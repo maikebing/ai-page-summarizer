@@ -61,3 +61,13 @@ jobs:
         with:
           name: chrome-extension-${{ github.ref_name }}
           path: chrome-extension-${{ github.ref_name }}.zip
+
+      - name: Upload to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            edge-extension-${{ github.ref_name }}.zip
+            chrome-extension-${{ github.ref_name }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
