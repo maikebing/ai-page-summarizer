@@ -4,12 +4,10 @@ on:
   push:
     branches:
       - main
-  release:
-    types: [published]
-  # Ò²Ö§³Ö tag push
-  push:
     tags:
       - 'v*'
+  release:
+    types: [published]
 
 jobs:
   build:
