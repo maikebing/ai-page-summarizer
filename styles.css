@@ -15,6 +15,15 @@ body {
 body.sidepanel-body {
   width: auto;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+body.sidepanel-body .container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .container {
@@ -103,8 +112,9 @@ h1 {
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   padding: 12px;
-  max-height: 400px;
+  flex: 1;
   overflow-y: auto;
+  min-height: 0;
 }
 
 #result h2 {
@@ -115,9 +125,64 @@ h1 {
 
 #summary-content {
   font-size: 14px;
-  line-height: 1.6;
-  white-space: pre-wrap;
+  line-height: 1.7;
   word-break: break-word;
+}
+
+/* Markdown ее╟Ф */
+#summary-content h1 { font-size: 1.3em; margin: 0.6em 0 0.3em; }
+#summary-content h2 { font-size: 1.15em; margin: 0.5em 0 0.25em; }
+#summary-content h3 { font-size: 1.05em; margin: 0.4em 0 0.2em; }
+#summary-content h4,
+#summary-content h5,
+#summary-content h6 { font-size: 1em; margin: 0.3em 0 0.15em; }
+
+#summary-content p { margin: 0.45em 0; }
+
+#summary-content ul,
+#summary-content ol {
+  margin: 0.4em 0;
+  padding-left: 1.6em;
+}
+#summary-content li { margin: 0.2em 0; }
+
+#summary-content strong { font-weight: 700; }
+#summary-content em { font-style: italic; }
+
+#summary-content code {
+  background: #f3f4f6;
+  padding: 0.15em 0.35em;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+}
+
+#summary-content pre {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 10px 12px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 0.5em 0;
+}
+
+#summary-content pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+  font-size: 0.85em;
+  line-height: 1.5;
+}
+
+#summary-content hr {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 0.6em 0;
+}
+
+#summary-content a {
+  color: #6366f1;
+  text-decoration: underline;
 }
 
 #copy-btn {

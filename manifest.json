@@ -2,16 +2,17 @@
   "manifest_version": 3,
   "name": "AI 页面总结器",
   "version": "1.0.0",
-  "description": "一键使用豆包/DeepSeek总结当前页面内容",
+  "description": "一键使用豆包/DeepSeek/Ollama总结当前页面内容",
   "permissions": [
     "activeTab",
+    "tabs",
     "scripting",
     "storage",
-    "sidePanel"
+    "sidePanel",
+    "declarativeNetRequest"
   ],
   "host_permissions": [
-    "https://api.deepseek.com/*",
-    "https://ark.cn-beijing.volces.com/*"
+    "<all_urls>"
   ],
   "action": {
     "default_icon": {
@@ -22,15 +23,6 @@
   },
   "side_panel": {
     "default_path": "sidepanel.html"
-  },
-  "sidebar_action": {
-    "default_panel": "sidepanel.html",
-    "default_icon": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
-    },
-    "default_title": "AI 页面总结器"
   },
   "background": {
     "service_worker": "background.js"
