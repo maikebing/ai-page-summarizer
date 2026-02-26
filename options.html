@@ -163,6 +163,21 @@
       </div>
       <div id="dockerai-status" class="ollama-status"></div>
   </div>
+
+  <div class="section">
+    <h2>🦄 KoboldCpp (本地模型)</h2>
+    <div style="margin-bottom: 8px;">
+      <span style="font-size:13px;color:#6b7280;">当前模型：</span>
+      <span id="koboldcpp-current-model" style="font-size:13px;color:#1e40af;">--</span>
+      <span style="margin-left:16px;font-size:13px;color:#6b7280;">版本：</span>
+      <span id="koboldcpp-version" style="font-size:13px;color:#1e40af;">--</span>
+      <button type="button" class="btn-sm btn-secondary" id="koboldcpp-refresh-btn" style="margin-left:8px;">🔄 刷新</button>
+    </div>
+    <label for="koboldcpp-url">服务器地址</label>
+    <input type="text" id="koboldcpp-url" placeholder="http://localhost:5001">
+    <p class="hint">KoboldCpp 默认运行在 <code>http://localhost:5001</code>，如有自定义端口请修改</p>
+    <div id="koboldcpp-status" class="ollama-status"></div>
+  </div>
 <button id="save-btn">💾 保存设置</button>
   <p class="status hidden" id="status">✅ 设置已保存！</p>
 
