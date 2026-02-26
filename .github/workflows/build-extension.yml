@@ -1,0 +1,65 @@
+name: Build & Package Edge/Chrome Extension
+
+on:
+  push:
+    branches:
+      - main
+  release:
+    types: [published]
+  # Ò²Ö§³Ö tag push
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Check manifest version
+        run: |
+          grep '"manifest_version": 3' manifest.json
+
+      - name: Validate extension structure
+        run: |
+          test -f manifest.json
+          test -f sidepanel.html
+          test -f sidepanel.js
+          test -f background.js
+          test -f styles.css
+          test -d icons
+
+      - name: Build (main branch)
+        if: github.ref == 'refs/heads/main'
+        run: echo "Build and validate only (main branch)"
+
+      - name: Package Edge Extension (on tag/release)
+        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'release'
+        run: |
+          zip -r edge-extension-${{ github.ref_name }}.zip . -x '*.git*' '*.github*'
+
+      - name: Package Chrome Extension (on tag/release)
+        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'release'
+        run: |
+          zip -r chrome-extension-${{ github.ref_name }}.zip . -x '*.git*' '*.github*'
+
+      - name: Upload Edge Extension Artifact
+        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'release'
+        uses: actions/upload-artifact@v3
+        with:
+          name: edge-extension-${{ github.ref_name }}
+          path: edge-extension-${{ github.ref_name }}.zip
+
+      - name: Upload Chrome Extension Artifact
+        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'release'
+        uses: actions/upload-artifact@v3
+        with:
+          name: chrome-extension-${{ github.ref_name }}
+          path: chrome-extension-${{ github.ref_name }}.zip
