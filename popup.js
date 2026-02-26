@@ -1,13 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const summarizeBtn = document.getElementById("summarize-btn");
-  const loadingEl = document.getElementById("loading");
-  const resultEl = document.getElementById("result");
-  const summaryContent = document.getElementById("summary-content");
   const errorEl = document.getElementById("error");
   const errorMessage = document.getElementById("error-message");
-  const copyBtn = document.getElementById("copy-btn");
   const providerSelect = document.getElementById("provider");
   const openOptions = document.getElementById("open-options");
+  const edgeDiscoverBtn = document.getElementById("edge-discover-btn");
+  const actionStatusEl = document.getElementById("action-status");
 
   // 加载上次选择的 provider
   chrome.storage.sync.get(["provider"], (data) => {
@@ -25,145 +22,74 @@ document.addEventListener("DOMContentLoaded", () => {
     chrome.runtime.openOptionsPage();
   });
 
-  summarizeBtn.addEventListener("click", async () => {
-    // 重置 UI
-    resultEl.classList.add("hidden");
+  edgeDiscoverBtn.addEventListener("click", async () => {
+    hideActionStatus(actionStatusEl);
     errorEl.classList.add("hidden");
-    loadingEl.classList.remove("hidden");
-    summarizeBtn.disabled = true;
+
+    edgeDiscoverBtn.disabled = true;
 
     try {
-      // 1. 获取当前标签页
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      const pageUrl = tab?.url || "";
+      const tabId = tab?.id;
+      const windowId = tab?.windowId;
 
-      // 2. 注入内容脚本，提取页面文本
-      const [{ result: pageContent }] = await chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        func: extractPageContent,
-      });
-
-      if (!pageContent || pageContent.trim().length === 0) {
-        throw new Error("无法提取页面内容。请确认当前页面有可读文本且不是受限页面（如 edge:// 或扩展商店）。");
+      if (!pageUrl || typeof tabId !== "number" || typeof windowId !== "number") {
+        throw new Error("无法获取当前页面地址。请切换到一个普通网页后重试。");
       }
 
-      // 3. 截断过长文本（避免超出 token 限制）
-      const maxLength = 15000;
-      const truncated = pageContent.length > maxLength
-        ? pageContent.substring(0, maxLength) + "\n\n[内容过长，已截断...]"
-        : pageContent;
+      if (/^(edge|chrome|about|extension):\/\//i.test(pageUrl)) {
+        throw new Error("当前是受限页面，无法发送。请在普通网页中使用该功能。");
+      }
 
-      // 4. 调用 AI API
-      const provider = providerSelect.value;
-      const summary = await callAI(provider, truncated, tab.title);
+      await chrome.storage.local.set({
+        sidepanel_request: {
+          tabId,
+          windowId,
+          pageUrl,
+          pageTitle: tab.title || "",
+          provider: providerSelect.value,
+          timestamp: Date.now(),
+        },
+      });
 
-      // 5. 展示结果
-      summaryContent.textContent = summary;
-      resultEl.classList.remove("hidden");
+      // Edge 的 popup 上下文中没有 chrome.sidePanel，
+      // 因此通过 background 切换为“点图标开侧边栏”模式，
+      // 用户再次点击扩展图标即可打开侧边栏。
+      const result = await chrome.runtime.sendMessage({ type: "prepare-sidepanel" });
 
+      if (!result?.ok) {
+        throw new Error(result?.error || "准备侧边栏失败");
+      }
+
+      // 立即尝试关闭 popup，让用户可以再次点击扩展图标
+      try { window.close(); } catch (_) {}
+      setTimeout(() => {
+        try { window.close(); } catch (_) {}
+        try { self.close(); } catch (_) {}
+      }, 300);
+
+      // 如果 popup 没能关闭（某些 Edge 版本），显示提示
+      setTimeout(() => {
+        showActionStatus(actionStatusEl, "success",
+          "✅ 准备完成！请关闭此弹窗，然后再次点击工具栏上的扩展图标，侧边栏将自动打开并总结当前页面。");
+      }, 500);
     } catch (err) {
-      errorMessage.textContent = err.message || "发生未知错误";
+      errorMessage.textContent = err.message || "打开侧边栏失败";
       errorEl.classList.remove("hidden");
     } finally {
-      loadingEl.classList.add("hidden");
-      summarizeBtn.disabled = false;
+      edgeDiscoverBtn.disabled = false;
     }
-  });
-
-  copyBtn.addEventListener("click", () => {
-    navigator.clipboard.writeText(summaryContent.textContent).then(() => {
-      copyBtn.textContent = "✅ 已复制";
-      setTimeout(() => { copyBtn.textContent = "📋 复制"; }, 2000);
-    });
   });
 });
 
-// 在页面中执行的函数 - 提取页面文本内容
-function extractPageContent() {
-  // 移除不需要的元素
-  const selectorsToRemove = ["script", "style", "nav", "footer", "header", "noscript", "iframe", "aside", "[role=\"complementary\"]", ".advertisement", ".sidebar"];
-  const cloned = document.cloneNode(true);
-
-  selectorsToRemove.forEach((sel) => {
-    cloned.querySelectorAll(sel).forEach((el) => el.remove());
-  });
-
-  // 尝试获取 article 或 main 内容
-  const article = cloned.querySelector("article") || cloned.querySelector("main") || cloned.querySelector("body");
-
-  return article ? article.innerText.replace(/\n{3,}/g, "\n\n").trim() : "";
+function hideActionStatus(statusEl) {
+  statusEl.textContent = "";
+  statusEl.className = "hidden";
 }
 
-// 调用 AI API
-async function callAI(provider, content, pageTitle) {
-  const config = await getAPIConfig(provider);
-
-  if (!config.apiKey) {
-    throw new Error(`请先在设置页面中配置 ${provider === "deepseek" ? "DeepSeek" : "豆包"} 的 API Key`);
-  }
-
-  const prompt = `请用中文总结以下网页内容，要求：
-1. 先用一句话概括主旨
-2. 然后列出 3-5 个关键要点
-3. 如果有重要数据或结论，请特别标注
-
-网页标题：${pageTitle}
-
-网页内容：
-${content}`;
-
-  const messages = [
-    { role: "system", content: "你是一个专业的内容分析助手，擅长快速总结网页内容的核心要点。" },
-    { role: "user", content: prompt },
-  ];
-
-  let apiUrl, headers, body;
-
-  if (provider === "deepseek") {
-    apiUrl = "https://api.deepseek.com/chat/completions";
-    headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${config.apiKey}`,
-    };
-    body = JSON.stringify({
-      model: config.model || "deepseek-chat",
-      messages,
-      max_tokens: 2000,
-      temperature: 0.3,
-    });
-  } else if (provider === "doubao") {
-    // 豆包使用火山引擎 Ark API（兼容 OpenAI 格式）
-    apiUrl = `https://ark.cn-beijing.volces.com/api/v3/chat/completions`;
-    headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${config.apiKey}`,
-    };
-    body = JSON.stringify({
-      model: config.model || "doubao-pro-256k",
-      messages,
-      max_tokens: 2000,
-      temperature: 0.3,
-    });
-  }
-
-  const response = await fetch(apiUrl, { method: "POST", headers, body });
-
-  if (!response.ok) {
-    const errData = await response.json().catch(() => ({}));
-    throw new Error(`API 请求失败 (${response.status}): ${errData.error?.message || response.statusText}。请检查 API Key 是否正确或服务是否可用。`);
-  }
-
-  const data = await response.json();
-  return data.choices?.[0]?.message?.content || "未能获取总结结果";
-}
-
-// 从 storage 获取 API 配置
-function getAPIConfig(provider) {
-  return new Promise((resolve) => {
-    chrome.storage.sync.get([`${provider}_api_key`, `${provider}_model`], (data) => {
-      resolve({
-        apiKey: data[`${provider}_api_key`] || "",
-        model: data[`${provider}_model`] || "",
-      });
-    });
-  });
+function showActionStatus(statusEl, type, text) {
+  statusEl.textContent = text;
+  statusEl.className = "";
+  statusEl.classList.add(type);
 }

@@ -2,6 +2,8 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 页面总结</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -16,18 +18,9 @@
       </select>
     </div>
 
-    <button id="summarize-btn">✨ 一键总结当前页面</button>
+    <button id="edge-discover-btn"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5Zm2-.5a.5.5 0 0 0-.5.5v14a.5.5 0 0 0 .5.5h9V4.5H5Zm10.5 0v15H19a.5.5 0 0 0 .5-.5V5a.5.5 0 0 0-.5-.5h-3.5Z" fill="currentColor"/></svg> 在侧边栏总结当前页面</button>
 
-    <div id="loading" class="hidden">
-      <div class="spinner"></div>
-      <span>正在总结中，请稍候...</span>
-    </div>
-
-    <div id="result" class="hidden">
-      <h2>总结结果</h2>
-      <div id="summary-content"></div>
-      <button id="copy-btn">📋 复制</button>
-    </div>
+    <div id="action-status" class="hidden"></div>
 
     <div id="error" class="hidden">
       <p id="error-message"></p>

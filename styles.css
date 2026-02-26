@@ -12,6 +12,11 @@ body {
   color: #1f2937;
 }
 
+body.sidepanel-body {
+  width: auto;
+  min-height: 100vh;
+}
+
 .container {
   padding: 16px;
 }
@@ -62,6 +67,16 @@ h1 {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.btn-icon {
+  width: 18px;
+  height: 18px;
+  vertical-align: -3px;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+
+
 
 #loading {
   text-align: center;

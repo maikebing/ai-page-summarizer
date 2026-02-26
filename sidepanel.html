@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 页面总结 - 侧边栏</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="sidepanel-body">
+  <div class="container">
+    <h1>📄 AI 页面总结</h1>
+
+    <div class="provider-select">
+      <label for="provider">选择 AI 模型：</label>
+      <select id="provider">
+        <option value="deepseek">DeepSeek</option>
+        <option value="doubao">豆包 (Doubao)</option>
+      </select>
+    </div>
+
+    <button id="summarize-btn">🔄 总结当前页面</button>
+
+    <div id="loading" class="hidden">
+      <div class="spinner"></div>
+      <span>正在读取页面并总结...</span>
+    </div>
+
+    <div id="result" class="hidden">
+      <h2>总结结果</h2>
+      <div id="summary-content"></div>
+      <button id="copy-btn">📋 复制</button>
+    </div>
+
+    <div id="error" class="hidden">
+      <p id="error-message"></p>
+    </div>
+
+    <div class="footer">
+      <a href="#" id="open-options">⚙️ 设置 API Key</a>
+    </div>
+  </div>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>
