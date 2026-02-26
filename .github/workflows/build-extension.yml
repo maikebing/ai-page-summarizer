@@ -32,6 +32,15 @@ jobs:
           test -f styles.css
           test -d icons
 
+      # ÓÃ tag Ãû³ÆÌæ»» manifest.json µÄ version ×Ö¶Î
+      - name: Replace manifest version with tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          TAG_VERSION=${GITHUB_REF_NAME#v}
+          jq --arg v "$TAG_VERSION" '.version = $v' manifest.json > manifest.tmp.json
+          mv manifest.tmp.json manifest.json
+          cat manifest.json
+
       - name: Build (main branch)
         if: github.ref == 'refs/heads/main'
         run: echo "Build and validate only (main branch)"
