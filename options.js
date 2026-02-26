@@ -7,27 +7,40 @@ document.addEventListener("DOMContentLoaded", () => {
   const ollamaModel = document.getElementById("ollama-model");
   const ollamaRefreshBtn = document.getElementById("ollama-refresh-btn");
   const ollamaStatusEl = document.getElementById("ollama-status");
+  const dockeraiUrl = document.getElementById("dockerai-url");
+  const dockeraiModel = document.getElementById("dockerai-model");
+  const dockeraiRefreshBtn = document.getElementById("dockerai-refresh-btn");
+  const dockeraiStatusEl = document.getElementById("dockerai-status");
   const saveBtn = document.getElementById("save-btn");
   const status = document.getElementById("status");
 
   // 加载已保存的设置
   chrome.storage.sync.get(
-    ["deepseek_api_key", "deepseek_model", "doubao_api_key", "doubao_model", "ollama_url", "ollama_model"],
+    ["deepseek_api_key", "deepseek_model", "doubao_api_key", "doubao_model", "ollama_url", "ollama_model", "dockerai_url", "dockerai_model"],
     (data) => {
       deepseekKey.value = data.deepseek_api_key || "";
       deepseekModel.value = data.deepseek_model || "deepseek-chat";
       doubaoKey.value = data.doubao_api_key || "";
       doubaoModel.value = data.doubao_model || "doubao-pro-256k";
       ollamaUrl.value = data.ollama_url || "http://localhost:11434";
+      ollamaModel.value = data.ollama_model || "qwen2.5:7b";
+      dockeraiUrl.value = data.dockerai_url || "http://localhost:12434";
+      dockeraiModel.value = data.dockerai_model || "qwen3:latest";
 
       // 加载完设置后自动刷新模型列表
       fetchOllamaModels(data.ollama_model || "");
+      fetchDockeraiModels(data.dockerai_model || "qwen3:latest");
     }
   );
 
-  // 刷新按钮
+  // Ollama 刷新按钮
   ollamaRefreshBtn.addEventListener("click", () => {
     fetchOllamaModels(ollamaModel.value);
+  });
+
+  // DockerAI 刷新按钮
+  dockeraiRefreshBtn.addEventListener("click", () => {
+    fetchDockeraiModels(dockeraiModel.value);
   });
 
   saveBtn.addEventListener("click", () => {
@@ -39,6 +52,8 @@ document.addEventListener("DOMContentLoaded", () => {
         doubao_model: doubaoModel.value.trim(),
         ollama_url: ollamaUrl.value.trim(),
         ollama_model: ollamaModel.value,
+        dockerai_url: dockeraiUrl.value.trim(),
+        dockerai_model: dockeraiModel.value,
       },
       () => {
         status.classList.remove("hidden");
@@ -154,5 +169,58 @@ document.addEventListener("DOMContentLoaded", () => {
   function setOllamaStatus(type, text) {
     ollamaStatusEl.textContent = text;
     ollamaStatusEl.className = "ollama-status " + type;
+  }
+
+  /**
+   * 从 Docker Desktop AI 获取模型列表
+   */
+  function fetchDockeraiModels(selectedModel) {
+    setDockeraiStatus("info", "⏳ 正在获取 Docker Desktop AI 模型列表...");
+    dockeraiRefreshBtn.disabled = true;
+    const url = dockeraiUrl.value.trim() || "http://localhost:12434";
+    fetch(`${url.replace(/\/+$/, "")}/v1/models`)
+      .then(res => res.json())
+      .then(data => {
+        dockeraiRefreshBtn.disabled = false;
+        if (!data.data || !Array.isArray(data.data)) {
+          setDockeraiStatus("error", "❌ 获取模型失败");
+          return;
+        }
+        populateDockeraiModelSelect(data.data, selectedModel);
+        setDockeraiStatus("success", `✅ 找到 ${data.data.length} 个模型`);
+      })
+      .catch(err => {
+        dockeraiRefreshBtn.disabled = false;
+        setDockeraiStatus("error", "❌ 无法连接 Docker Desktop AI: " + (err.message || "未知错误"));
+      });
+  }
+
+  function populateDockeraiModelSelect(models, selectedModel) {
+    dockeraiModel.innerHTML = "";
+    if (!models.length) {
+      const opt = document.createElement("option");
+      opt.value = "";
+      opt.textContent = "暂无模型";
+      dockeraiModel.appendChild(opt);
+      return;
+    }
+    models.forEach((m) => {
+      const opt = document.createElement("option");
+      opt.value = m.id || m.name || m.model || m;
+      opt.textContent = m.id || m.name || m.model || m;
+      dockeraiModel.appendChild(opt);
+    });
+    // 选中之前保存的模型或默认
+    if (selectedModel) {
+      const exists = Array.from(dockeraiModel.options).some(opt => opt.value === selectedModel);
+      dockeraiModel.value = exists ? selectedModel : "qwen3:latest";
+    } else {
+      dockeraiModel.value = "qwen3:latest";
+    }
+  }
+
+  function setDockeraiStatus(type, text) {
+    dockeraiStatusEl.textContent = text;
+    dockeraiStatusEl.className = "ollama-status " + type;
   }
 });

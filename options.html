@@ -144,9 +144,26 @@
       <button type="button" class="btn-sm" id="ollama-refresh-btn">🔄 刷新</button>
     </div>
     <div id="ollama-status" class="ollama-status"></div>
+
   </div>
 
-  <button id="save-btn">💾 保存设置</button>
+  
+  <div class="section">
+    <h2>🐳 Docker Desktop AI</h2>
+    <label for="dockerai-url">API 地址</label>
+    <input type="text" id="dockerai-url" placeholder="http://localhost:12434">
+    <p class="hint">Docker Desktop AI 默认运行在 <code>http://localhost:12434</code></p>
+      <p class="hint">Docker Desktop AI 默认运行在 <code>http://localhost:12434</code>，修改地址后点击“刷新”重新获取模型列表</p>
+      <label for="dockerai-model">选择模型</label>
+      <div class="model-row">
+        <select id="dockerai-model">
+          <option value="">点击“刷新”获取模型列表</option>
+        </select>
+        <button type="button" class="btn-sm" id="dockerai-refresh-btn">🔄 刷新</button>
+      </div>
+      <div id="dockerai-status" class="ollama-status"></div>
+  </div>
+<button id="save-btn">💾 保存设置</button>
   <p class="status hidden" id="status">✅ 设置已保存！</p>
 
   <script src="options.js"></script>
