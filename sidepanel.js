@@ -8,6 +8,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const providerSelect = document.getElementById("provider");
   const summarizeBtn = document.getElementById("summarize-btn");
   const openOptions = document.getElementById("open-options");
+  const chatMessages = document.getElementById("chat-messages");
+  const chatInput = document.getElementById("chat-input");
+  const chatSendBtn = document.getElementById("chat-send-btn");
+
+  // 对话历史（包含 system + 页面上下文 + 所有对话）
+  let conversationHistory = [];
+  // 缓存的页面内容，用于对话上下文
+  let cachedPageContent = "";
+  let cachedPageTitle = "";
+  let cachedPageUrl = "";
+  let isChatBusy = false;
 
   // 加载上次选择的 provider
   chrome.storage.sync.get(["provider"], (data) => {
@@ -34,11 +45,113 @@ document.addEventListener("DOMContentLoaded", () => {
     chrome.runtime.openOptionsPage();
   });
 
-  // 总结当前页面
+  // ===== 对话输入框自动高度 =====
+  chatInput.addEventListener("input", () => {
+    chatInput.style.height = "auto";
+    chatInput.style.height = Math.min(chatInput.scrollHeight, 100) + "px";
+  });
+
+  // Enter 发送，Shift+Enter 换行
+  chatInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleChatSend();
+    }
+  });
+
+  chatSendBtn.addEventListener("click", handleChatSend);
+
+  // ===== 发送对话消息 =====
+  async function handleChatSend() {
+    const text = chatInput.value.trim();
+    if (!text || isChatBusy) return;
+
+    // 如果还没有页面上下文（没做过总结），先提取
+    if (!cachedPageContent) {
+      appendChatMsg("assistant", "请先点击「总结当前页面」后再提问。");
+      return;
+    }
+
+    // 显示用户消息
+    appendChatMsg("user", text);
+    chatInput.value = "";
+    chatInput.style.height = "auto";
+
+    // 添加到对话历史
+    conversationHistory.push({ role: "user", content: text });
+
+    // 显示加载动画
+    const loadingBubble = appendChatLoading();
+    isChatBusy = true;
+    chatSendBtn.disabled = true;
+
+    try {
+      const provider = providerSelect.value;
+      const reply = await callChatAI(provider, conversationHistory);
+
+      // 移除加载动画
+      loadingBubble.remove();
+
+      // 添加 AI 回复
+      conversationHistory.push({ role: "assistant", content: reply });
+      appendChatMsg("assistant", renderMarkdown(reply));
+
+      // 滚动到底部
+      scrollChatToBottom();
+    } catch (err) {
+      loadingBubble.remove();
+      let msg = err.message || "回复失败";
+      if (providerSelect.value === "ollama" &&
+          (msg.includes("Failed to fetch") || msg.includes("CORS") || msg.includes("NetworkError") || msg.includes("网络请求失败"))) {
+        msg = "无法连接 Ollama 服务，请检查 Ollama 是否已启动。";
+      }
+      appendChatMsg("assistant", `❌ ${msg}`);
+      scrollChatToBottom();
+    } finally {
+      isChatBusy = false;
+      chatSendBtn.disabled = false;
+      chatInput.focus();
+    }
+  }
+
+  function appendChatMsg(role, content) {
+    chatMessages.classList.remove("hidden");
+    const div = document.createElement("div");
+    div.className = `chat-msg ${role}`;
+    if (role === "assistant") {
+      div.innerHTML = content;
+    } else {
+      div.textContent = content;
+    }
+    chatMessages.appendChild(div);
+    scrollChatToBottom();
+    return div;
+  }
+
+  function appendChatLoading() {
+    chatMessages.classList.remove("hidden");
+    const div = document.createElement("div");
+    div.className = "chat-msg assistant chat-msg-loading";
+    div.innerHTML = "<span></span><span></span><span></span>";
+    chatMessages.appendChild(div);
+    scrollChatToBottom();
+    return div;
+  }
+
+  function scrollChatToBottom() {
+    requestAnimationFrame(() => {
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+  }
+
+  // ===== 总结当前页面 =====
   async function doSummarize() {
     loadingEl.classList.remove("hidden");
     resultEl.classList.add("hidden");
     errorEl.classList.add("hidden");
+    chatMessages.classList.add("hidden");
+    chatMessages.innerHTML = "";
+    conversationHistory = [];
     summarizeBtn.disabled = true;
 
     try {
@@ -73,10 +186,30 @@ document.addEventListener("DOMContentLoaded", () => {
           ? pageContent.substring(0, maxLength) + "\n\n[内容过长，已截断...]"
           : pageContent;
 
-      const summary = await callAI(providerSelect.value, truncated, tab.title || "", tab.url || "");
+      // 缓存页面内容供对话使用
+      cachedPageContent = truncated;
+      cachedPageTitle = tab.title || "";
+      cachedPageUrl = tab.url || "";
+
+      const summary = await callAI(providerSelect.value, truncated, cachedPageTitle, cachedPageUrl);
 
       summaryContent.innerHTML = renderMarkdown(summary);
       resultEl.classList.remove("hidden");
+
+      // 初始化对话历史，包含页面上下文和总结
+      conversationHistory = [
+        {
+          role: "system",
+          content: `你是一个专业的内容分析助手。用户正在浏览一个网页，你已经帮他总结了内容。现在用户会对这个页面内容提出进一步的问题，请基于以下网页内容回答。如果问题超出页面内容范围，你也可以结合自己的知识回答，但要说明哪些是页面内容中的信息，哪些是你的补充。
+
+网页标题：${cachedPageTitle}
+网页地址：${cachedPageUrl}
+
+网页内容：
+${cachedPageContent}`
+        },
+        { role: "assistant", content: summary },
+      ];
     } catch (err) {
       let msg = err.message || "总结失败";
       // 检测 CORS / 网络连接错误并给出 Ollama 专属提示
@@ -332,6 +465,74 @@ ${content}`;
     return data.message?.content || "未能获取总结结果";
   }
   return data.choices?.[0]?.message?.content || "未能获取总结结果";
+}
+
+/**
+ * 对话模式：发送完整对话历史给 AI
+ */
+async function callChatAI(provider, messages) {
+  const config = await getAPIConfig(provider);
+
+  if (provider !== "ollama" && !config.apiKey) {
+    throw new Error(`请先在设置页面中配置 ${provider === "deepseek" ? "DeepSeek" : "豆包"} 的 API Key`);
+  }
+
+  let apiUrl;
+  let headers;
+  let body;
+
+  if (provider === "deepseek") {
+    apiUrl = "https://api.deepseek.com/chat/completions";
+    headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${config.apiKey}`,
+    };
+    body = JSON.stringify({
+      model: config.model || "deepseek-chat",
+      messages,
+      max_tokens: 2000,
+      temperature: 0.5,
+    });
+  } else if (provider === "ollama") {
+    const baseUrl = (config.url || "http://localhost:11434").replace(/\/+$/, "");
+    apiUrl = `${baseUrl}/api/chat`;
+    headers = { "Content-Type": "application/json" };
+    body = JSON.stringify({
+      model: config.model || "qwen2.5:7b",
+      messages,
+      stream: false,
+    });
+  } else {
+    apiUrl = "https://ark.cn-beijing.volces.com/api/v3/chat/completions";
+    headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${config.apiKey}`,
+    };
+    body = JSON.stringify({
+      model: config.model || "doubao-pro-256k",
+      messages,
+      max_tokens: 2000,
+      temperature: 0.5,
+    });
+  }
+
+  const response = await (provider === "ollama"
+    ? proxyFetch(apiUrl, { method: "POST", headers, body })
+    : fetch(apiUrl, { method: "POST", headers, body }));
+
+  if (!response.ok) {
+    const errData = provider === "ollama"
+      ? { error: { message: response.error } }
+      : await response.json().catch(() => ({}));
+    throw new Error(`API 请求失败 (${response.status || "?"}): ${errData.error?.message || response.statusText || response.error || "未知错误"}`);
+  }
+
+  const data = provider === "ollama" ? response.data : await response.json();
+
+  if (provider === "ollama") {
+    return data.message?.content || "未能获取回复";
+  }
+  return data.choices?.[0]?.message?.content || "未能获取回复";
 }
 
 function getAPIConfig(provider) {

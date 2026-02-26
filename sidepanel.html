@@ -36,8 +36,19 @@
       <p id="error-message"></p>
     </div>
 
-    <div class="footer">
-      <a href="#" id="open-options">⚙️ 设置 API Key</a>
+    <!-- 对话历史区域 -->
+    <div id="chat-messages" class="hidden"></div>
+
+    <!-- 底部对话输入框 -->
+    <div class="chat-input-area">
+      <div class="chat-input-row">
+        <textarea id="chat-input" placeholder="对页面内容提问..." rows="1"></textarea>
+        <button id="chat-send-btn" title="发送">➤</button>
+      </div>
+      <div class="chat-footer-row">
+        <a href="#" id="open-options">⚙️ 设置</a>
+        <span id="chat-hint">Enter 发送 · Shift+Enter 换行</span>
+      </div>
     </div>
   </div>
 
