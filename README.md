@@ -80,7 +80,7 @@ ai-page-summarizer/
 ## 🗺️ 后续计划
 
 - [ ] Ollama 流式输出（Streaming）支持
-- [ ] 右键菜单支持，选中文字后直接总结
+   - [ ] 右键菜单支持，选中文字后直接在边栏总结
 - [ ] 支持更多 AI Provider（如 OpenAI、Claude 等）
 - [ ] 总结/对话历史记录功能
 

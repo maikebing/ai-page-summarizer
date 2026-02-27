@@ -16,6 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const koboldcppCurrentModel = document.getElementById("koboldcpp-current-model");
   const koboldcppVersion = document.getElementById("koboldcpp-version");
   const koboldcppRefreshBtn = document.getElementById("koboldcpp-refresh-btn");
+  const giteeaiKey = document.getElementById("giteeai-key");
+  const giteeaiModel = document.getElementById("giteeai-model");
   const saveBtn = document.getElementById("save-btn");
   const status = document.getElementById("status");
 
@@ -26,7 +28,8 @@ document.addEventListener("DOMContentLoaded", () => {
       "doubao_api_key", "doubao_model",
       "ollama_url", "ollama_model",
       "dockerai_url", "dockerai_model",
-      "koboldcpp_url"
+      "koboldcpp_url",
+      "giteeai_api_key", "giteeai_model"
     ],
     (data) => {
       deepseekKey.value = data.deepseek_api_key || "";
@@ -38,6 +41,8 @@ document.addEventListener("DOMContentLoaded", () => {
       dockeraiUrl.value = data.dockerai_url || "http://localhost:12434";
       dockeraiModel.value = data.dockerai_model || "docker.io/ai/qwen2.5:7B-Q4_0";
       koboldcppUrl.value = data.koboldcpp_url || "http://localhost:5001";
+      giteeaiKey.value = data.giteeai_api_key || "";
+      giteeaiModel.value = data.giteeai_model || "Qwen3-8B";
 
       // 加载完设置后自动刷新模型列表
       fetchOllamaModels(data.ollama_model || "qwen2.5:7b");
@@ -123,6 +128,8 @@ document.addEventListener("DOMContentLoaded", () => {
         dockerai_url: dockeraiUrl.value.trim(),
         dockerai_model: dockeraiModel.value,
         koboldcpp_url: koboldcppUrl.value.trim(),
+        giteeai_api_key: giteeaiKey.value.trim(),
+        giteeai_model: giteeaiModel.value.trim(),
       },
       () => {
         status.classList.remove("hidden");

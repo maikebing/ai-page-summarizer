@@ -374,8 +374,8 @@ function extractPageContent() {
 
 async function callAI(provider, content, pageTitle, pageUrl) {
   const config = await getAPIConfig(provider);
-  if (provider !== "ollama" && provider !== "dockerai" && provider !== "koboldcpp" && !config.apiKey) {
-    throw new Error(`请先在设置页面中配置 ${provider === "deepseek" ? "DeepSeek" : provider === "doubao" ? "豆包" : provider} 的 API Key`);
+  if (provider !== "ollama" && provider !== "dockerai" && provider !== "koboldcpp" && provider !== "giteeai" && !config.apiKey) {
+    throw new Error(`请先在设置页面中配置 ${provider === "deepseek" ? "DeepSeek" : provider === "doubao" ? "豆包" : provider === "giteeai" ? "Gitee AI" : provider} 的 API Key`);
   }
   const prompt = `请用中文总结以下网页，要求：\n1. 先用一句话概括主旨\n2. 然后列出 3-5 个关键要点\n3. 如果有重要数据或结论，请特别标注\n\n网页标题：${pageTitle || "未获取"}\n网页地址：${pageUrl || "未获取"}\n\n网页内容：\n${content}`;
   const messages = [
@@ -432,6 +432,23 @@ async function callAI(provider, content, pageTitle, pageUrl) {
       max_tokens: 2000,
       temperature: 0.3,
     });
+  } else if (provider === "giteeai") {
+    apiUrl = "https://ai.gitee.com/v1/chat/completions";
+    headers = {
+      "Content-Type": "application/json",
+      "X-Failover-Enabled": "true",
+      Authorization: `Bearer ${config.apiKey}`,
+    };
+    body = JSON.stringify({
+      model: config.model || "Qwen3-8B",
+      messages,
+      stream: false,
+      max_tokens: 1024,
+      temperature: 0.7,
+      top_p: 0.7,
+      top_k: 50,
+      frequency_penalty: 1
+    });
   } else {
     apiUrl = "https://ark.cn-beijing.volces.com/api/v3/chat/completions";
     headers = {
@@ -478,8 +495,8 @@ async function callAI(provider, content, pageTitle, pageUrl) {
  */
 async function callChatAI(provider, messages) {
   const config = await getAPIConfig(provider);
-  if (provider !== "ollama" && provider !== "dockerai" && provider !== "koboldcpp" && !config.apiKey) {
-    throw new Error(`请先在设置页面中配置 ${provider === "deepseek" ? "DeepSeek" : provider === "doubao" ? "豆包" : provider} 的 API Key`);
+  if (provider !== "ollama" && provider !== "dockerai" && provider !== "koboldcpp" && provider !== "giteeai" && !config.apiKey) {
+    throw new Error(`请先在设置页面中配置 ${provider === "deepseek" ? "DeepSeek" : provider === "doubao" ? "豆包" : provider === "giteeai" ? "Gitee AI" : provider} 的 API Key`);
   }
   let apiUrl;
   let headers;
@@ -524,6 +541,23 @@ async function callChatAI(provider, messages) {
       messages,
       max_tokens: 2000,
       temperature: 0.5,
+    });
+  } else if (provider === "giteeai") {
+    apiUrl = "https://ai.gitee.com/v1/chat/completions";
+    headers = {
+      "Content-Type": "application/json",
+      "X-Failover-Enabled": "true",
+      Authorization: `Bearer ${config.apiKey}`,
+    };
+    body = JSON.stringify({
+      model: config.model || "Qwen3-8B",
+      messages,
+      stream: false,
+      max_tokens: 1024,
+      temperature: 0.7,
+      top_p: 0.7,
+      top_k: 50,
+      frequency_penalty: 1
     });
   } else {
     apiUrl = "https://ark.cn-beijing.volces.com/api/v3/chat/completions";
@@ -580,6 +614,13 @@ function getAPIConfig(provider) {
         resolve({
           url: data.dockerai_url || "http://localhost:8080",
           model: data.dockerai_model || "qwen2.5-7b",
+        });
+      });
+    } else if (provider === "giteeai") {
+      chrome.storage.sync.get(["giteeai_api_key", "giteeai_model"], (data) => {
+        resolve({
+          apiKey: data["giteeai_api_key"] || "",
+          model: data["giteeai_model"] || "Qwen3-8B",
         });
       });
     } else {
