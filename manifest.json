@@ -3,7 +3,6 @@
   "name": "AI 页面总结器",
   "version": "1.0.0",
   "description": "一键使用豆包/DeepSeek/Ollama总结当前页面内容",
-  "default_locale": "zh_CN",
   "permissions": [
     "activeTab",
     "tabs",
