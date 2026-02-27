@@ -8,8 +8,33 @@ chrome.runtime.onInstalled.addListener(() => {
     chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => {});
   }
 
+  // 添加右键菜单：选中文字后总结
+  chrome.contextMenus.create({
+    id: "summarize-selection",
+    title: "AI 总结选中内容",
+    contexts: ["selection"]
+  });
+
   // 移除发往 Ollama 的 Origin 请求头，防止 Ollama 返回 403
   updateOllamaRules();
+// 监听右键菜单点击，发送选中内容到侧边栏
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId === "summarize-selection") {
+    if (info.selectionText) {
+      // 有选中内容，直接总结选中内容
+      chrome.storage.local.set({ sidepanel_selection: {
+        text: info.selectionText,
+        tabId: tab.id,
+        pageUrl: tab.url,
+        pageTitle: tab.title || ""
+      }});
+    } else {
+      // 没有选中内容，清除 sidepanel_selection，侧边栏自动总结整个页面
+      chrome.storage.local.remove("sidepanel_selection");
+    }
+    chrome.sidePanel.open({ tabId: tab.id });
+  }
+});
 });
 
 /**

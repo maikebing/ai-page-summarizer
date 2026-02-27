@@ -217,8 +217,52 @@ document.addEventListener("DOMContentLoaded", () => {
   // 点击按钮重新总结
   summarizeBtn.addEventListener("click", doSummarize);
 
-  // 侧边栏打开时自动总结
-  doSummarize();
+  // 检查是否有右键选中内容
+  chrome.storage.local.get(["sidepanel_selection"], async (data) => {
+    if (data.sidepanel_selection && data.sidepanel_selection.text) {
+      // 只总结选中内容，不再自动提取页面内容
+      loadingEl.classList.remove("hidden");
+      resultEl.classList.add("hidden");
+      errorEl.classList.add("hidden");
+      chatMessages.classList.add("hidden");
+      chatMessages.innerHTML = "";
+      conversationHistory = [];
+      summarizeBtn.disabled = true;
+      summaryTimer.textContent = "";
+      try {
+        await wakeServiceWorker();
+        const selection = data.sidepanel_selection;
+        cachedPageContent = selection.text;
+        cachedPageTitle = selection.pageTitle || "";
+        cachedPageUrl = selection.pageUrl || "";
+        const start = Date.now();
+        const summary = await callAI(providerSelect.value, cachedPageContent, "", "");
+        const end = Date.now();
+        summaryContent.innerHTML = renderMarkdown(summary);
+        resultEl.classList.remove("hidden");
+        summaryTimer.textContent = `耗时 ${( (end - start) / 1000 ).toFixed(3)} 秒`;
+        conversationHistory = [
+          {
+            role: "system",
+            content: `你是一个专业的内容分析助手。用户选中了网页的一段文字，你已经帮他总结了内容。现在用户会对这段内容提出进一步的问题，请基于以下内容回答。如果问题超出内容范围，你也可以结合自己的知识回答，但要说明哪些是内容中的信息，哪些是你的补充。\n\n网页标题：${cachedPageTitle}\n网页地址：${cachedPageUrl}\n\n选中内容：\n${cachedPageContent}`
+          },
+          { role: "assistant", content: summary },
+        ];
+        chrome.storage.local.remove("sidepanel_selection");
+      } catch (err) {
+        let msg = err.message || "总结失败";
+        errorMessage.textContent = msg;
+        errorEl.classList.remove("hidden");
+        summaryTimer.textContent = "";
+      } finally {
+        loadingEl.classList.add("hidden");
+        summarizeBtn.disabled = false;
+      }
+    } else {
+      // 没有选中内容时，才自动提取页面内容
+      doSummarize();
+    }
+  });
 });
 
 /**
