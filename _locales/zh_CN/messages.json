@@ -1,0 +1,338 @@
+{
+  "extName": {
+    "message": "AI 页面总结器"
+  },
+  "extDescription": {
+    "message": "一键使用豆包、DeepSeek、Ollama 等模型总结当前页面内容。"
+  },
+  "popupTitle": {
+    "message": "AI 页面总结器"
+  },
+  "popupHeading": {
+    "message": "📄 AI 页面总结器"
+  },
+  "popupProviderLabel": {
+    "message": "选择 AI 模型："
+  },
+  "providerDeepSeek": {
+    "message": "DeepSeek"
+  },
+  "providerDoubao": {
+    "message": "豆包"
+  },
+  "providerOllamaLocal": {
+    "message": "Ollama（本地）"
+  },
+  "providerDockerAI": {
+    "message": "Docker Desktop AI"
+  },
+  "providerKoboldCppLocal": {
+    "message": "KoboldCpp（本地）"
+  },
+  "providerGiteeAI": {
+    "message": "Gitee AI"
+  },
+  "popupOpenSidePanelButton": {
+    "message": "在侧边栏总结当前页面"
+  },
+  "popupOpenOptionsLink": {
+    "message": "⚙️ 设置 API Key"
+  },
+  "popupErrorCannotGetPageUrl": {
+    "message": "无法获取当前页面地址。请切换到一个普通网页后重试。"
+  },
+  "popupErrorRestrictedPageCannotSend": {
+    "message": "当前是受限页面，无法发送。请在普通网页中使用该功能。"
+  },
+  "popupErrorPrepareSidePanelFailed": {
+    "message": "准备侧边栏失败"
+  },
+  "popupReadyMessage": {
+    "message": "✅ 准备完成！请关闭此弹窗，然后再次点击工具栏上的扩展图标，侧边栏将自动打开并总结当前页面。"
+  },
+  "popupErrorOpenSidePanelFailed": {
+    "message": "打开侧边栏失败"
+  },
+  "sidepanelTitle": {
+    "message": "AI 页面总结器 - 侧边栏"
+  },
+  "sidepanelHeading": {
+    "message": "📄 AI 页面总结器"
+  },
+  "sidepanelProviderLabel": {
+    "message": "选择 AI 模型："
+  },
+  "sidepanelSummarizeButton": {
+    "message": "🔄 总结当前页面"
+  },
+  "sidepanelLoadingText": {
+    "message": "正在读取页面并总结..."
+  },
+  "sidepanelResultHeading": {
+    "message": "总结结果"
+  },
+  "sidepanelCopyButton": {
+    "message": "📋 复制"
+  },
+  "sidepanelCopySuccessButton": {
+    "message": "✅ 已复制"
+  },
+  "sidepanelChatPlaceholder": {
+    "message": "对页面内容提问..."
+  },
+  "sidepanelChatSendTitle": {
+    "message": "发送"
+  },
+  "sidepanelOpenOptionsLink": {
+    "message": "⚙️ 设置"
+  },
+  "sidepanelChatHint": {
+    "message": "Enter 发送 · Shift+Enter 换行"
+  },
+  "sidepanelPromptSummarizeFirst": {
+    "message": "请先点击“总结当前页面”后再提问。"
+  },
+  "sidepanelReplyFailed": {
+    "message": "回复失败"
+  },
+  "sidepanelOllamaConnectShort": {
+    "message": "无法连接 Ollama 服务，请检查 Ollama 是否已启动。"
+  },
+  "sidepanelCannotGetPageInfo": {
+    "message": "无法获取当前页面信息。请切换到一个普通网页后重试。"
+  },
+  "sidepanelRestrictedPageCannotRead": {
+    "message": "当前是受限页面，无法读取内容。请在普通网页中使用。"
+  },
+  "sidepanelCannotExtractContent": {
+    "message": "无法提取页面内容。请确认当前页面有可读文本。"
+  },
+  "sidepanelContentTruncated": {
+    "message": "[内容过长，已截断...]"
+  },
+  "sidepanelSummaryDuration": {
+    "message": "耗时 $1 秒"
+  },
+  "sidepanelSummaryFailed": {
+    "message": "总结失败"
+  },
+  "sidepanelOllamaConnectLong": {
+    "message": "无法连接 Ollama 服务。请检查：\n1. Ollama 是否已启动（ollama serve）\n2. 启动前设置环境变量 OLLAMA_ORIGINS=*\n   Windows: set OLLAMA_ORIGINS=* 然后 ollama serve\n   Mac/Linux: OLLAMA_ORIGINS=* ollama serve"
+  },
+  "sidepanelAssistantSummaryRole": {
+    "message": "你是一个专业的内容分析助手，擅长快速总结网页内容的核心要点。"
+  },
+  "sidepanelSummaryPrompt": {
+    "message": "请用中文总结以下网页，要求：\n1. 先用一句话概括主旨\n2. 然后列出 3-5 个关键要点\n3. 如果有重要数据或结论，请特别标注\n\n网页标题：$1\n网页地址：$2\n\n网页内容：\n$3"
+  },
+  "sidepanelPageSummarySystemPrompt": {
+    "message": "你是一个专业的内容分析助手。用户正在浏览一个网页，你已经帮他总结了内容。现在用户会对这个页面内容提出进一步的问题，请基于以下网页内容回答。如果问题超出页面内容范围，你也可以结合自己的知识回答，但要说明哪些是页面内容中的信息，哪些是你的补充。\n\n网页标题：$1\n网页地址：$2\n\n网页内容：\n$3"
+  },
+  "sidepanelSelectionSummarySystemPrompt": {
+    "message": "你是一个专业的内容分析助手。用户选中了网页的一段文字，你已经帮他总结了内容。现在用户会对这段内容提出进一步的问题，请基于以下内容回答。如果问题超出内容范围，你也可以结合自己的知识回答，但要说明哪些是内容中的信息，哪些是你的补充。\n\n网页标题：$1\n网页地址：$2\n\n选中内容：\n$3"
+  },
+  "commonUnavailable": {
+    "message": "未获取"
+  },
+  "commonNetworkRequestFailed": {
+    "message": "网络请求失败"
+  },
+  "commonUnknownError": {
+    "message": "未知错误"
+  },
+  "sidepanelNoSummaryResult": {
+    "message": "未能获取总结结果"
+  },
+  "sidepanelNoReplyResult": {
+    "message": "未能获取回复"
+  },
+  "sidepanelApiKeyMissing": {
+    "message": "请先在设置页面中配置 $1 的 API Key"
+  },
+  "sidepanelApiRequestFailed": {
+    "message": "API 请求失败（$1）：$2"
+  },
+  "sidepanelBackgroundDisconnected": {
+    "message": "后台连接已断开，请重试"
+  },
+  "sidepanelCannotConnectBackground": {
+    "message": "无法连接后台服务"
+  },
+  "optionsTitle": {
+    "message": "AI 页面总结器 - 设置"
+  },
+  "optionsHeading": {
+    "message": "⚙️ AI 页面总结器 - 设置"
+  },
+  "optionsSectionDeepSeek": {
+    "message": "🤖 DeepSeek"
+  },
+  "optionsSectionGiteeAI": {
+    "message": "🐱 Gitee AI"
+  },
+  "optionsSectionDoubao": {
+    "message": "🔥 豆包（Doubao）"
+  },
+  "optionsSectionOllama": {
+    "message": "🦙 Ollama（本地模型）"
+  },
+  "optionsSectionDockerAI": {
+    "message": "🐳 Docker Desktop AI"
+  },
+  "optionsSectionKoboldCpp": {
+    "message": "🦄 KoboldCpp（本地模型）"
+  },
+  "optionsLabelApiKey": {
+    "message": "API Key"
+  },
+  "optionsLabelModel": {
+    "message": "模型"
+  },
+  "optionsLabelEndpoint": {
+    "message": "模型 / 推理接入点（Endpoint ID）"
+  },
+  "optionsLabelServerUrl": {
+    "message": "服务器地址"
+  },
+  "optionsLabelApiUrl": {
+    "message": "API 地址"
+  },
+  "optionsSelectModel": {
+    "message": "选择模型"
+  },
+  "optionsPlaceholderDeepSeekKey": {
+    "message": "sk-xxxxxxxxxxxxxxxx"
+  },
+  "optionsHintDeepSeekHtml": {
+    "message": "在 <a href=\"https://platform.deepseek.com/api_keys\" target=\"_blank\">DeepSeek 开放平台</a> 获取"
+  },
+  "optionsPlaceholderGiteeKey": {
+    "message": "your-gitee-ai-key"
+  },
+  "optionsHintGiteeKeyHtml": {
+    "message": "在 <a href=\"https://ai.gitee.com/console/apikeys\" target=\"_blank\">Gitee AI 控制台</a> 获取"
+  },
+  "optionsPlaceholderGiteeModel": {
+    "message": "Qwen3-8B"
+  },
+  "optionsHintGiteeModel": {
+    "message": "填写模型名称，如 Qwen3-8B"
+  },
+  "optionsPlaceholderDoubaoKey": {
+    "message": "your-ark-api-key"
+  },
+  "optionsHintDoubaoHtml": {
+    "message": "在 <a href=\"https://console.volcengine.com/ark\" target=\"_blank\">火山引擎 Ark 控制台</a> 获取"
+  },
+  "optionsPlaceholderDoubaoModel": {
+    "message": "doubao-pro-256k 或你的 endpoint id"
+  },
+  "optionsHintDoubaoModel": {
+    "message": "填写模型名称或者你创建的推理接入点 ID"
+  },
+  "optionsPlaceholderOllamaUrl": {
+    "message": "http://localhost:11434"
+  },
+  "optionsHintOllamaUrlHtml": {
+    "message": "Ollama 默认运行在 <code>http://localhost:11434</code>，修改地址后点击“刷新”重新获取模型列表"
+  },
+  "optionsClickRefreshModels": {
+    "message": "点击“刷新”获取模型列表"
+  },
+  "optionsRefreshButton": {
+    "message": "🔄 刷新"
+  },
+  "optionsFetchingCurrentModelVersion": {
+    "message": "⏳ 正在获取当前模型和版本..."
+  },
+  "optionsCurrentModelLabel": {
+    "message": "当前模型："
+  },
+  "optionsVersionLabel": {
+    "message": "版本："
+  },
+  "optionsPlaceholderKoboldUrl": {
+    "message": "http://localhost:5001"
+  },
+  "optionsHintKoboldUrlHtml": {
+    "message": "KoboldCpp 默认运行在 <code>http://localhost:5001</code>，如有自定义端口请修改"
+  },
+  "optionsPlaceholderDockerUrl": {
+    "message": "http://localhost:12434"
+  },
+  "optionsHintDockerUrlHtml": {
+    "message": "Docker Desktop AI 默认运行在 <code>http://localhost:12434</code>，修改地址后点击“刷新”重新获取模型列表"
+  },
+  "optionsNoLocalModels": {
+    "message": "暂无本地模型"
+  },
+  "optionsNoModels": {
+    "message": "暂无模型"
+  },
+  "optionsSaveButton": {
+    "message": "💾 保存设置"
+  },
+  "optionsStatusSaved": {
+    "message": "✅ 设置已保存！"
+  },
+  "optionsFetchingLocalModels": {
+    "message": "⏳ 正在获取本地模型列表..."
+  },
+  "optionsCannotConnectBackground": {
+    "message": "❌ 无法连接后台服务：$1"
+  },
+  "optionsCannotConnectOllama": {
+    "message": "❌ 无法连接 Ollama：$1"
+  },
+  "optionsOllamaEnsureRunning": {
+    "message": "请确认 Ollama 已启动"
+  },
+  "optionsFoundLocalModels": {
+    "message": "✅ 找到 $1 个本地模型"
+  },
+  "optionsAutoPullingModel": {
+    "message": "⏳ 未找到本地模型，正在自动拉取 $1，请耐心等待..."
+  },
+  "optionsPullFailed": {
+    "message": "❌ 拉取失败：$1"
+  },
+  "optionsPullCompleted": {
+    "message": "✅ $1 拉取完成！"
+  },
+  "optionsFetchingDockerModels": {
+    "message": "⏳ 正在获取 Docker Desktop AI 模型列表..."
+  },
+  "optionsFetchDockerModelsFailed": {
+    "message": "❌ 获取模型失败"
+  },
+  "optionsFoundDockerModels": {
+    "message": "✅ 找到 $1 个模型"
+  },
+  "optionsCannotConnectDockerAI": {
+    "message": "❌ 无法连接 Docker Desktop AI：$1"
+  },
+  "optionsCurrentModelStatus": {
+    "message": "✅ 当前模型：$1"
+  },
+  "optionsCannotGetModelName": {
+    "message": "❌ 未获取到模型名称"
+  },
+  "optionsFetchModelNameFailed": {
+    "message": "❌ 获取模型名称失败：$1"
+  },
+  "backgroundInstalledLog": {
+    "message": "AI 页面总结器已安装"
+  },
+  "backgroundContextMenuTitle": {
+    "message": "AI 总结选中内容"
+  },
+  "backgroundCannotConnectOllama": {
+    "message": "无法连接 Ollama"
+  },
+  "backgroundPullModelFailed": {
+    "message": "拉取模型失败"
+  },
+  "backgroundOllamaRuleWarning": {
+    "message": "设置 Ollama 请求头规则失败："
+  }
+}

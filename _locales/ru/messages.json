@@ -1,0 +1,338 @@
+{
+  "extName": {
+    "message": "AI-суммаризатор страниц"
+  },
+  "extDescription": {
+    "message": "Суммируйте текущую страницу с помощью Doubao, DeepSeek, Ollama и других моделей в один клик."
+  },
+  "popupTitle": {
+    "message": "AI-суммаризатор страниц"
+  },
+  "popupHeading": {
+    "message": "📄 AI-суммаризатор страниц"
+  },
+  "popupProviderLabel": {
+    "message": "Модель AI:"
+  },
+  "providerDeepSeek": {
+    "message": "DeepSeek"
+  },
+  "providerDoubao": {
+    "message": "Doubao"
+  },
+  "providerOllamaLocal": {
+    "message": "Ollama (локально)"
+  },
+  "providerDockerAI": {
+    "message": "Docker Desktop AI"
+  },
+  "providerKoboldCppLocal": {
+    "message": "KoboldCpp (локально)"
+  },
+  "providerGiteeAI": {
+    "message": "Gitee AI"
+  },
+  "popupOpenSidePanelButton": {
+    "message": "Суммировать текущую страницу в боковой панели"
+  },
+  "popupOpenOptionsLink": {
+    "message": "⚙️ Настроить API-ключи"
+  },
+  "popupErrorCannotGetPageUrl": {
+    "message": "Не удалось получить URL текущей страницы. Переключитесь на обычную веб-страницу и попробуйте снова."
+  },
+  "popupErrorRestrictedPageCannotSend": {
+    "message": "Это ограниченная страница, её нельзя отправить. Используйте эту функцию на обычной веб-странице."
+  },
+  "popupErrorPrepareSidePanelFailed": {
+    "message": "Не удалось подготовить боковую панель"
+  },
+  "popupReadyMessage": {
+    "message": "✅ Готово. Закройте это окно, затем снова нажмите значок расширения. Боковая панель откроется автоматически и суммирует текущую страницу."
+  },
+  "popupErrorOpenSidePanelFailed": {
+    "message": "Не удалось открыть боковую панель"
+  },
+  "sidepanelTitle": {
+    "message": "AI-суммаризатор страниц - Боковая панель"
+  },
+  "sidepanelHeading": {
+    "message": "📄 AI-суммаризатор страниц"
+  },
+  "sidepanelProviderLabel": {
+    "message": "Модель AI:"
+  },
+  "sidepanelSummarizeButton": {
+    "message": "🔄 Суммировать текущую страницу"
+  },
+  "sidepanelLoadingText": {
+    "message": "Чтение и суммирование страницы..."
+  },
+  "sidepanelResultHeading": {
+    "message": "Результат"
+  },
+  "sidepanelCopyButton": {
+    "message": "📋 Копировать"
+  },
+  "sidepanelCopySuccessButton": {
+    "message": "✅ Скопировано"
+  },
+  "sidepanelChatPlaceholder": {
+    "message": "Задайте вопрос по содержимому страницы..."
+  },
+  "sidepanelChatSendTitle": {
+    "message": "Отправить"
+  },
+  "sidepanelOpenOptionsLink": {
+    "message": "⚙️ Настройки"
+  },
+  "sidepanelChatHint": {
+    "message": "Enter — отправить · Shift+Enter — новая строка"
+  },
+  "sidepanelPromptSummarizeFirst": {
+    "message": "Сначала нажмите «Суммировать текущую страницу», а затем задавайте вопросы."
+  },
+  "sidepanelReplyFailed": {
+    "message": "Не удалось получить ответ"
+  },
+  "sidepanelOllamaConnectShort": {
+    "message": "Не удалось подключиться к службе Ollama. Убедитесь, что Ollama запущен."
+  },
+  "sidepanelCannotGetPageInfo": {
+    "message": "Не удалось получить информацию о текущей странице. Переключитесь на обычную веб-страницу и попробуйте снова."
+  },
+  "sidepanelRestrictedPageCannotRead": {
+    "message": "Это ограниченная страница, её содержимое нельзя прочитать. Используйте эту функцию на обычной веб-странице."
+  },
+  "sidepanelCannotExtractContent": {
+    "message": "Не удалось извлечь содержимое страницы. Убедитесь, что на странице есть читаемый текст."
+  },
+  "sidepanelContentTruncated": {
+    "message": "[Содержимое слишком длинное и было обрезано...]"
+  },
+  "sidepanelSummaryDuration": {
+    "message": "Затрачено $1 сек."
+  },
+  "sidepanelSummaryFailed": {
+    "message": "Не удалось выполнить суммирование"
+  },
+  "sidepanelOllamaConnectLong": {
+    "message": "Не удалось подключиться к службе Ollama. Проверьте:\n1. Запущен ли Ollama (ollama serve)\n2. Установлена ли перед запуском переменная окружения OLLAMA_ORIGINS=*\n   Windows: set OLLAMA_ORIGINS=* затем ollama serve\n   Mac/Linux: OLLAMA_ORIGINS=* ollama serve"
+  },
+  "sidepanelAssistantSummaryRole": {
+    "message": "Вы профессиональный помощник по анализу контента, который умеет быстро выделять ключевые мысли веб-страниц."
+  },
+  "sidepanelSummaryPrompt": {
+    "message": "Пожалуйста, кратко изложите следующую веб-страницу на русском языке. Требования:\n1. Сначала опишите главную мысль одним предложением\n2. Затем перечислите 3–5 ключевых пунктов\n3. Выделите важные данные или выводы, если они есть\n\nЗаголовок страницы: $1\nURL страницы: $2\n\nСодержимое страницы:\n$3"
+  },
+  "sidepanelPageSummarySystemPrompt": {
+    "message": "Вы профессиональный помощник по анализу контента. Пользователь просматривает веб-страницу, и вы уже суммировали её содержание. Теперь пользователь может задавать уточняющие вопросы по этой странице. Отвечайте на основе содержания страницы ниже. Если вопрос выходит за рамки содержания страницы, вы можете использовать собственные знания, но чётко укажите, что взято со страницы, а что является вашим дополнением.\n\nЗаголовок страницы: $1\nURL страницы: $2\n\nСодержимое страницы:\n$3"
+  },
+  "sidepanelSelectionSummarySystemPrompt": {
+    "message": "Вы профессиональный помощник по анализу контента. Пользователь выделил фрагмент текста на веб-странице, и вы уже суммировали его. Теперь пользователь может задавать уточняющие вопросы по этому фрагменту. Отвечайте на основе содержимого ниже. Если вопрос выходит за рамки выделенного текста, вы можете использовать собственные знания, но чётко укажите, что взято из выделенного текста, а что является вашим дополнением.\n\nЗаголовок страницы: $1\nURL страницы: $2\n\nВыделенный текст:\n$3"
+  },
+  "commonUnavailable": {
+    "message": "Недоступно"
+  },
+  "commonNetworkRequestFailed": {
+    "message": "Ошибка сетевого запроса"
+  },
+  "commonUnknownError": {
+    "message": "Неизвестная ошибка"
+  },
+  "sidepanelNoSummaryResult": {
+    "message": "Не удалось получить результат суммирования"
+  },
+  "sidepanelNoReplyResult": {
+    "message": "Не удалось получить ответ"
+  },
+  "sidepanelApiKeyMissing": {
+    "message": "Сначала настройте API-ключ для $1 на странице настроек."
+  },
+  "sidepanelApiRequestFailed": {
+    "message": "Ошибка API-запроса ($1): $2"
+  },
+  "sidepanelBackgroundDisconnected": {
+    "message": "Подключение к фоновому процессу было прервано. Попробуйте снова."
+  },
+  "sidepanelCannotConnectBackground": {
+    "message": "Не удалось подключиться к фоновому сервису"
+  },
+  "optionsTitle": {
+    "message": "AI-суммаризатор страниц - Настройки"
+  },
+  "optionsHeading": {
+    "message": "⚙️ AI-суммаризатор страниц - Настройки"
+  },
+  "optionsSectionDeepSeek": {
+    "message": "🤖 DeepSeek"
+  },
+  "optionsSectionGiteeAI": {
+    "message": "🐱 Gitee AI"
+  },
+  "optionsSectionDoubao": {
+    "message": "🔥 Doubao"
+  },
+  "optionsSectionOllama": {
+    "message": "🦙 Ollama (локальная модель)"
+  },
+  "optionsSectionDockerAI": {
+    "message": "🐳 Docker Desktop AI"
+  },
+  "optionsSectionKoboldCpp": {
+    "message": "🦄 KoboldCpp (локальная модель)"
+  },
+  "optionsLabelApiKey": {
+    "message": "API-ключ"
+  },
+  "optionsLabelModel": {
+    "message": "Модель"
+  },
+  "optionsLabelEndpoint": {
+    "message": "Модель / Endpoint ID"
+  },
+  "optionsLabelServerUrl": {
+    "message": "URL сервера"
+  },
+  "optionsLabelApiUrl": {
+    "message": "URL API"
+  },
+  "optionsSelectModel": {
+    "message": "Выберите модель"
+  },
+  "optionsPlaceholderDeepSeekKey": {
+    "message": "sk-xxxxxxxxxxxxxxxx"
+  },
+  "optionsHintDeepSeekHtml": {
+    "message": "Получите его на <a href=\"https://platform.deepseek.com/api_keys\" target=\"_blank\">DeepSeek Open Platform</a>."
+  },
+  "optionsPlaceholderGiteeKey": {
+    "message": "your-gitee-ai-key"
+  },
+  "optionsHintGiteeKeyHtml": {
+    "message": "Получите его в <a href=\"https://ai.gitee.com/console/apikeys\" target=\"_blank\">консоли Gitee AI</a>."
+  },
+  "optionsPlaceholderGiteeModel": {
+    "message": "Qwen3-8B"
+  },
+  "optionsHintGiteeModel": {
+    "message": "Введите имя модели, например Qwen3-8B."
+  },
+  "optionsPlaceholderDoubaoKey": {
+    "message": "your-ark-api-key"
+  },
+  "optionsHintDoubaoHtml": {
+    "message": "Получите его в <a href=\"https://console.volcengine.com/ark\" target=\"_blank\">консоли Volcengine Ark</a>."
+  },
+  "optionsPlaceholderDoubaoModel": {
+    "message": "doubao-pro-256k или ваш endpoint ID"
+  },
+  "optionsHintDoubaoModel": {
+    "message": "Введите имя модели или ваш endpoint ID."
+  },
+  "optionsPlaceholderOllamaUrl": {
+    "message": "http://localhost:11434"
+  },
+  "optionsHintOllamaUrlHtml": {
+    "message": "Ollama по умолчанию работает на <code>http://localhost:11434</code>. После изменения адреса нажмите «Обновить», чтобы перезагрузить список моделей."
+  },
+  "optionsClickRefreshModels": {
+    "message": "Нажмите «Обновить», чтобы загрузить список моделей"
+  },
+  "optionsRefreshButton": {
+    "message": "🔄 Обновить"
+  },
+  "optionsFetchingCurrentModelVersion": {
+    "message": "⏳ Получение текущей модели и версии..."
+  },
+  "optionsCurrentModelLabel": {
+    "message": "Текущая модель:"
+  },
+  "optionsVersionLabel": {
+    "message": "Версия:"
+  },
+  "optionsPlaceholderKoboldUrl": {
+    "message": "http://localhost:5001"
+  },
+  "optionsHintKoboldUrlHtml": {
+    "message": "KoboldCpp по умолчанию работает на <code>http://localhost:5001</code>. Измените адрес, если используете нестандартный порт."
+  },
+  "optionsPlaceholderDockerUrl": {
+    "message": "http://localhost:12434"
+  },
+  "optionsHintDockerUrlHtml": {
+    "message": "Docker Desktop AI по умолчанию работает на <code>http://localhost:12434</code>. После изменения адреса нажмите «Обновить», чтобы перезагрузить список моделей."
+  },
+  "optionsNoLocalModels": {
+    "message": "Нет локальных моделей"
+  },
+  "optionsNoModels": {
+    "message": "Нет моделей"
+  },
+  "optionsSaveButton": {
+    "message": "💾 Сохранить настройки"
+  },
+  "optionsStatusSaved": {
+    "message": "✅ Настройки сохранены!"
+  },
+  "optionsFetchingLocalModels": {
+    "message": "⏳ Получение списка локальных моделей..."
+  },
+  "optionsCannotConnectBackground": {
+    "message": "❌ Не удалось подключиться к фоновому сервису: $1"
+  },
+  "optionsCannotConnectOllama": {
+    "message": "❌ Не удалось подключиться к Ollama: $1"
+  },
+  "optionsOllamaEnsureRunning": {
+    "message": "Убедитесь, что Ollama запущен"
+  },
+  "optionsFoundLocalModels": {
+    "message": "✅ Найдено локальных моделей: $1"
+  },
+  "optionsAutoPullingModel": {
+    "message": "⏳ Локальные модели не найдены. Автоматически загружается $1, пожалуйста подождите..."
+  },
+  "optionsPullFailed": {
+    "message": "❌ Ошибка загрузки: $1"
+  },
+  "optionsPullCompleted": {
+    "message": "✅ Модель $1 успешно загружена!"
+  },
+  "optionsFetchingDockerModels": {
+    "message": "⏳ Получение списка моделей Docker Desktop AI..."
+  },
+  "optionsFetchDockerModelsFailed": {
+    "message": "❌ Не удалось получить список моделей"
+  },
+  "optionsFoundDockerModels": {
+    "message": "✅ Найдено моделей: $1"
+  },
+  "optionsCannotConnectDockerAI": {
+    "message": "❌ Не удалось подключиться к Docker Desktop AI: $1"
+  },
+  "optionsCurrentModelStatus": {
+    "message": "✅ Текущая модель: $1"
+  },
+  "optionsCannotGetModelName": {
+    "message": "❌ Не удалось получить имя модели"
+  },
+  "optionsFetchModelNameFailed": {
+    "message": "❌ Не удалось получить имя модели: $1"
+  },
+  "backgroundInstalledLog": {
+    "message": "AI-суммаризатор страниц установлен"
+  },
+  "backgroundContextMenuTitle": {
+    "message": "Суммировать выделенный текст с помощью AI"
+  },
+  "backgroundCannotConnectOllama": {
+    "message": "Не удалось подключиться к Ollama"
+  },
+  "backgroundPullModelFailed": {
+    "message": "Не удалось загрузить модель"
+  },
+  "backgroundOllamaRuleWarning": {
+    "message": "Не удалось настроить правила заголовков запроса для Ollama:"
+  }
+}

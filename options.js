@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const { t } = window.AppI18n;
   const deepseekKey = document.getElementById("deepseek-key");
   const deepseekModel = document.getElementById("deepseek-model");
   const doubaoKey = document.getElementById("doubao-key");
@@ -62,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const url = (koboldcppUrl.value.trim() || "http://localhost:5001").replace(/\/+$/, "");
         koboldcppCurrentModel.textContent = "--";
         koboldcppVersion.textContent = "--";
-        koboldcppStatusEl.textContent = "⏳ 正在获取当前模型和版本...";
+        koboldcppStatusEl.textContent = t("optionsFetchingCurrentModelVersion");
         koboldcppStatusEl.className = "ollama-status info";
         // 获取模型名
         fetch(url + "/api/v1/model")
@@ -73,17 +74,17 @@ document.addEventListener("DOMContentLoaded", () => {
           .then(data => {
             if (data && data.result) {
               koboldcppCurrentModel.textContent = data.result;
-              koboldcppStatusEl.textContent = `✅ 当前模型：${data.result}`;
+              koboldcppStatusEl.textContent = t("optionsCurrentModelStatus", data.result);
               koboldcppStatusEl.className = "ollama-status success";
             } else {
               koboldcppCurrentModel.textContent = "--";
-              koboldcppStatusEl.textContent = "❌ 未获取到模型名称";
+              koboldcppStatusEl.textContent = t("optionsCannotGetModelName");
               koboldcppStatusEl.className = "ollama-status error";
             }
           })
           .catch(err => {
             koboldcppCurrentModel.textContent = "--";
-            koboldcppStatusEl.textContent = "❌ 获取模型名称失败: " + (err.message || err);
+            koboldcppStatusEl.textContent = t("optionsFetchModelNameFailed", err.message || err);
             koboldcppStatusEl.className = "ollama-status error";
           });
         // 获取版本号
@@ -143,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
    * 如果没有任何模型，自动拉取 deepseek-r1:1.5b
    */
   function fetchOllamaModels(selectedModel) {
-    setOllamaStatus("info", "⏳ 正在获取本地模型列表...");
+    setOllamaStatus("info", t("optionsFetchingLocalModels"));
     ollamaRefreshBtn.disabled = true;
 
     chrome.runtime.sendMessage(
@@ -152,12 +153,12 @@ document.addEventListener("DOMContentLoaded", () => {
         ollamaRefreshBtn.disabled = false;
 
         if (chrome.runtime.lastError) {
-          setOllamaStatus("error", "❌ 无法连接后台服务：" + chrome.runtime.lastError.message);
+          setOllamaStatus("error", t("optionsCannotConnectBackground", chrome.runtime.lastError.message));
           return;
         }
 
         if (!response?.ok) {
-          setOllamaStatus("error", "❌ 无法连接 Ollama：" + (response?.error || "请确认 Ollama 已启动"));
+          setOllamaStatus("error", t("optionsCannotConnectOllama", response?.error || t("optionsOllamaEnsureRunning")));
           return;
         }
 
@@ -168,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
           // 没有任何模型，自动拉取
           autoPullModel();
         } else {
-          setOllamaStatus("success", `✅ 找到 ${models.length} 个本地模型`);
+          setOllamaStatus("success", t("optionsFoundLocalModels", models.length));
         }
       }
     );
@@ -183,7 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (models.length === 0) {
       const opt = document.createElement("option");
       opt.value = "";
-      opt.textContent = "暂无本地模型";
+      opt.textContent = t("optionsNoLocalModels");
       ollamaModel.appendChild(opt);
       return;
     }
@@ -210,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
    */
   function autoPullModel() {
     const modelToPull = "qwen2.5:7b";
-    setOllamaStatus("info", `⏳ 未找到本地模型，正在自动拉取 ${modelToPull}，请耐心等待...`);
+    setOllamaStatus("info", t("optionsAutoPullingModel", modelToPull));
     ollamaRefreshBtn.disabled = true;
 
     chrome.runtime.sendMessage(
@@ -223,16 +224,16 @@ document.addEventListener("DOMContentLoaded", () => {
         ollamaRefreshBtn.disabled = false;
 
         if (chrome.runtime.lastError) {
-          setOllamaStatus("error", "❌ 拉取失败：" + chrome.runtime.lastError.message);
+          setOllamaStatus("error", t("optionsPullFailed", chrome.runtime.lastError.message));
           return;
         }
 
         if (!response?.ok) {
-          setOllamaStatus("error", "❌ 拉取失败：" + (response?.error || "未知错误"));
+          setOllamaStatus("error", t("optionsPullFailed", response?.error || t("commonUnknownError")));
           return;
         }
 
-        setOllamaStatus("success", `✅ ${modelToPull} 拉取完成！`);
+        setOllamaStatus("success", t("optionsPullCompleted", modelToPull));
         // 重新刷新模型列表
         fetchOllamaModels(modelToPull);
       }
@@ -251,7 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
    * 从 Docker Desktop AI 获取模型列表
    */
   function fetchDockeraiModels(selectedModel) {
-    setDockeraiStatus("info", "⏳ 正在获取 Docker Desktop AI 模型列表...");
+    setDockeraiStatus("info", t("optionsFetchingDockerModels"));
     dockeraiRefreshBtn.disabled = true;
     const url = dockeraiUrl.value.trim() || "http://localhost:12434";
     fetch(`${url.replace(/\/+$/, "")}/v1/models`)
@@ -259,15 +260,15 @@ document.addEventListener("DOMContentLoaded", () => {
       .then(data => {
         dockeraiRefreshBtn.disabled = false;
         if (!data.data || !Array.isArray(data.data)) {
-          setDockeraiStatus("error", "❌ 获取模型失败");
+          setDockeraiStatus("error", t("optionsFetchDockerModelsFailed"));
           return;
         }
         populateDockeraiModelSelect(data.data, selectedModel);
-        setDockeraiStatus("success", `✅ 找到 ${data.data.length} 个模型`);
+        setDockeraiStatus("success", t("optionsFoundDockerModels", data.data.length));
       })
       .catch(err => {
         dockeraiRefreshBtn.disabled = false;
-        setDockeraiStatus("error", "❌ 无法连接 Docker Desktop AI: " + (err.message || "未知错误"));
+        setDockeraiStatus("error", t("optionsCannotConnectDockerAI", err.message || t("commonUnknownError")));
       });
   }
 
@@ -276,7 +277,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!models.length) {
       const opt = document.createElement("option");
       opt.value = "";
-      opt.textContent = "暂无模型";
+      opt.textContent = t("optionsNoModels");
       dockeraiModel.appendChild(opt);
       return;
     }

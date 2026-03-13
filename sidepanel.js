@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const { t } = window.AppI18n;
   const loadingEl = document.getElementById("loading");
   const resultEl = document.getElementById("result");
   const summaryContent = document.getElementById("summary-content");
@@ -34,9 +35,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   copyBtn.addEventListener("click", () => {
     navigator.clipboard.writeText(summaryContent.innerText).then(() => {
-      copyBtn.textContent = "✅ 已复制";
+      copyBtn.textContent = t("sidepanelCopySuccessButton");
       setTimeout(() => {
-        copyBtn.textContent = "📋 复制";
+        copyBtn.textContent = t("sidepanelCopyButton");
       }, 2000);
     });
   });
@@ -69,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 如果还没有页面上下文（没做过总结），先提取
     if (!cachedPageContent) {
-      appendChatMsg("assistant", "请先点击「总结当前页面」后再提问。");
+      appendChatMsg("assistant", t("sidepanelPromptSummarizeFirst"));
       return;
     }
 
@@ -101,10 +102,10 @@ document.addEventListener("DOMContentLoaded", () => {
       scrollChatToBottom();
     } catch (err) {
       loadingBubble.remove();
-      let msg = err.message || "回复失败";
+      let msg = err.message || t("sidepanelReplyFailed");
       if (providerSelect.value === "ollama" &&
-          (msg.includes("Failed to fetch") || msg.includes("CORS") || msg.includes("NetworkError") || msg.includes("网络请求失败"))) {
-        msg = "无法连接 Ollama 服务，请检查 Ollama 是否已启动。";
+          (msg.includes("Failed to fetch") || msg.includes("CORS") || msg.includes("NetworkError") || msg.includes(window.AppI18n.t("commonNetworkRequestFailed")))) {
+        msg = t("sidepanelOllamaConnectShort");
       }
       appendChatMsg("assistant", `❌ ${msg}`);
       scrollChatToBottom();
@@ -164,22 +165,22 @@ document.addEventListener("DOMContentLoaded", () => {
       const tabResult = await sendMessageWithRetry({ type: "get-active-tab" });
       const tab = tabResult?.tab;
       if (!tab?.id || !tab?.url) {
-        throw new Error("无法获取当前页面信息。请切换到一个普通网页后重试。");
+        throw new Error(t("sidepanelCannotGetPageInfo"));
       }
       if (/^(edge|chrome|about|extension):\/\//i.test(tab.url)) {
-        throw new Error("当前是受限页面，无法读取内容。请在普通网页中使用。");
+        throw new Error(t("sidepanelRestrictedPageCannotRead"));
       }
       const [{ result: pageContent }] = await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: extractPageContent,
       });
       if (!pageContent || pageContent.trim().length === 0) {
-        throw new Error("无法提取页面内容。请确认当前页面有可读文本。");
+        throw new Error(t("sidepanelCannotExtractContent"));
       }
       const maxLength = 15000;
       const truncated =
         pageContent.length > maxLength
-          ? pageContent.substring(0, maxLength) + "\n\n[内容过长，已截断...]"
+          ? pageContent.substring(0, maxLength) + `\n\n${t("sidepanelContentTruncated")}`
           : pageContent;
       cachedPageContent = truncated;
       cachedPageTitle = tab.title || "";
@@ -190,20 +191,20 @@ document.addEventListener("DOMContentLoaded", () => {
       const end = Date.now();
       summaryContent.innerHTML = renderMarkdown(summary);
       resultEl.classList.remove("hidden");
-      summaryTimer.textContent = `耗时 ${( (end - start) / 1000 ).toFixed(3)} 秒`;
+      summaryTimer.textContent = t("sidepanelSummaryDuration", ((end - start) / 1000).toFixed(3));
       // 初始化对话历史，包含页面上下文和总结
       conversationHistory = [
         {
           role: "system",
-          content: `你是一个专业的内容分析助手。用户正在浏览一个网页，你已经帮他总结了内容。现在用户会对这个页面内容提出进一步的问题，请基于以下网页内容回答。如果问题超出页面内容范围，你也可以结合自己的知识回答，但要说明哪些是页面内容中的信息，哪些是你的补充。\n\n网页标题：${cachedPageTitle}\n网页地址：${cachedPageUrl}\n\n网页内容：\n${cachedPageContent}`
+          content: t("sidepanelPageSummarySystemPrompt", [cachedPageTitle || t("commonUnavailable"), cachedPageUrl || t("commonUnavailable"), cachedPageContent])
         },
         { role: "assistant", content: summary },
       ];
     } catch (err) {
-      let msg = err.message || "总结失败";
+      let msg = err.message || t("sidepanelSummaryFailed");
       if (providerSelect.value === "ollama" &&
-          (msg.includes("Failed to fetch") || msg.includes("CORS") || msg.includes("NetworkError") || msg.includes("网络请求失败"))) {
-        msg = "无法连接 Ollama 服务。请检查：\n1. Ollama 是否已启动（ollama serve）\n2. 启动前设置环境变量 OLLAMA_ORIGINS=*\n   Windows: set OLLAMA_ORIGINS=* 然后 ollama serve\n   Mac/Linux: OLLAMA_ORIGINS=* ollama serve";
+          (msg.includes("Failed to fetch") || msg.includes("CORS") || msg.includes("NetworkError") || msg.includes(window.AppI18n.t("commonNetworkRequestFailed")))) {
+        msg = t("sidepanelOllamaConnectLong");
       }
       errorMessage.textContent = msg;
       errorEl.classList.remove("hidden");
@@ -240,17 +241,17 @@ document.addEventListener("DOMContentLoaded", () => {
         const end = Date.now();
         summaryContent.innerHTML = renderMarkdown(summary);
         resultEl.classList.remove("hidden");
-        summaryTimer.textContent = `耗时 ${( (end - start) / 1000 ).toFixed(3)} 秒`;
+        summaryTimer.textContent = t("sidepanelSummaryDuration", ((end - start) / 1000).toFixed(3));
         conversationHistory = [
           {
             role: "system",
-            content: `你是一个专业的内容分析助手。用户选中了网页的一段文字，你已经帮他总结了内容。现在用户会对这段内容提出进一步的问题，请基于以下内容回答。如果问题超出内容范围，你也可以结合自己的知识回答，但要说明哪些是内容中的信息，哪些是你的补充。\n\n网页标题：${cachedPageTitle}\n网页地址：${cachedPageUrl}\n\n选中内容：\n${cachedPageContent}`
+            content: t("sidepanelSelectionSummarySystemPrompt", [cachedPageTitle || t("commonUnavailable"), cachedPageUrl || t("commonUnavailable"), cachedPageContent])
           },
           { role: "assistant", content: summary },
         ];
         chrome.storage.local.remove("sidepanel_selection");
       } catch (err) {
-        let msg = err.message || "总结失败";
+        let msg = err.message || t("sidepanelSummaryFailed");
         errorMessage.textContent = msg;
         errorEl.classList.remove("hidden");
         summaryTimer.textContent = "";
@@ -417,13 +418,14 @@ function extractPageContent() {
 }
 
 async function callAI(provider, content, pageTitle, pageUrl) {
+  const { t } = window.AppI18n;
   const config = await getAPIConfig(provider);
   if (provider !== "ollama" && provider !== "dockerai" && provider !== "koboldcpp" && provider !== "giteeai" && !config.apiKey) {
-    throw new Error(`请先在设置页面中配置 ${provider === "deepseek" ? "DeepSeek" : provider === "doubao" ? "豆包" : provider === "giteeai" ? "Gitee AI" : provider} 的 API Key`);
+    throw new Error(t("sidepanelApiKeyMissing", getProviderLabel(provider)));
   }
-  const prompt = `请用中文总结以下网页，要求：\n1. 先用一句话概括主旨\n2. 然后列出 3-5 个关键要点\n3. 如果有重要数据或结论，请特别标注\n\n网页标题：${pageTitle || "未获取"}\n网页地址：${pageUrl || "未获取"}\n\n网页内容：\n${content}`;
+  const prompt = t("sidepanelSummaryPrompt", [pageTitle || t("commonUnavailable"), pageUrl || t("commonUnavailable"), content]);
   const messages = [
-    { role: "system", content: "你是一个专业的内容分析助手，擅长快速总结网页内容的核心要点。" },
+    { role: "system", content: t("sidepanelAssistantSummaryRole") },
     { role: "user", content: prompt },
   ];
   let apiUrl;
@@ -511,26 +513,26 @@ async function callAI(provider, content, pageTitle, pageUrl) {
     response = await proxyFetch(apiUrl, { method: "POST", headers, body });
     if (!response.ok) {
       const errData = { error: { message: response.error } };
-      throw new Error(`API 请求失败 (${response.status || "?"}): ${errData.error?.message || response.statusText || response.error || "未知错误"}`);
+      throw new Error(t("sidepanelApiRequestFailed", [response.status || "?", errData.error?.message || response.statusText || response.error || t("commonUnknownError")]));
     }
     data = response.data;
-    return data.message?.content || "未能获取总结结果";
+    return data.message?.content || t("sidepanelNoSummaryResult");
   } else if (provider === "dockerai" || provider === "koboldcpp") {
     response = await fetch(apiUrl, { method: "POST", headers, body });
     if (!response.ok) {
       const errData = await response.json().catch(() => ({}));
-      throw new Error(`API 请求失败 (${response.status || "?"}): ${errData.error?.message || response.statusText || response.error || "未知错误"}`);
+      throw new Error(t("sidepanelApiRequestFailed", [response.status || "?", errData.error?.message || response.statusText || response.error || t("commonUnknownError")]));
     }
     data = await response.json();
-    return data.choices?.[0]?.message?.content || "未能获取总结结果";
+    return data.choices?.[0]?.message?.content || t("sidepanelNoSummaryResult");
   } else {
     response = await fetch(apiUrl, { method: "POST", headers, body });
     if (!response.ok) {
       const errData = await response.json().catch(() => ({}));
-      throw new Error(`API 请求失败 (${response.status || "?"}): ${errData.error?.message || response.statusText || response.error || "未知错误"}`);
+      throw new Error(t("sidepanelApiRequestFailed", [response.status || "?", errData.error?.message || response.statusText || response.error || t("commonUnknownError")]));
     }
     data = await response.json();
-    return data.choices?.[0]?.message?.content || "未能获取总结结果";
+    return data.choices?.[0]?.message?.content || t("sidepanelNoSummaryResult");
   }
 }
 
@@ -538,9 +540,10 @@ async function callAI(provider, content, pageTitle, pageUrl) {
  * 对话模式：发送完整对话历史给 AI
  */
 async function callChatAI(provider, messages) {
+  const { t } = window.AppI18n;
   const config = await getAPIConfig(provider);
   if (provider !== "ollama" && provider !== "dockerai" && provider !== "koboldcpp" && provider !== "giteeai" && !config.apiKey) {
-    throw new Error(`请先在设置页面中配置 ${provider === "deepseek" ? "DeepSeek" : provider === "doubao" ? "豆包" : provider === "giteeai" ? "Gitee AI" : provider} 的 API Key`);
+    throw new Error(t("sidepanelApiKeyMissing", getProviderLabel(provider)));
   }
   let apiUrl;
   let headers;
@@ -621,26 +624,47 @@ async function callChatAI(provider, messages) {
     response = await proxyFetch(apiUrl, { method: "POST", headers, body });
     if (!response.ok) {
       const errData = { error: { message: response.error } };
-      throw new Error(`API 请求失败 (${response.status || "?"}): ${errData.error?.message || response.statusText || response.error || "未知错误"}`);
+      throw new Error(t("sidepanelApiRequestFailed", [response.status || "?", errData.error?.message || response.statusText || response.error || t("commonUnknownError")]));
     }
     data = response.data;
-    return data.message?.content || "未能获取回复";
+    return data.message?.content || t("sidepanelNoReplyResult");
   } else if (provider === "dockerai" || provider === "koboldcpp") {
     response = await fetch(apiUrl, { method: "POST", headers, body });
     if (!response.ok) {
       const errData = await response.json().catch(() => ({}));
-      throw new Error(`API 请求失败 (${response.status || "?"}): ${errData.error?.message || response.statusText || response.error || "未知错误"}`);
+      throw new Error(t("sidepanelApiRequestFailed", [response.status || "?", errData.error?.message || response.statusText || response.error || t("commonUnknownError")]));
     }
     data = await response.json();
-    return data.choices?.[0]?.message?.content || "未能获取回复";
+    return data.choices?.[0]?.message?.content || t("sidepanelNoReplyResult");
   } else {
     response = await fetch(apiUrl, { method: "POST", headers, body });
     if (!response.ok) {
       const errData = await response.json().catch(() => ({}));
-      throw new Error(`API 请求失败 (${response.status || "?"}): ${errData.error?.message || response.statusText || response.error || "未知错误"}`);
+      throw new Error(t("sidepanelApiRequestFailed", [response.status || "?", errData.error?.message || response.statusText || response.error || t("commonUnknownError")]));
     }
     data = await response.json();
-    return data.choices?.[0]?.message?.content || "未能获取回复";
+    return data.choices?.[0]?.message?.content || t("sidepanelNoReplyResult");
+  }
+}
+
+function getProviderLabel(provider) {
+  const { t } = window.AppI18n;
+
+  switch (provider) {
+    case "deepseek":
+      return t("providerDeepSeek");
+    case "doubao":
+      return t("providerDoubao");
+    case "ollama":
+      return t("providerOllamaLocal");
+    case "dockerai":
+      return t("providerDockerAI");
+    case "koboldcpp":
+      return t("providerKoboldCppLocal");
+    case "giteeai":
+      return t("providerGiteeAI");
+    default:
+      return provider;
   }
 }
 
@@ -728,12 +752,12 @@ function _doPortFetch(url, options) {
       port.onDisconnect.addListener(() => {
         if (settled) return;
         const err = chrome.runtime.lastError;
-        reject(new Error(err?.message || "后台连接已断开，请重试"));
+        reject(new Error(err?.message || window.AppI18n.t("sidepanelBackgroundDisconnected")));
       });
 
       port.postMessage({ url, options, requestId });
     } catch (err) {
-      reject(new Error(err.message || "无法连接后台服务"));
+      reject(new Error(err.message || window.AppI18n.t("sidepanelCannotConnectBackground")));
     }
   });
 }

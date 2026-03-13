@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const { t } = window.AppI18n;
   const errorEl = document.getElementById("error");
   const errorMessage = document.getElementById("error-message");
   const providerSelect = document.getElementById("provider");
@@ -35,11 +36,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const windowId = tab?.windowId;
 
       if (!pageUrl || typeof tabId !== "number" || typeof windowId !== "number") {
-        throw new Error("无法获取当前页面地址。请切换到一个普通网页后重试。");
+        throw new Error(t("popupErrorCannotGetPageUrl"));
       }
 
       if (/^(edge|chrome|about|extension):\/\//i.test(pageUrl)) {
-        throw new Error("当前是受限页面，无法发送。请在普通网页中使用该功能。");
+        throw new Error(t("popupErrorRestrictedPageCannotSend"));
       }
 
       await chrome.storage.local.set({
@@ -59,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const result = await chrome.runtime.sendMessage({ type: "prepare-sidepanel" });
 
       if (!result?.ok) {
-        throw new Error(result?.error || "准备侧边栏失败");
+        throw new Error(result?.error || t("popupErrorPrepareSidePanelFailed"));
       }
 
       // 立即尝试关闭 popup，让用户可以再次点击扩展图标
@@ -71,11 +72,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // 如果 popup 没能关闭（某些 Edge 版本），显示提示
       setTimeout(() => {
-        showActionStatus(actionStatusEl, "success",
-          "✅ 准备完成！请关闭此弹窗，然后再次点击工具栏上的扩展图标，侧边栏将自动打开并总结当前页面。");
+        showActionStatus(actionStatusEl, "success", t("popupReadyMessage"));
       }, 500);
     } catch (err) {
-      errorMessage.textContent = err.message || "打开侧边栏失败";
+      errorMessage.textContent = err.message || t("popupErrorOpenSidePanelFailed");
       errorEl.classList.remove("hidden");
     } finally {
       edgeDiscoverBtn.disabled = false;

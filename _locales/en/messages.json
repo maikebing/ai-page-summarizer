@@ -1,0 +1,338 @@
+{
+  "extName": {
+    "message": "AI Page Summarizer"
+  },
+  "extDescription": {
+    "message": "Summarize the current page with Doubao, DeepSeek, Ollama, and more in one click."
+  },
+  "popupTitle": {
+    "message": "AI Page Summarizer"
+  },
+  "popupHeading": {
+    "message": "📄 AI Page Summarizer"
+  },
+  "popupProviderLabel": {
+    "message": "AI model:"
+  },
+  "providerDeepSeek": {
+    "message": "DeepSeek"
+  },
+  "providerDoubao": {
+    "message": "Doubao"
+  },
+  "providerOllamaLocal": {
+    "message": "Ollama (local)"
+  },
+  "providerDockerAI": {
+    "message": "Docker Desktop AI"
+  },
+  "providerKoboldCppLocal": {
+    "message": "KoboldCpp (local)"
+  },
+  "providerGiteeAI": {
+    "message": "Gitee AI"
+  },
+  "popupOpenSidePanelButton": {
+    "message": "Summarize current page in side panel"
+  },
+  "popupOpenOptionsLink": {
+    "message": "⚙️ Set API keys"
+  },
+  "popupErrorCannotGetPageUrl": {
+    "message": "Unable to get the current page URL. Switch to a regular webpage and try again."
+  },
+  "popupErrorRestrictedPageCannotSend": {
+    "message": "This is a restricted page and cannot be sent. Please use this feature on a regular webpage."
+  },
+  "popupErrorPrepareSidePanelFailed": {
+    "message": "Failed to prepare the side panel"
+  },
+  "popupReadyMessage": {
+    "message": "✅ Ready. Close this popup, then click the extension icon again. The side panel will open automatically and summarize the current page."
+  },
+  "popupErrorOpenSidePanelFailed": {
+    "message": "Failed to open the side panel"
+  },
+  "sidepanelTitle": {
+    "message": "AI Page Summarizer - Side Panel"
+  },
+  "sidepanelHeading": {
+    "message": "📄 AI Page Summarizer"
+  },
+  "sidepanelProviderLabel": {
+    "message": "AI model:"
+  },
+  "sidepanelSummarizeButton": {
+    "message": "🔄 Summarize current page"
+  },
+  "sidepanelLoadingText": {
+    "message": "Reading and summarizing the page..."
+  },
+  "sidepanelResultHeading": {
+    "message": "Summary"
+  },
+  "sidepanelCopyButton": {
+    "message": "📋 Copy"
+  },
+  "sidepanelCopySuccessButton": {
+    "message": "✅ Copied"
+  },
+  "sidepanelChatPlaceholder": {
+    "message": "Ask about the page content..."
+  },
+  "sidepanelChatSendTitle": {
+    "message": "Send"
+  },
+  "sidepanelOpenOptionsLink": {
+    "message": "⚙️ Settings"
+  },
+  "sidepanelChatHint": {
+    "message": "Enter to send · Shift+Enter for newline"
+  },
+  "sidepanelPromptSummarizeFirst": {
+    "message": "Please click “Summarize current page” before asking questions."
+  },
+  "sidepanelReplyFailed": {
+    "message": "Reply failed"
+  },
+  "sidepanelOllamaConnectShort": {
+    "message": "Unable to connect to the Ollama service. Please make sure Ollama is running."
+  },
+  "sidepanelCannotGetPageInfo": {
+    "message": "Unable to get the current page information. Switch to a regular webpage and try again."
+  },
+  "sidepanelRestrictedPageCannotRead": {
+    "message": "This is a restricted page and its content cannot be read. Please use this feature on a regular webpage."
+  },
+  "sidepanelCannotExtractContent": {
+    "message": "Unable to extract page content. Make sure the current page contains readable text."
+  },
+  "sidepanelContentTruncated": {
+    "message": "[Content too long, truncated...]"
+  },
+  "sidepanelSummaryDuration": {
+    "message": "Took $1 seconds"
+  },
+  "sidepanelSummaryFailed": {
+    "message": "Summary failed"
+  },
+  "sidepanelOllamaConnectLong": {
+    "message": "Unable to connect to the Ollama service. Please check:\n1. Whether Ollama is running (ollama serve)\n2. Whether the OLLAMA_ORIGINS=* environment variable is set before startup\n   Windows: set OLLAMA_ORIGINS=* then run ollama serve\n   Mac/Linux: OLLAMA_ORIGINS=* ollama serve"
+  },
+  "sidepanelAssistantSummaryRole": {
+    "message": "You are a professional content analysis assistant who is good at quickly summarizing the key points of webpages."
+  },
+  "sidepanelSummaryPrompt": {
+    "message": "Please summarize the following webpage in English. Requirements:\n1. Start with one sentence describing the main idea\n2. Then list 3-5 key points\n3. Highlight any important data or conclusions\n\nPage title: $1\nPage URL: $2\n\nPage content:\n$3"
+  },
+  "sidepanelPageSummarySystemPrompt": {
+    "message": "You are a professional content analysis assistant. The user is viewing a webpage and you have already summarized it. The user may now ask follow-up questions about this page. Answer based on the webpage content below. If a question goes beyond the page content, you may use your own knowledge, but clearly state which parts come from the page and which parts are your additions.\n\nPage title: $1\nPage URL: $2\n\nPage content:\n$3"
+  },
+  "sidepanelSelectionSummarySystemPrompt": {
+    "message": "You are a professional content analysis assistant. The user selected a passage on a webpage and you have already summarized it. The user may now ask follow-up questions about this content. Answer based on the content below. If a question goes beyond the selected content, you may use your own knowledge, but clearly state which parts come from the selected content and which parts are your additions.\n\nPage title: $1\nPage URL: $2\n\nSelected content:\n$3"
+  },
+  "commonUnavailable": {
+    "message": "Unavailable"
+  },
+  "commonNetworkRequestFailed": {
+    "message": "Network request failed"
+  },
+  "commonUnknownError": {
+    "message": "Unknown error"
+  },
+  "sidepanelNoSummaryResult": {
+    "message": "No summary was returned"
+  },
+  "sidepanelNoReplyResult": {
+    "message": "No reply was returned"
+  },
+  "sidepanelApiKeyMissing": {
+    "message": "Please configure the API key for $1 on the settings page first."
+  },
+  "sidepanelApiRequestFailed": {
+    "message": "API request failed ($1): $2"
+  },
+  "sidepanelBackgroundDisconnected": {
+    "message": "The background connection was disconnected. Please try again."
+  },
+  "sidepanelCannotConnectBackground": {
+    "message": "Unable to connect to the background service"
+  },
+  "optionsTitle": {
+    "message": "AI Page Summarizer - Settings"
+  },
+  "optionsHeading": {
+    "message": "⚙️ AI Page Summarizer - Settings"
+  },
+  "optionsSectionDeepSeek": {
+    "message": "🤖 DeepSeek"
+  },
+  "optionsSectionGiteeAI": {
+    "message": "🐱 Gitee AI"
+  },
+  "optionsSectionDoubao": {
+    "message": "🔥 Doubao"
+  },
+  "optionsSectionOllama": {
+    "message": "🦙 Ollama (local model)"
+  },
+  "optionsSectionDockerAI": {
+    "message": "🐳 Docker Desktop AI"
+  },
+  "optionsSectionKoboldCpp": {
+    "message": "🦄 KoboldCpp (local model)"
+  },
+  "optionsLabelApiKey": {
+    "message": "API Key"
+  },
+  "optionsLabelModel": {
+    "message": "Model"
+  },
+  "optionsLabelEndpoint": {
+    "message": "Model / Endpoint ID"
+  },
+  "optionsLabelServerUrl": {
+    "message": "Server URL"
+  },
+  "optionsLabelApiUrl": {
+    "message": "API URL"
+  },
+  "optionsSelectModel": {
+    "message": "Select model"
+  },
+  "optionsPlaceholderDeepSeekKey": {
+    "message": "sk-xxxxxxxxxxxxxxxx"
+  },
+  "optionsHintDeepSeekHtml": {
+    "message": "Get it from the <a href=\"https://platform.deepseek.com/api_keys\" target=\"_blank\">DeepSeek Open Platform</a>."
+  },
+  "optionsPlaceholderGiteeKey": {
+    "message": "your-gitee-ai-key"
+  },
+  "optionsHintGiteeKeyHtml": {
+    "message": "Get it from the <a href=\"https://ai.gitee.com/console/apikeys\" target=\"_blank\">Gitee AI Console</a>."
+  },
+  "optionsPlaceholderGiteeModel": {
+    "message": "Qwen3-8B"
+  },
+  "optionsHintGiteeModel": {
+    "message": "Enter a model name such as Qwen3-8B."
+  },
+  "optionsPlaceholderDoubaoKey": {
+    "message": "your-ark-api-key"
+  },
+  "optionsHintDoubaoHtml": {
+    "message": "Get it from the <a href=\"https://console.volcengine.com/ark\" target=\"_blank\">Volcengine Ark Console</a>."
+  },
+  "optionsPlaceholderDoubaoModel": {
+    "message": "doubao-pro-256k or your endpoint ID"
+  },
+  "optionsHintDoubaoModel": {
+    "message": "Enter a model name or your endpoint ID."
+  },
+  "optionsPlaceholderOllamaUrl": {
+    "message": "http://localhost:11434"
+  },
+  "optionsHintOllamaUrlHtml": {
+    "message": "Ollama runs on <code>http://localhost:11434</code> by default. After changing the address, click \"Refresh\" to reload the model list."
+  },
+  "optionsClickRefreshModels": {
+    "message": "Click \"Refresh\" to load models"
+  },
+  "optionsRefreshButton": {
+    "message": "🔄 Refresh"
+  },
+  "optionsFetchingCurrentModelVersion": {
+    "message": "⏳ Getting the current model and version..."
+  },
+  "optionsCurrentModelLabel": {
+    "message": "Current model:"
+  },
+  "optionsVersionLabel": {
+    "message": "Version:"
+  },
+  "optionsPlaceholderKoboldUrl": {
+    "message": "http://localhost:5001"
+  },
+  "optionsHintKoboldUrlHtml": {
+    "message": "KoboldCpp runs on <code>http://localhost:5001</code> by default. Change it if you use a custom port."
+  },
+  "optionsPlaceholderDockerUrl": {
+    "message": "http://localhost:12434"
+  },
+  "optionsHintDockerUrlHtml": {
+    "message": "Docker Desktop AI runs on <code>http://localhost:12434</code> by default. After changing the address, click \"Refresh\" to reload the model list."
+  },
+  "optionsNoLocalModels": {
+    "message": "No local models"
+  },
+  "optionsNoModels": {
+    "message": "No models"
+  },
+  "optionsSaveButton": {
+    "message": "💾 Save settings"
+  },
+  "optionsStatusSaved": {
+    "message": "✅ Settings saved!"
+  },
+  "optionsFetchingLocalModels": {
+    "message": "⏳ Fetching local model list..."
+  },
+  "optionsCannotConnectBackground": {
+    "message": "❌ Unable to connect to the background service: $1"
+  },
+  "optionsCannotConnectOllama": {
+    "message": "❌ Unable to connect to Ollama: $1"
+  },
+  "optionsOllamaEnsureRunning": {
+    "message": "Please make sure Ollama is running"
+  },
+  "optionsFoundLocalModels": {
+    "message": "✅ Found $1 local model(s)"
+  },
+  "optionsAutoPullingModel": {
+    "message": "⏳ No local model was found. Pulling $1 automatically. Please wait..."
+  },
+  "optionsPullFailed": {
+    "message": "❌ Pull failed: $1"
+  },
+  "optionsPullCompleted": {
+    "message": "✅ $1 was pulled successfully!"
+  },
+  "optionsFetchingDockerModels": {
+    "message": "⏳ Fetching Docker Desktop AI models..."
+  },
+  "optionsFetchDockerModelsFailed": {
+    "message": "❌ Failed to get the model list"
+  },
+  "optionsFoundDockerModels": {
+    "message": "✅ Found $1 model(s)"
+  },
+  "optionsCannotConnectDockerAI": {
+    "message": "❌ Unable to connect to Docker Desktop AI: $1"
+  },
+  "optionsCurrentModelStatus": {
+    "message": "✅ Current model: $1"
+  },
+  "optionsCannotGetModelName": {
+    "message": "❌ Could not get the model name"
+  },
+  "optionsFetchModelNameFailed": {
+    "message": "❌ Failed to get the model name: $1"
+  },
+  "backgroundInstalledLog": {
+    "message": "AI Page Summarizer installed"
+  },
+  "backgroundContextMenuTitle": {
+    "message": "Summarize selected content with AI"
+  },
+  "backgroundCannotConnectOllama": {
+    "message": "Unable to connect to Ollama"
+  },
+  "backgroundPullModelFailed": {
+    "message": "Failed to pull the model"
+  },
+  "backgroundOllamaRuleWarning": {
+    "message": "Failed to set Ollama request-header rules:"
+  }
+}

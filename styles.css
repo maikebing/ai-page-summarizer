@@ -1,3 +1,7 @@
+html:not([data-i18n-ready]) body {
+  visibility: hidden;
+}
+
 #summary-timer {
   font-size: 12px;
   color: #9ca3af;
@@ -134,7 +138,7 @@ h1 {
   word-break: break-word;
 }
 
-/* Markdown ÅÅ°æ */
+/* Markdown ï¿½Å°ï¿½ */
 #summary-content h1 { font-size: 1.3em; margin: 0.6em 0 0.3em; }
 #summary-content h2 { font-size: 1.15em; margin: 0.5em 0 0.25em; }
 #summary-content h3 { font-size: 1.05em; margin: 0.4em 0 0.2em; }
@@ -233,7 +237,7 @@ h1 {
   color: #6366f1;
 }
 
-/* ===== ¶Ô»°ÇøÓò ===== */
+/* ===== ï¿½Ô»ï¿½ï¿½ï¿½ï¿½ï¿½ ===== */
 #chat-messages {
   margin-top: 12px;
   display: flex;
@@ -316,7 +320,7 @@ h1 {
   30% { transform: translateY(-6px); }
 }
 
-/* ===== µ×²¿ÊäÈë¿ò ===== */
+/* ===== ï¿½×²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ===== */
 .chat-input-area {
   margin-top: auto;
   padding-top: 10px;

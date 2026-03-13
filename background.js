@@ -1,7 +1,9 @@
 // Service Worker - 后台处理
 
+const t = (key, substitutions) => chrome.i18n.getMessage(key, substitutions) || "";
+
 chrome.runtime.onInstalled.addListener(() => {
-  console.log("AI 页面总结器已安装");
+  console.log(t("backgroundInstalledLog"));
 
   // 点击扩展图标直接打开侧边栏
   if (chrome.sidePanel?.setPanelBehavior) {
@@ -11,7 +13,7 @@ chrome.runtime.onInstalled.addListener(() => {
   // 添加右键菜单：选中文字后总结
   chrome.contextMenus.create({
     id: "summarize-selection",
-    title: "AI 总结选中内容",
+    title: t("backgroundContextMenuTitle"),
     contexts: ["selection"]
   });
 
@@ -77,7 +79,7 @@ function updateOllamaRules() {
       }
     ]
   }).catch((err) => {
-    console.warn("设置 Ollama 请求头规则失败:", err);
+    console.warn(t("backgroundOllamaRuleWarning"), err);
   });
 }
 
@@ -112,7 +114,7 @@ chrome.runtime.onConnect.addListener((port) => {
       port.postMessage({
         requestId,
         ok: false,
-        error: err.message || "网络请求失败",
+        error: err.message || t("commonNetworkRequestFailed"),
       });
     }
   });
@@ -154,7 +156,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         sendResponse({ ok: true, models });
       })
       .catch((err) => {
-        sendResponse({ ok: false, error: err.message || "无法连接 Ollama" });
+        sendResponse({ ok: false, error: err.message || t("backgroundCannotConnectOllama") });
       });
     return true;
   }
@@ -176,7 +178,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         sendResponse({ ok: true, status: data.status || "success" });
       })
       .catch((err) => {
-        sendResponse({ ok: false, error: err.message || "拉取模型失败" });
+        sendResponse({ ok: false, error: err.message || t("backgroundPullModelFailed") });
       });
     return true;
   }

@@ -1,6 +1,8 @@
 
 # AI 页面总结器（Edge/Chrome 扩展）
 
+[English](#ai-page-summarizer-edgechrome-extension)
+
 > 一键总结网页内容，支持多轮对话。兼容 Gitee AI、DeepSeek、豆包等主流在线模型，以及 Ollama、Docker Desktop AI、KoboldCpp 等本地模型。
 
 
@@ -97,3 +99,94 @@
    可尝试切换模型或缩小总结范围。
 
 如有更多问题，欢迎提交 Issue 或 PR 反馈。
+
+---
+
+# AI Page Summarizer (Edge/Chrome Extension)
+
+> Summarize any webpage with one click and continue with multi-turn follow-up questions. Works with mainstream hosted models such as Gitee AI, DeepSeek, and Doubao, as well as local models like Ollama, Docker Desktop AI, and KoboldCpp.
+
+## ✨ Features
+
+- Summarize webpages with hosted models such as DeepSeek, Doubao, and Gitee AI
+- Use local models including Ollama, Docker Desktop AI, and KoboldCpp without an API key
+- Automatically fetch and switch Ollama/Docker Desktop AI models
+- Chat in the side panel with multi-turn context awareness
+- Render summaries and chat replies in Markdown
+- Summarize the full page or only selected text from the context menu
+- One-click side panel workflow with a clean UI
+- Auto-check API key and local model configuration status
+- Built-in CORS and permission handling for local Ollama usage
+- Automatically truncates long page content (up to 15,000 characters)
+
+## 🚀 Installation
+
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/maikebing/ai-page-summarizer.git
+   # or
+   git clone https://gitee.com/maikebing/ai-page-summarizer.git
+   ```
+2. Open Edge or Chrome:
+   - `edge://extensions/` or `chrome://extensions/`
+3. Enable Developer mode
+4. Click Load unpacked and select the project root directory
+5. After installation, pin the extension to the toolbar if needed
+
+## 🏁 Quick Start
+
+1. Click the extension icon to open the side panel
+2. On first use, click `⚙️ Settings` and configure an API key or local model
+3. Choose an AI provider (DeepSeek / Doubao / Gitee AI / Ollama / Docker Desktop AI / KoboldCpp)
+4. Click `🔄 Summarize current page` or use the context menu to summarize selected text
+5. Wait for the AI summary in Markdown format
+6. Ask follow-up questions in the chat box at the bottom
+7. Switch models and re-run summaries at any time
+
+## Model Notes
+
+### Ollama
+- Automatically pulls `qwen2.5:7b` by default
+- Supports dynamic model selection and status detection
+- No API key required
+- Supports multi-turn chat
+
+### DeepSeek / Doubao
+- Requires an API key in the settings page
+- Supports summaries, translation, and multi-turn chat
+
+### Gitee AI
+- Requires a Gitee AI API key in settings
+- Supports models such as `Qwen3-8B`
+- Supports summaries, translation, and multi-turn chat
+
+### Docker Desktop AI
+- Default endpoint: `http://localhost:12434`
+- Supports dynamic model selection and status detection
+- Supports summaries, translation, and multi-turn chat
+
+### KoboldCpp
+- Default endpoint: `http://localhost:5001`
+- Supports local deployment and model switching
+- Supports summaries, translation, and multi-turn chat
+
+## 🔑 API Key Links
+
+- **DeepSeek**: [DeepSeek Open Platform](https://platform.deepseek.com/api_keys)
+- **Doubao**: [Volcengine Ark Console](https://console.volcengine.com/ark)
+- **Gitee AI**:
+  1. Sign in to [Gitee AI](https://ai.gitee.com/)
+  2. Complete account registration and verification
+  3. Open the API key management page and create a key
+  4. Paste the key into the extension settings page
+
+## ❓ FAQ
+
+1. **Cannot connect to Ollama?**  
+   Make sure Ollama is running and the port is available.
+2. **API key still does not work after configuration?**  
+   Check whether the key is correct and whether the target service is reachable.
+3. **Summary quality is not ideal?**  
+   Try another model or summarize a smaller content range.
+
+If you have more questions, feel free to open an Issue or PR.

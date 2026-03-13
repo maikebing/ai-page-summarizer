@@ -1,9 +1,14 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-i18n-title="optionsTitle">
 <head>
   <meta charset="UTF-8">
-  <title>AI 页面总结器 - 设置</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Page Summarizer - Settings</title>
   <style>
+    html:not([data-i18n-ready]) body {
+      visibility: hidden;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       max-width: 500px;
@@ -104,17 +109,34 @@
       color: #9ca3af;
       margin-top: 4px;
     }
+    .koboldcpp-meta {
+      margin-bottom: 8px;
+    }
+    .meta-label {
+      font-size: 13px;
+      color: #6b7280;
+    }
+    .meta-label-spaced {
+      margin-left: 16px;
+    }
+    .meta-value {
+      font-size: 13px;
+      color: #1e40af;
+    }
+    .meta-refresh-btn {
+      margin-left: 8px;
+    }
   </style>
 </head>
 <body>
-  <h1>⚙️ AI 页面总结器 - 设置</h1>
+  <h1 data-i18n="optionsHeading">⚙️ AI Page Summarizer - Settings</h1>
 
   <div class="section">
-    <h2>🤖 DeepSeek</h2>
-    <label for="deepseek-key">API Key</label>
-    <input type="password" id="deepseek-key" placeholder="sk-xxxxxxxxxxxxxxxx">
-    <p class="hint">在 <a href="https://platform.deepseek.com/api_keys" target="_blank">DeepSeek 开放平台</a> 获取</p>
-    <label for="deepseek-model">模型</label>
+    <h2 data-i18n="optionsSectionDeepSeek">🤖 DeepSeek</h2>
+    <label for="deepseek-key" data-i18n="optionsLabelApiKey">API Key</label>
+    <input type="password" id="deepseek-key" data-i18n-placeholder="optionsPlaceholderDeepSeekKey" placeholder="sk-xxxxxxxxxxxxxxxx">
+    <p class="hint" data-i18n-html="optionsHintDeepSeekHtml">Get it from the DeepSeek Open Platform.</p>
+    <label for="deepseek-model" data-i18n="optionsLabelModel">Model</label>
     <select id="deepseek-model">
       <option value="deepseek-chat">deepseek-chat (V3)</option>
       <option value="deepseek-reasoner">deepseek-reasoner (R1)</option>
@@ -122,36 +144,36 @@
   </div>
 
   <div class="section">
-    <h2>🐱 Gitee AI</h2>
-    <label for="giteeai-key">API Key</label>
-    <input type="password" id="giteeai-key" placeholder="your-gitee-ai-key">
-    <p class="hint">在 <a href="https://ai.gitee.com/console/apikeys" target="_blank">Gitee AI 控制台</a> 获取</p>
-    <label for="giteeai-model">模型</label>
-    <input type="text" id="giteeai-model" placeholder="Qwen3-8B">
-    <p class="hint">填写模型名称，如 Qwen3-8B</p>
+    <h2 data-i18n="optionsSectionGiteeAI">🐱 Gitee AI</h2>
+    <label for="giteeai-key" data-i18n="optionsLabelApiKey">API Key</label>
+    <input type="password" id="giteeai-key" data-i18n-placeholder="optionsPlaceholderGiteeKey" placeholder="your-gitee-ai-key">
+    <p class="hint" data-i18n-html="optionsHintGiteeKeyHtml">Get it from the Gitee AI Console.</p>
+    <label for="giteeai-model" data-i18n="optionsLabelModel">Model</label>
+    <input type="text" id="giteeai-model" data-i18n-placeholder="optionsPlaceholderGiteeModel" placeholder="Qwen3-8B">
+    <p class="hint" data-i18n="optionsHintGiteeModel">Enter a model name such as Qwen3-8B.</p>
   </div>
 
   <div class="section">
-    <h2>🔥 豆包 (Doubao)</h2>
-    <label for="doubao-key">API Key</label>
-    <input type="password" id="doubao-key" placeholder="your-ark-api-key">
-    <p class="hint">在 <a href="https://console.volcengine.com/ark" target="_blank">火山引擎 Ark 控制台</a> 获取</p>
-    <label for="doubao-model">模型 / 推理接入点 (Endpoint ID)</label>
-    <input type="text" id="doubao-model" placeholder="doubao-pro-256k 或你的 endpoint id">
-    <p class="hint">填写模型名称或者你创建的推理接入点 ID</p>
+    <h2 data-i18n="optionsSectionDoubao">🔥 Doubao</h2>
+    <label for="doubao-key" data-i18n="optionsLabelApiKey">API Key</label>
+    <input type="password" id="doubao-key" data-i18n-placeholder="optionsPlaceholderDoubaoKey" placeholder="your-ark-api-key">
+    <p class="hint" data-i18n-html="optionsHintDoubaoHtml">Get it from the Volcengine Ark Console.</p>
+    <label for="doubao-model" data-i18n="optionsLabelEndpoint">Model / Endpoint ID</label>
+    <input type="text" id="doubao-model" data-i18n-placeholder="optionsPlaceholderDoubaoModel" placeholder="doubao-pro-256k or your endpoint ID">
+    <p class="hint" data-i18n="optionsHintDoubaoModel">Enter a model name or your endpoint ID.</p>
   </div>
 
   <div class="section">
-    <h2>🦙 Ollama (本地模型)</h2>
-    <label for="ollama-url">服务器地址</label>
-    <input type="text" id="ollama-url" placeholder="http://localhost:11434">
-    <p class="hint">Ollama 默认运行在 <code>http://localhost:11434</code>，修改地址后点击“刷新”重新获取模型列表</p>
-    <label for="ollama-model">选择模型</label>
+    <h2 data-i18n="optionsSectionOllama">🦙 Ollama (local model)</h2>
+    <label for="ollama-url" data-i18n="optionsLabelServerUrl">Server URL</label>
+    <input type="text" id="ollama-url" data-i18n-placeholder="optionsPlaceholderOllamaUrl" placeholder="http://localhost:11434">
+    <p class="hint" data-i18n-html="optionsHintOllamaUrlHtml">Ollama runs on http://localhost:11434 by default.</p>
+    <label for="ollama-model" data-i18n="optionsSelectModel">Select model</label>
     <div class="model-row">
       <select id="ollama-model">
-        <option value="">点击“刷新”获取模型列表</option>
+        <option value="" data-i18n="optionsClickRefreshModels">Click "Refresh" to load models</option>
       </select>
-      <button type="button" class="btn-sm" id="ollama-refresh-btn">🔄 刷新</button>
+      <button type="button" class="btn-sm" id="ollama-refresh-btn" data-i18n="optionsRefreshButton">🔄 Refresh</button>
     </div>
     <div id="ollama-status" class="ollama-status"></div>
 
@@ -159,38 +181,38 @@
 
   
   <div class="section">
-    <h2>🐳 Docker Desktop AI</h2>
-    <label for="dockerai-url">API 地址</label>
-    <input type="text" id="dockerai-url" placeholder="http://localhost:12434">
-    <p class="hint">Docker Desktop AI 默认运行在 <code>http://localhost:12434</code></p>
-      <p class="hint">Docker Desktop AI 默认运行在 <code>http://localhost:12434</code>，修改地址后点击“刷新”重新获取模型列表</p>
-      <label for="dockerai-model">选择模型</label>
+    <h2 data-i18n="optionsSectionDockerAI">🐳 Docker Desktop AI</h2>
+    <label for="dockerai-url" data-i18n="optionsLabelApiUrl">API URL</label>
+    <input type="text" id="dockerai-url" data-i18n-placeholder="optionsPlaceholderDockerUrl" placeholder="http://localhost:12434">
+      <p class="hint" data-i18n-html="optionsHintDockerUrlHtml">Docker Desktop AI runs on http://localhost:12434 by default.</p>
+      <label for="dockerai-model" data-i18n="optionsSelectModel">Select model</label>
       <div class="model-row">
         <select id="dockerai-model">
-          <option value="">点击“刷新”获取模型列表</option>
+          <option value="" data-i18n="optionsClickRefreshModels">Click "Refresh" to load models</option>
         </select>
-        <button type="button" class="btn-sm" id="dockerai-refresh-btn">🔄 刷新</button>
+        <button type="button" class="btn-sm" id="dockerai-refresh-btn" data-i18n="optionsRefreshButton">🔄 Refresh</button>
       </div>
       <div id="dockerai-status" class="ollama-status"></div>
   </div>
 
   <div class="section">
-    <h2>🦄 KoboldCpp (本地模型)</h2>
-    <div style="margin-bottom: 8px;">
-      <span style="font-size:13px;color:#6b7280;">当前模型：</span>
-      <span id="koboldcpp-current-model" style="font-size:13px;color:#1e40af;">--</span>
-      <span style="margin-left:16px;font-size:13px;color:#6b7280;">版本：</span>
-      <span id="koboldcpp-version" style="font-size:13px;color:#1e40af;">--</span>
-      <button type="button" class="btn-sm btn-secondary" id="koboldcpp-refresh-btn" style="margin-left:8px;">🔄 刷新</button>
+    <h2 data-i18n="optionsSectionKoboldCpp">🦄 KoboldCpp (local model)</h2>
+    <div class="koboldcpp-meta">
+      <span class="meta-label" data-i18n="optionsCurrentModelLabel">Current model:</span>
+      <span id="koboldcpp-current-model" class="meta-value">--</span>
+      <span class="meta-label meta-label-spaced" data-i18n="optionsVersionLabel">Version:</span>
+      <span id="koboldcpp-version" class="meta-value">--</span>
+      <button type="button" class="btn-sm btn-secondary meta-refresh-btn" id="koboldcpp-refresh-btn" data-i18n="optionsRefreshButton">🔄 Refresh</button>
     </div>
-    <label for="koboldcpp-url">服务器地址</label>
-    <input type="text" id="koboldcpp-url" placeholder="http://localhost:5001">
-    <p class="hint">KoboldCpp 默认运行在 <code>http://localhost:5001</code>，如有自定义端口请修改</p>
+    <label for="koboldcpp-url" data-i18n="optionsLabelServerUrl">Server URL</label>
+    <input type="text" id="koboldcpp-url" data-i18n-placeholder="optionsPlaceholderKoboldUrl" placeholder="http://localhost:5001">
+    <p class="hint" data-i18n-html="optionsHintKoboldUrlHtml">KoboldCpp runs on http://localhost:5001 by default.</p>
     <div id="koboldcpp-status" class="ollama-status"></div>
   </div>
-<button id="save-btn">💾 保存设置</button>
-  <p class="status hidden" id="status">✅ 设置已保存！</p>
+<button id="save-btn" data-i18n="optionsSaveButton">💾 Save settings</button>
+  <p class="status hidden" id="status" data-i18n="optionsStatusSaved">✅ Settings saved!</p>
 
+  <script src="i18n.js"></script>
   <script src="options.js"></script>
 </body>
 </html>

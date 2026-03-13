@@ -1,24 +1,24 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-i18n-title="popupTitle">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI 页面总结</title>
+  <title>AI Page Summarizer</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
-    <h1>📄 AI 页面总结</h1>
+    <h1 data-i18n="popupHeading">📄 AI Page Summarizer</h1>
 
     <div class="provider-select">
-      <label for="provider">选择 AI 模型：</label>
+      <label for="provider" data-i18n="popupProviderLabel">AI model:</label>
       <select id="provider">
-        <option value="deepseek">DeepSeek</option>
-        <option value="doubao">豆包 (Doubao)</option>
+        <option value="deepseek" data-i18n="providerDeepSeek">DeepSeek</option>
+        <option value="doubao" data-i18n="providerDoubao">Doubao</option>
       </select>
     </div>
 
-    <button id="edge-discover-btn"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5Zm2-.5a.5.5 0 0 0-.5.5v14a.5.5 0 0 0 .5.5h9V4.5H5Zm10.5 0v15H19a.5.5 0 0 0 .5-.5V5a.5.5 0 0 0-.5-.5h-3.5Z" fill="currentColor"/></svg> 在侧边栏总结当前页面</button>
+    <button id="edge-discover-btn"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5Zm2-.5a.5.5 0 0 0-.5.5v14a.5.5 0 0 0 .5.5h9V4.5H5Zm10.5 0v15H19a.5.5 0 0 0 .5-.5V5a.5.5 0 0 0-.5-.5h-3.5Z" fill="currentColor"/></svg> <span data-i18n="popupOpenSidePanelButton">Summarize current page in side panel</span></button>
 
     <div id="action-status" class="hidden"></div>
 
@@ -27,10 +27,11 @@
     </div>
 
     <div class="footer">
-      <a href="#" id="open-options">⚙️ 设置 API Key</a>
+      <a href="#" id="open-options" data-i18n="popupOpenOptionsLink">⚙️ Set API keys</a>
     </div>
   </div>
 
+  <script src="i18n.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>
