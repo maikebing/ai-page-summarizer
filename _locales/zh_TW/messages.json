@@ -164,6 +164,96 @@
   "optionsHeading": {
     "message": "⚙️ AI 頁面摘要器 - 設定"
   },
+  "optionsPageDescription": {
+    "message": "使用分頁、分組卡片與可折疊面板，更有效率地管理本地模型與線上 API 設定。"
+  },
+  "optionsTabAll": {
+    "message": "全部"
+  },
+  "optionsTabLocal": {
+    "message": "本地模型"
+  },
+  "optionsTabOnline": {
+    "message": "線上 API"
+  },
+  "optionsGroupLocal": {
+    "message": "🖥️ 本地模型"
+  },
+  "optionsGroupLocalHint": {
+    "message": "管理執行於本機或區域網路服務上的模型。"
+  },
+  "optionsGroupOnline": {
+    "message": "☁️ 線上模型 API"
+  },
+  "optionsGroupOnlineHint": {
+    "message": "集中管理雲端 API Key 與模型名稱。"
+  },
+  "optionsCollapse": {
+    "message": "收合"
+  },
+  "optionsExpand": {
+    "message": "展開"
+  },
+  "optionsSearchPlaceholder": {
+    "message": "搜尋模型、服務商或設定項目"
+  },
+  "optionsClearSearch": {
+    "message": "清除"
+  },
+  "optionsEmptyState": {
+    "message": "找不到相符的服務商或設定項目。"
+  },
+  "optionsBadgeLocal": {
+    "message": "本地"
+  },
+  "optionsBadgeOnline": {
+    "message": "API"
+  },
+  "optionsStateUntested": {
+    "message": "未測試"
+  },
+  "optionsStateNeedsConfig": {
+    "message": "待設定"
+  },
+  "optionsStateConfigured": {
+    "message": "已設定"
+  },
+  "optionsStateLocalService": {
+    "message": "本地服務"
+  },
+  "optionsStateConnected": {
+    "message": "已連線"
+  },
+  "optionsStateFailed": {
+    "message": "連線失敗"
+  },
+  "optionsStateTesting": {
+    "message": "測試中"
+  },
+  "optionsTestConnection": {
+    "message": "測試連線"
+  },
+  "optionsTestingConnection": {
+    "message": "⏳ 正在測試連線..."
+  },
+  "optionsTestHintLocal": {
+    "message": "測試本地服務是否可連線，以及模型清單能否正常取得。"
+  },
+  "optionsTestHintOnline": {
+    "message": "驗證目前的 API Key 與模型設定是否可連到遠端服務。"
+  },
+  "optionsTestSuccess": {
+    "message": "✅ 連線成功"
+  },
+  "optionsTestSuccessWithCount": {
+    "message": "✅ 連線成功，找到 $1 個模型"
+  },
+  "optionsTestSuccessModel": {
+    "message": "✅ 連線成功，目前模型：$1"
+  },
+  "optionsTestMissingConfig": {
+    "message": "請先填寫完整的 API Key 與模型資訊再進行測試。"
+  },
   "optionsSectionDeepSeek": {
     "message": "🤖 DeepSeek"
   },

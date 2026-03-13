@@ -164,6 +164,96 @@
   "optionsHeading": {
     "message": "⚙️ AIページ要約ツール - 設定"
   },
+  "optionsPageDescription": {
+    "message": "タブ、グループカード、折りたたみパネルで、ローカルモデルとオンライン API の設定をより整理して管理できます。"
+  },
+  "optionsTabAll": {
+    "message": "すべて"
+  },
+  "optionsTabLocal": {
+    "message": "ローカルモデル"
+  },
+  "optionsTabOnline": {
+    "message": "オンライン API"
+  },
+  "optionsGroupLocal": {
+    "message": "🖥️ ローカルモデル"
+  },
+  "optionsGroupLocalHint": {
+    "message": "ローカル環境または LAN サービス上で動作するモデルを管理します。"
+  },
+  "optionsGroupOnline": {
+    "message": "☁️ オンラインモデル API"
+  },
+  "optionsGroupOnlineHint": {
+    "message": "クラウド API キーとモデル名をまとめて管理します。"
+  },
+  "optionsCollapse": {
+    "message": "折りたたむ"
+  },
+  "optionsExpand": {
+    "message": "展開"
+  },
+  "optionsSearchPlaceholder": {
+    "message": "プロバイダー、モデル、設定を検索"
+  },
+  "optionsClearSearch": {
+    "message": "クリア"
+  },
+  "optionsEmptyState": {
+    "message": "一致するプロバイダーまたは設定が見つかりませんでした。"
+  },
+  "optionsBadgeLocal": {
+    "message": "ローカル"
+  },
+  "optionsBadgeOnline": {
+    "message": "API"
+  },
+  "optionsStateUntested": {
+    "message": "未確認"
+  },
+  "optionsStateNeedsConfig": {
+    "message": "要設定"
+  },
+  "optionsStateConfigured": {
+    "message": "設定済み"
+  },
+  "optionsStateLocalService": {
+    "message": "ローカルサービス"
+  },
+  "optionsStateConnected": {
+    "message": "接続済み"
+  },
+  "optionsStateFailed": {
+    "message": "接続失敗"
+  },
+  "optionsStateTesting": {
+    "message": "確認中"
+  },
+  "optionsTestConnection": {
+    "message": "接続を確認"
+  },
+  "optionsTestingConnection": {
+    "message": "⏳ 接続を確認しています..."
+  },
+  "optionsTestHintLocal": {
+    "message": "ローカルサービスに接続できるか、モデル一覧を取得できるかを確認します。"
+  },
+  "optionsTestHintOnline": {
+    "message": "現在の API キーとモデル設定でリモートサービスに接続できるか確認します。"
+  },
+  "optionsTestSuccess": {
+    "message": "✅ 接続に成功しました"
+  },
+  "optionsTestSuccessWithCount": {
+    "message": "✅ 接続に成功しました。モデル数: $1"
+  },
+  "optionsTestSuccessModel": {
+    "message": "✅ 接続に成功しました。現在のモデル: $1"
+  },
+  "optionsTestMissingConfig": {
+    "message": "テスト前に API キーとモデルを入力してください。"
+  },
   "optionsSectionDeepSeek": {
     "message": "🤖 DeepSeek"
   },

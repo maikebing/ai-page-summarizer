@@ -2,108 +2,265 @@ document.addEventListener("DOMContentLoaded", () => {
   const { t } = window.AppI18n;
   const deepseekKey = document.getElementById("deepseek-key");
   const deepseekModel = document.getElementById("deepseek-model");
+  const openaiKey = document.getElementById("openai-key");
+  const openaiModel = document.getElementById("openai-model");
+  const openaiRefreshModelsBtn = document.getElementById("openai-refresh-models-btn");
+  const geminiKey = document.getElementById("gemini-key");
+  const geminiModel = document.getElementById("gemini-model");
+  const geminiRefreshModelsBtn = document.getElementById("gemini-refresh-models-btn");
+  const anthropicKey = document.getElementById("anthropic-key");
+  const anthropicModel = document.getElementById("anthropic-model");
+  const anthropicRefreshModelsBtn = document.getElementById("anthropic-refresh-models-btn");
   const doubaoKey = document.getElementById("doubao-key");
   const doubaoModel = document.getElementById("doubao-model");
+  const doubaoRefreshModelsBtn = document.getElementById("doubao-refresh-models-btn");
   const ollamaUrl = document.getElementById("ollama-url");
   const ollamaModel = document.getElementById("ollama-model");
   const ollamaRefreshBtn = document.getElementById("ollama-refresh-btn");
+  const ollamaTestBtn = document.getElementById("ollama-test-btn");
   const ollamaStatusEl = document.getElementById("ollama-status");
   const dockeraiUrl = document.getElementById("dockerai-url");
   const dockeraiModel = document.getElementById("dockerai-model");
   const dockeraiRefreshBtn = document.getElementById("dockerai-refresh-btn");
+  const dockeraiTestBtn = document.getElementById("dockerai-test-btn");
   const dockeraiStatusEl = document.getElementById("dockerai-status");
+  const foundrylocalUrl = document.getElementById("foundrylocal-url");
+  const foundrylocalModel = document.getElementById("foundrylocal-model");
+  const foundrylocalRefreshBtn = document.getElementById("foundrylocal-refresh-btn");
+  const foundrylocalTestBtn = document.getElementById("foundrylocal-test-btn");
+  const foundrylocalStatusEl = document.getElementById("foundrylocal-status");
   const koboldcppUrl = document.getElementById("koboldcpp-url");
   const koboldcppStatusEl = document.getElementById("koboldcpp-status");
   const koboldcppCurrentModel = document.getElementById("koboldcpp-current-model");
   const koboldcppVersion = document.getElementById("koboldcpp-version");
   const koboldcppRefreshBtn = document.getElementById("koboldcpp-refresh-btn");
+  const koboldcppTestBtn = document.getElementById("koboldcpp-test-btn");
   const giteeaiKey = document.getElementById("giteeai-key");
   const giteeaiModel = document.getElementById("giteeai-model");
+  const giteeaiRefreshModelsBtn = document.getElementById("giteeai-refresh-models-btn");
+  const githubcopilotKey = document.getElementById("githubcopilot-key");
+  const githubcopilotModel = document.getElementById("githubcopilot-model");
+  const githubcopilotRefreshModelsBtn = document.getElementById("githubcopilot-refresh-models-btn");
+  const deepseekStatusEl = document.getElementById("deepseek-status");
+  const openaiStatusEl = document.getElementById("openai-status");
+  const geminiStatusEl = document.getElementById("gemini-status");
+  const anthropicStatusEl = document.getElementById("anthropic-status");
+  const giteeaiStatusEl = document.getElementById("giteeai-status");
+  const githubcopilotStatusEl = document.getElementById("githubcopilot-status");
+  const doubaoStatusEl = document.getElementById("doubao-status");
+  const deepseekTestBtn = document.getElementById("deepseek-test-btn");
+  const openaiTestBtn = document.getElementById("openai-test-btn");
+  const geminiTestBtn = document.getElementById("gemini-test-btn");
+  const anthropicTestBtn = document.getElementById("anthropic-test-btn");
+  const giteeaiTestBtn = document.getElementById("giteeai-test-btn");
+  const githubcopilotTestBtn = document.getElementById("githubcopilot-test-btn");
+  const doubaoTestBtn = document.getElementById("doubao-test-btn");
   const saveBtn = document.getElementById("save-btn");
   const status = document.getElementById("status");
+  const pageHeader = document.querySelector(".page-header");
+  const providerSearchInput = document.getElementById("provider-search");
+  const clearSearchBtn = document.getElementById("clear-search-btn");
+  const emptyState = document.getElementById("empty-state");
+  const tabButtons = Array.from(document.querySelectorAll("[data-tab]"));
+  const groupSections = Array.from(document.querySelectorAll("[data-group]"));
+  const groupToggleButtons = Array.from(document.querySelectorAll("[data-group-toggle]"));
+  const providerCards = Array.from(document.querySelectorAll("[data-provider-id]"));
+  const providerStateEls = {
+    deepseek: document.getElementById("provider-state-deepseek"),
+    openai: document.getElementById("provider-state-openai"),
+    gemini: document.getElementById("provider-state-gemini"),
+    anthropic: document.getElementById("provider-state-anthropic"),
+    doubao: document.getElementById("provider-state-doubao"),
+    ollama: document.getElementById("provider-state-ollama"),
+    dockerai: document.getElementById("provider-state-dockerai"),
+    foundrylocal: document.getElementById("provider-state-foundrylocal"),
+    koboldcpp: document.getElementById("provider-state-koboldcpp"),
+    giteeai: document.getElementById("provider-state-giteeai"),
+    githubcopilot: document.getElementById("provider-state-githubcopilot"),
+  };
+  const providerStatusEls = {
+    deepseek: deepseekStatusEl,
+    openai: openaiStatusEl,
+    gemini: geminiStatusEl,
+    anthropic: anthropicStatusEl,
+    doubao: doubaoStatusEl,
+    ollama: ollamaStatusEl,
+    dockerai: dockeraiStatusEl,
+    foundrylocal: foundrylocalStatusEl,
+    koboldcpp: koboldcppStatusEl,
+    giteeai: giteeaiStatusEl,
+    githubcopilot: githubcopilotStatusEl,
+  };
+  const providerTestBtns = {
+    deepseek: deepseekTestBtn,
+    openai: openaiTestBtn,
+    gemini: geminiTestBtn,
+    anthropic: anthropicTestBtn,
+    doubao: doubaoTestBtn,
+    ollama: ollamaTestBtn,
+    dockerai: dockeraiTestBtn,
+    foundrylocal: foundrylocalTestBtn,
+    koboldcpp: koboldcppTestBtn,
+    giteeai: giteeaiTestBtn,
+    githubcopilot: githubcopilotTestBtn,
+  };
+  const REMOTE_MODEL_PRESETS = {
+    openai: ["gpt-4.1-mini", "gpt-4.1", "gpt-4o-mini", "gpt-4o", "gpt-5-mini"],
+    gemini: ["gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-1.5-pro", "gemini-1.5-flash"],
+    anthropic: ["claude-3-5-sonnet-latest", "claude-3-7-sonnet-latest", "claude-3-5-haiku-latest", "claude-3-opus-latest"],
+    deepseek: ["deepseek-chat", "deepseek-reasoner"],
+    giteeai: ["Qwen3-8B", "Qwen2.5-72B-Instruct", "DeepSeek-R1-Distill-Qwen-7B", "glm-4-9b-chat"],
+    githubcopilot: ["openai/gpt-4.1-mini", "openai/gpt-4.1", "openai/gpt-4o", "openai/gpt-5-mini", "deepseek/deepseek-r1"],
+    doubao: ["doubao-pro-256k", "doubao-1-5-pro-32k", "doubao-1-5-lite-32k", "doubao-seed-1-6-thinking"],
+  };
+  const MODEL_LIST_CONFIG = {
+    openai: {
+      input: openaiModel,
+      listId: "openai-model-list",
+      button: openaiRefreshModelsBtn,
+      getApiKey: () => openaiKey.value.trim(),
+      getProxyConfig: () => getProxyFormConfig("openai"),
+      fetcher: fetchOpenAIModelList,
+    },
+    gemini: {
+      input: geminiModel,
+      listId: "gemini-model-list",
+      button: geminiRefreshModelsBtn,
+      getApiKey: () => geminiKey.value.trim(),
+      getProxyConfig: () => getProxyFormConfig("gemini"),
+      fetcher: fetchGeminiModelList,
+    },
+    anthropic: {
+      input: anthropicModel,
+      listId: "anthropic-model-list",
+      button: anthropicRefreshModelsBtn,
+      getApiKey: () => anthropicKey.value.trim(),
+      getProxyConfig: () => getProxyFormConfig("anthropic"),
+      fetcher: fetchAnthropicModelList,
+    },
+    giteeai: {
+      input: giteeaiModel,
+      listId: "giteeai-model-list",
+      button: giteeaiRefreshModelsBtn,
+      getApiKey: () => giteeaiKey.value.trim(),
+      getProxyConfig: () => getProxyFormConfig("giteeai"),
+      fetcher: fetchGiteeAIModelList,
+    },
+    githubcopilot: {
+      input: githubcopilotModel,
+      listId: "githubcopilot-model-list",
+      button: githubcopilotRefreshModelsBtn,
+      getApiKey: () => githubcopilotKey.value.trim(),
+      getProxyConfig: () => getProxyFormConfig("githubcopilot"),
+      fetcher: null,
+    },
+    doubao: {
+      input: doubaoModel,
+      listId: "doubao-model-list",
+      button: doubaoRefreshModelsBtn,
+      getApiKey: () => doubaoKey.value.trim(),
+      getProxyConfig: () => getProxyFormConfig("doubao"),
+      fetcher: null,
+    },
+  };
+  const PROVIDERS = ["deepseek", "openai", "gemini", "anthropic", "doubao", "ollama", "dockerai", "foundrylocal", "koboldcpp", "giteeai", "githubcopilot"];
+  const LOCAL_PROVIDERS = ["ollama", "dockerai", "foundrylocal", "koboldcpp"];
+  const ONLINE_PROVIDERS = ["deepseek", "openai", "gemini", "anthropic", "doubao", "giteeai", "githubcopilot"];
+  const PROXY_FIELDS = ["mode", "scheme", "host", "port", "username", "password"];
+  const PROXY_SCOPES = {
+    local: LOCAL_PROVIDERS,
+    online: ONLINE_PROVIDERS,
+  };
+  const proxyScopeEls = Object.fromEntries(
+    Object.entries(PROXY_SCOPES).map(([scope, providers]) => [
+      scope,
+      {
+        mode: document.getElementById(`proxy-${scope}-mode`),
+        customFields: document.getElementById(`proxy-${scope}-custom-fields`),
+        scheme: document.getElementById(`proxy-${scope}-scheme`),
+        host: document.getElementById(`proxy-${scope}-host`),
+        port: document.getElementById(`proxy-${scope}-port`),
+        username: document.getElementById(`proxy-${scope}-username`),
+        password: document.getElementById(`proxy-${scope}-password`),
+        testButton: document.getElementById(`proxy-${scope}-test-btn`),
+        status: document.getElementById(`proxy-${scope}-status`),
+        providerChecks: Object.fromEntries(
+          providers.map((provider) => [provider, document.getElementById(`proxy-${scope}-enable-${provider}`)])
+        ),
+      },
+    ])
+  );
+  const UI_STATE_KEY = "options_ui_state";
+  const defaultUiState = {
+    activeTab: "all",
+    search: "",
+    groupCollapsed: {
+      local: false,
+      online: false,
+    },
+    providerOpen: {},
+  };
+  let uiState = cloneUiState(defaultUiState);
+
+  initializeTabs();
+  initializeGroupToggles();
+  initializeProviderCards();
+  initializeSearch();
+  initializeModelPresets();
+  initializeModelRefreshButtons();
+  initializeProxyEnhancements();
+  initializeProviderIndicators();
+  initializeTestButtons();
+  restoreUiState();
 
   // 加载已保存的设置
   chrome.storage.sync.get(
     [
       "deepseek_api_key", "deepseek_model",
+      "openai_api_key", "openai_model",
+      "gemini_api_key", "gemini_model",
+      "anthropic_api_key", "anthropic_model",
       "doubao_api_key", "doubao_model",
       "ollama_url", "ollama_model",
       "dockerai_url", "dockerai_model",
+      "foundrylocal_url", "foundrylocal_model",
       "koboldcpp_url",
-      "giteeai_api_key", "giteeai_model"
-    ],
+      "giteeai_api_key", "giteeai_model",
+      "githubcopilot_api_key", "githubcopilot_model"
+    ].concat(getAllProxyStorageKeys()),
     (data) => {
       deepseekKey.value = data.deepseek_api_key || "";
       deepseekModel.value = data.deepseek_model || "deepseek-chat";
+      openaiKey.value = data.openai_api_key || "";
+      openaiModel.value = data.openai_model || "gpt-4.1-mini";
+      geminiKey.value = data.gemini_api_key || "";
+      geminiModel.value = data.gemini_model || "gemini-2.0-flash";
+      anthropicKey.value = data.anthropic_api_key || "";
+      anthropicModel.value = data.anthropic_model || "claude-3-5-sonnet-latest";
       doubaoKey.value = data.doubao_api_key || "";
       doubaoModel.value = data.doubao_model || "doubao-pro-256k";
       ollamaUrl.value = data.ollama_url || "http://localhost:11434";
       ollamaModel.value = data.ollama_model || "qwen2.5:7b";
       dockeraiUrl.value = data.dockerai_url || "http://localhost:12434";
       dockeraiModel.value = data.dockerai_model || "docker.io/ai/qwen2.5:7B-Q4_0";
+      foundrylocalUrl.value = data.foundrylocal_url || "http://localhost:5273";
+      foundrylocalModel.value = data.foundrylocal_model || "";
       koboldcppUrl.value = data.koboldcpp_url || "http://localhost:5001";
       giteeaiKey.value = data.giteeai_api_key || "";
       giteeaiModel.value = data.giteeai_model || "Qwen3-8B";
+      githubcopilotKey.value = data.githubcopilot_api_key || "";
+      githubcopilotModel.value = data.githubcopilot_model || "openai/gpt-4.1-mini";
+      loadProxySettings(data);
+
+      refreshProviderIndicators();
 
       // 加载完设置后自动刷新模型列表
       fetchOllamaModels(data.ollama_model || "qwen2.5:7b");
       fetchDockeraiModels(data.dockerai_model || "docker.io/ai/qwen2.5:7B-Q4_0");
+      fetchFoundryLocalModels(data.foundrylocal_model || "");
+      refreshRemoteModelChoices(true);
       // koboldcpp: 获取当前模型名称
       fetchKoboldcppInfo();
-      // koboldcpp 刷新按钮
-
-      koboldcppRefreshBtn.addEventListener("click", () => {
-        fetchKoboldcppInfo();
-      });
-
-      /**
-       * 获取 KoboldCpp 当前模型名称和版本
-       */
-      function fetchKoboldcppInfo() {
-        const url = (koboldcppUrl.value.trim() || "http://localhost:5001").replace(/\/+$/, "");
-        koboldcppCurrentModel.textContent = "--";
-        koboldcppVersion.textContent = "--";
-        koboldcppStatusEl.textContent = t("optionsFetchingCurrentModelVersion");
-        koboldcppStatusEl.className = "ollama-status info";
-        // 获取模型名
-        fetch(url + "/api/v1/model")
-          .then(res => {
-            if (!res.ok) throw new Error("HTTP " + res.status);
-            return res.json();
-          })
-          .then(data => {
-            if (data && data.result) {
-              koboldcppCurrentModel.textContent = data.result;
-              koboldcppStatusEl.textContent = t("optionsCurrentModelStatus", data.result);
-              koboldcppStatusEl.className = "ollama-status success";
-            } else {
-              koboldcppCurrentModel.textContent = "--";
-              koboldcppStatusEl.textContent = t("optionsCannotGetModelName");
-              koboldcppStatusEl.className = "ollama-status error";
-            }
-          })
-          .catch(err => {
-            koboldcppCurrentModel.textContent = "--";
-            koboldcppStatusEl.textContent = t("optionsFetchModelNameFailed", err.message || err);
-            koboldcppStatusEl.className = "ollama-status error";
-          });
-        // 获取版本号
-        fetch(url + "/api/v1/info/version")
-          .then(res => {
-            if (!res.ok) throw new Error("HTTP " + res.status);
-            return res.json();
-          })
-          .then(data => {
-            if (data && data.result) {
-              koboldcppVersion.textContent = data.result;
-            } else {
-              koboldcppVersion.textContent = "--";
-            }
-          })
-          .catch(() => {
-            koboldcppVersion.textContent = "--";
-          });
-      }
     }
   );
 
@@ -117,27 +274,1220 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchDockeraiModels(dockeraiModel.value);
   });
 
+  foundrylocalRefreshBtn.addEventListener("click", () => {
+    fetchFoundryLocalModels(foundrylocalModel.value);
+  });
+
+  koboldcppRefreshBtn.addEventListener("click", () => {
+    fetchKoboldcppInfo();
+  });
+
   saveBtn.addEventListener("click", () => {
+    saveSettings();
+  });
+
+  function saveSettings(callback) {
     chrome.storage.sync.set(
       {
         deepseek_api_key: deepseekKey.value.trim(),
         deepseek_model: deepseekModel.value.trim(),
+        openai_api_key: openaiKey.value.trim(),
+        openai_model: openaiModel.value.trim(),
+        gemini_api_key: geminiKey.value.trim(),
+        gemini_model: geminiModel.value.trim(),
+        anthropic_api_key: anthropicKey.value.trim(),
+        anthropic_model: anthropicModel.value.trim(),
         doubao_api_key: doubaoKey.value.trim(),
         doubao_model: doubaoModel.value.trim(),
         ollama_url: ollamaUrl.value.trim(),
         ollama_model: ollamaModel.value,
         dockerai_url: dockeraiUrl.value.trim(),
         dockerai_model: dockeraiModel.value,
+        foundrylocal_url: foundrylocalUrl.value.trim(),
+        foundrylocal_model: foundrylocalModel.value,
         koboldcpp_url: koboldcppUrl.value.trim(),
         giteeai_api_key: giteeaiKey.value.trim(),
         giteeai_model: giteeaiModel.value.trim(),
+        githubcopilot_api_key: githubcopilotKey.value.trim(),
+        githubcopilot_model: githubcopilotModel.value.trim(),
+        ...collectProxySettings(),
       },
       () => {
         status.classList.remove("hidden");
         setTimeout(() => status.classList.add("hidden"), 3000);
+        refreshProviderIndicators();
+        callback?.();
       }
     );
-  });
+  }
+
+  function initializeTabs() {
+    setActiveTab("all", false);
+
+    tabButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        setActiveTab(button.dataset.tab || "all");
+      });
+    });
+  }
+
+  function setActiveTab(activeTab, persist = true) {
+    uiState.activeTab = activeTab;
+
+    tabButtons.forEach((button) => {
+      const isActive = button.dataset.tab === activeTab;
+      button.classList.toggle("active", isActive);
+      button.setAttribute("aria-selected", String(isActive));
+    });
+
+    applyFilters();
+
+    if (persist) {
+      persistUiState();
+    }
+  }
+
+  function initializeSearch() {
+    providerSearchInput.addEventListener("input", () => {
+      setSearchQuery(providerSearchInput.value);
+    });
+
+    clearSearchBtn.addEventListener("click", () => {
+      setSearchQuery("");
+      providerSearchInput.focus();
+    });
+  }
+
+  function setSearchQuery(value, persist = true) {
+    const normalized = value.trim();
+    uiState.search = normalized;
+    providerSearchInput.value = normalized;
+    clearSearchBtn.classList.toggle("hidden", !normalized);
+    applyFilters();
+
+    if (persist) {
+      persistUiState();
+    }
+  }
+
+  function initializeGroupToggles() {
+    groupToggleButtons.forEach((button) => {
+      const groupName = button.dataset.groupToggle;
+      setGroupExpanded(groupName, true, false);
+
+      button.addEventListener("click", () => {
+        const content = document.querySelector(`[data-group-content="${groupName}"]`);
+        if (!content) {
+          return;
+        }
+
+        setGroupExpanded(groupName, content.hidden);
+      });
+    });
+  }
+
+  function setGroupExpanded(groupName, isExpanded, persist = true) {
+    uiState.groupCollapsed[groupName] = !isExpanded;
+
+    const content = document.querySelector(`[data-group-content="${groupName}"]`);
+    if (content) {
+      content.hidden = !isExpanded;
+    }
+
+    updateGroupToggleLabel(groupName, isExpanded);
+    applyFilters();
+
+    if (persist) {
+      persistUiState();
+    }
+  }
+
+  function updateGroupToggleLabel(groupName, isExpanded) {
+    const button = document.querySelector(`[data-group-toggle="${groupName}"]`);
+    if (!button) {
+      return;
+    }
+
+    button.textContent = isExpanded ? t("optionsCollapse") : t("optionsExpand");
+    button.setAttribute("aria-expanded", String(isExpanded));
+  }
+
+  function initializeProviderCards() {
+    providerCards.forEach((card) => {
+      card.addEventListener("toggle", () => {
+        const providerId = card.dataset.providerId;
+        if (!providerId) {
+          return;
+        }
+
+        uiState.providerOpen[providerId] = card.open;
+        persistUiState();
+      });
+    });
+  }
+
+  function restoreUiState() {
+    chrome.storage.local.get([UI_STATE_KEY], (data) => {
+      const storedState = data?.[UI_STATE_KEY] || {};
+
+      uiState = {
+        activeTab: storedState.activeTab || defaultUiState.activeTab,
+        search: typeof storedState.search === "string" ? storedState.search : defaultUiState.search,
+        groupCollapsed: {
+          ...defaultUiState.groupCollapsed,
+          ...(storedState.groupCollapsed || {}),
+        },
+        providerOpen: {
+          ...(storedState.providerOpen || {}),
+        },
+      };
+
+      providerCards.forEach((card) => {
+        const providerId = card.dataset.providerId;
+        if (!providerId) {
+          return;
+        }
+
+        if (typeof uiState.providerOpen[providerId] === "boolean") {
+          card.open = uiState.providerOpen[providerId];
+        }
+      });
+
+      Object.entries(uiState.groupCollapsed).forEach(([groupName, isCollapsed]) => {
+        setGroupExpanded(groupName, !isCollapsed, false);
+      });
+
+      setSearchQuery(uiState.search, false);
+      setActiveTab(uiState.activeTab, false);
+    });
+  }
+
+  function persistUiState() {
+    chrome.storage.local.set({
+      [UI_STATE_KEY]: uiState,
+    });
+  }
+
+  function applyFilters() {
+    const activeTab = uiState.activeTab || "all";
+    const query = normalizeText(uiState.search || "");
+    let visibleCards = 0;
+
+    groupSections.forEach((section) => {
+      const groupName = section.dataset.group;
+      const isTabMatch = activeTab === "all" || activeTab === groupName;
+      const cards = Array.from(section.querySelectorAll("[data-provider-id]"));
+      let visibleInGroup = 0;
+
+      cards.forEach((card) => {
+        const matches = !query || normalizeText(card.textContent).includes(query);
+        card.hidden = !matches;
+
+        if (matches && isTabMatch) {
+          visibleInGroup += 1;
+          visibleCards += 1;
+        }
+      });
+
+      section.hidden = !isTabMatch || visibleInGroup === 0;
+    });
+
+    emptyState.classList.toggle("hidden", visibleCards > 0);
+  }
+
+  function normalizeText(value) {
+    return String(value || "")
+      .toLowerCase()
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function cloneUiState(source) {
+    return {
+      activeTab: source.activeTab,
+      search: source.search,
+      groupCollapsed: { ...source.groupCollapsed },
+      providerOpen: { ...source.providerOpen },
+    };
+  }
+
+  function initializeModelPresets() {
+    attachModelDatalist(openaiModel, "openai-model-list", REMOTE_MODEL_PRESETS.openai);
+    attachModelDatalist(geminiModel, "gemini-model-list", REMOTE_MODEL_PRESETS.gemini);
+    attachModelDatalist(anthropicModel, "anthropic-model-list", REMOTE_MODEL_PRESETS.anthropic);
+    attachModelDatalist(giteeaiModel, "giteeai-model-list", REMOTE_MODEL_PRESETS.giteeai);
+    attachModelDatalist(githubcopilotModel, "githubcopilot-model-list", REMOTE_MODEL_PRESETS.githubcopilot);
+    attachModelDatalist(doubaoModel, "doubao-model-list", REMOTE_MODEL_PRESETS.doubao);
+  }
+
+  function initializeProxyEnhancements() {
+    initializeSharedProxyControls();
+    initializeProxyTransferActions();
+  }
+
+  function initializeSharedProxyControls() {
+    Object.keys(PROXY_SCOPES).forEach((scope) => {
+      const controls = proxyScopeEls[scope];
+      if (!controls?.mode) {
+        return;
+      }
+
+      const syncVisibility = () => {
+        updateProxyFieldsVisibility(scope);
+        clearProxyStatus(scope);
+      };
+
+      controls.mode.addEventListener("change", syncVisibility);
+      controls.testButton?.addEventListener("click", () => runProxyConnectionTest(scope));
+
+      [controls.scheme, controls.host, controls.port, controls.username, controls.password].forEach((element) => {
+        element?.addEventListener("input", () => clearProxyStatus(scope));
+        element?.addEventListener("change", () => clearProxyStatus(scope));
+      });
+
+      Object.values(controls.providerChecks || {}).forEach((checkbox) => {
+        checkbox?.addEventListener("change", () => clearProxyStatus(scope));
+      });
+
+      updateProxyFieldsVisibility(scope);
+    });
+  }
+
+  function initializeProxyTransferActions() {
+    if (!pageHeader || pageHeader.querySelector(".header-actions")) {
+      return;
+    }
+
+    const actions = document.createElement("div");
+    actions.className = "header-actions";
+
+    const exportBtn = document.createElement("button");
+    exportBtn.type = "button";
+    exportBtn.className = "btn-sm btn-outline";
+    exportBtn.dataset.i18n = "optionsProxyExportButton";
+    exportBtn.textContent = t("optionsProxyExportButton");
+
+    const importBtn = document.createElement("button");
+    importBtn.type = "button";
+    importBtn.className = "btn-sm btn-outline";
+    importBtn.dataset.i18n = "optionsProxyImportButton";
+    importBtn.textContent = t("optionsProxyImportButton");
+
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "application/json";
+    input.className = "hidden";
+
+    exportBtn.addEventListener("click", exportProxySettings);
+    importBtn.addEventListener("click", () => input.click());
+    input.addEventListener("change", async () => {
+      const file = input.files?.[0];
+      if (!file) {
+        return;
+      }
+      await importProxySettings(file);
+      input.value = "";
+    });
+
+    actions.appendChild(exportBtn);
+    actions.appendChild(importBtn);
+    actions.appendChild(input);
+    pageHeader.appendChild(actions);
+    window.AppI18n.applyI18n(actions);
+  }
+
+  function initializeModelRefreshButtons() {
+    Object.entries(MODEL_LIST_CONFIG).forEach(([provider, config]) => {
+      config.button?.addEventListener("click", () => {
+        refreshRemoteModelChoicesForProvider(provider);
+      });
+    });
+  }
+
+  function updateProxyFieldsVisibility(scope) {
+    const controls = proxyScopeEls[scope];
+    if (!controls?.mode || !controls.customFields) {
+      return;
+    }
+
+    controls.customFields.classList.toggle("hidden", controls.mode.value !== "custom");
+  }
+
+  function getAllProxyStorageKeys() {
+    const sharedKeys = Object.keys(PROXY_SCOPES).flatMap((scope) => {
+      const prefix = `proxy_${scope}_`;
+      return [
+        ...PROXY_FIELDS.map((field) => `${prefix}${field}`),
+        `${prefix}enabled_providers`,
+      ];
+    });
+
+    const legacyKeys = PROVIDERS.flatMap((provider) =>
+      PROXY_FIELDS.map((field) => `${provider}_proxy_${field}`)
+    );
+
+    return [...new Set([...sharedKeys, ...legacyKeys])];
+  }
+
+  function loadProxySettings(data) {
+    Object.entries(PROXY_SCOPES).forEach(([scope, providers]) => {
+      const controls = proxyScopeEls[scope];
+      if (!controls?.mode) {
+        return;
+      }
+
+      const prefix = `proxy_${scope}_`;
+      const hasSharedMode = typeof data[`${prefix}mode`] === "string";
+
+      if (hasSharedMode) {
+        controls.mode.value = data[`${prefix}mode`] || "browser";
+        controls.scheme.value = data[`${prefix}scheme`] || "http";
+        controls.host.value = data[`${prefix}host`] || "";
+        controls.port.value = data[`${prefix}port`] || "";
+        controls.username.value = data[`${prefix}username`] || "";
+        controls.password.value = data[`${prefix}password`] || "";
+      } else {
+        const legacyConfigs = providers.map((provider) => ({
+          provider,
+          mode: data[`${provider}_proxy_mode`] || "browser",
+          scheme: data[`${provider}_proxy_scheme`] || "http",
+          host: data[`${provider}_proxy_host`] || "",
+          port: data[`${provider}_proxy_port`] || "",
+          username: data[`${provider}_proxy_username`] || "",
+          password: data[`${provider}_proxy_password`] || "",
+        }));
+        const firstCustom = legacyConfigs.find((config) => config.mode === "custom" && config.host && config.port);
+        const hasEnabled = legacyConfigs.some((config) => config.mode !== "none");
+
+        controls.mode.value = firstCustom ? "custom" : (hasEnabled ? "browser" : "none");
+        controls.scheme.value = firstCustom?.scheme || "http";
+        controls.host.value = firstCustom?.host || "";
+        controls.port.value = firstCustom?.port || "";
+        controls.username.value = firstCustom?.username || "";
+        controls.password.value = firstCustom?.password || "";
+      }
+
+      const sharedEnabled = data[`${prefix}enabled_providers`];
+      const enabledSet = new Set(
+        Array.isArray(sharedEnabled)
+          ? sharedEnabled
+          : providers.filter((provider) => (data[`${provider}_proxy_mode`] || "browser") !== "none")
+      );
+
+      providers.forEach((provider) => {
+        const checkbox = controls.providerChecks?.[provider];
+        if (checkbox) {
+          checkbox.checked = enabledSet.has(provider);
+        }
+      });
+
+      updateProxyFieldsVisibility(scope);
+      clearProxyStatus(scope);
+    });
+  }
+
+  function collectProxySettings() {
+    const result = {};
+
+    Object.keys(PROXY_SCOPES).forEach((scope) => {
+      const config = getScopeProxyFormConfig(scope);
+      const prefix = `proxy_${scope}_`;
+      result[`${prefix}mode`] = config.mode;
+      result[`${prefix}scheme`] = config.scheme;
+      result[`${prefix}host`] = config.host;
+      result[`${prefix}port`] = config.port;
+      result[`${prefix}username`] = config.username;
+      result[`${prefix}password`] = config.password;
+      result[`${prefix}enabled_providers`] = getEnabledProviders(scope);
+    });
+
+    // 兼容旧版本读取逻辑：保存展开后的 provider 级配置
+    PROVIDERS.forEach((provider) => {
+      const config = getProxyFormConfig(provider);
+      result[`${provider}_proxy_mode`] = config.mode;
+      result[`${provider}_proxy_scheme`] = config.scheme;
+      result[`${provider}_proxy_host`] = config.host;
+      result[`${provider}_proxy_port`] = config.port;
+      result[`${provider}_proxy_username`] = config.username;
+      result[`${provider}_proxy_password`] = config.password;
+    });
+
+    return result;
+  }
+
+  function getProxyScopeForProvider(provider) {
+    if (LOCAL_PROVIDERS.includes(provider)) {
+      return "local";
+    }
+    return "online";
+  }
+
+  function getEnabledProviders(scope) {
+    const controls = proxyScopeEls[scope];
+    const providers = PROXY_SCOPES[scope] || [];
+    return providers.filter((provider) => controls?.providerChecks?.[provider]?.checked);
+  }
+
+  function getScopeProxyFormConfig(scope) {
+    const controls = proxyScopeEls[scope];
+    return {
+      mode: controls?.mode?.value || "browser",
+      scheme: controls?.scheme?.value || "http",
+      host: controls?.host?.value.trim() || "",
+      port: controls?.port?.value.trim() || "",
+      username: controls?.username?.value.trim() || "",
+      password: controls?.password?.value || "",
+    };
+  }
+
+  function getProxyFormConfig(provider) {
+    const scope = getProxyScopeForProvider(provider);
+    const config = getScopeProxyFormConfig(scope);
+    const isEnabled = getEnabledProviders(scope).includes(provider);
+    return isEnabled ? config : { ...config, mode: "none" };
+  }
+
+  function setProxyStatus(scope, type, text) {
+    const statusEl = proxyScopeEls[scope]?.status;
+    if (!statusEl) {
+      return;
+    }
+
+    statusEl.className = `proxy-status ${type}`;
+    statusEl.textContent = text;
+  }
+
+  function clearProxyStatus(scope) {
+    const statusEl = proxyScopeEls[scope]?.status;
+    if (!statusEl) {
+      return;
+    }
+
+    statusEl.className = "proxy-status";
+    statusEl.textContent = "";
+  }
+
+  async function runProxyConnectionTest(scope) {
+    const controls = proxyScopeEls[scope];
+    const config = getScopeProxyFormConfig(scope);
+    if (!controls?.testButton) {
+      return;
+    }
+
+    if (config.mode === "custom" && (!config.host || !config.port)) {
+      setProxyStatus(scope, "error", t("optionsProxyMissingHostPort"));
+      return;
+    }
+
+    controls.testButton.disabled = true;
+    setProxyStatus(scope, "info", t("optionsProxyTesting"));
+
+    try {
+      const response = await backgroundFetchJson(
+        "https://api.github.com/meta",
+        {
+          headers: {
+            Accept: "application/vnd.github+json",
+          },
+        },
+        config
+      );
+
+      if (!response.ok) {
+        throw new Error(response.error || `HTTP ${response.status}`);
+      }
+
+      setProxyStatus(scope, "success", t("optionsProxyTestSuccess"));
+    } catch (error) {
+      setProxyStatus(scope, "error", error.message || t("commonUnknownError"));
+    } finally {
+      controls.testButton.disabled = false;
+    }
+  }
+
+  function exportProxySettings() {
+    const payload = {
+      version: 2,
+      exportedAt: new Date().toISOString(),
+      scopes: Object.fromEntries(
+        Object.keys(PROXY_SCOPES).map((scope) => [
+          scope,
+          {
+            ...getScopeProxyFormConfig(scope),
+            enabledProviders: getEnabledProviders(scope),
+          },
+        ])
+      ),
+    };
+
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const stamp = new Date().toISOString().slice(0, 19).replace(/[T:]/g, "-");
+    link.href = url;
+    link.download = `ai-page-summarizer-proxy-${stamp}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+    setTransientStatus(t("optionsProxyExportSuccess"));
+  }
+
+  async function importProxySettings(file) {
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+
+      if (parsed?.scopes && typeof parsed.scopes === "object") {
+        Object.keys(PROXY_SCOPES).forEach((scope) => {
+          const controls = proxyScopeEls[scope];
+          const incoming = parsed.scopes?.[scope] || {};
+          if (!controls?.mode) {
+            return;
+          }
+
+          controls.mode.value = incoming.mode || "browser";
+          controls.scheme.value = incoming.scheme || "http";
+          controls.host.value = incoming.host || "";
+          controls.port.value = incoming.port || "";
+          controls.username.value = incoming.username || "";
+          controls.password.value = incoming.password || "";
+
+          const enabledSet = new Set(Array.isArray(incoming.enabledProviders) ? incoming.enabledProviders : PROXY_SCOPES[scope]);
+          (PROXY_SCOPES[scope] || []).forEach((provider) => {
+            const checkbox = controls.providerChecks?.[provider];
+            if (checkbox) {
+              checkbox.checked = enabledSet.has(provider);
+            }
+          });
+
+          updateProxyFieldsVisibility(scope);
+          clearProxyStatus(scope);
+        });
+      } else {
+        const providers = parsed?.providers && typeof parsed.providers === "object" ? parsed.providers : parsed;
+
+        Object.entries(PROXY_SCOPES).forEach(([scope, scopeProviders]) => {
+          const controls = proxyScopeEls[scope];
+          if (!controls?.mode) {
+            return;
+          }
+
+          const legacyConfigs = scopeProviders.map((provider) => ({
+            provider,
+            ...(providers?.[provider] || {}),
+          }));
+          const firstCustom = legacyConfigs.find((config) => config.mode === "custom" && config.host && config.port);
+          const hasEnabled = legacyConfigs.some((config) => (config.mode || "browser") !== "none");
+
+          controls.mode.value = firstCustom ? "custom" : (hasEnabled ? "browser" : "none");
+          controls.scheme.value = firstCustom?.scheme || "http";
+          controls.host.value = firstCustom?.host || "";
+          controls.port.value = firstCustom?.port || "";
+          controls.username.value = firstCustom?.username || "";
+          controls.password.value = firstCustom?.password || "";
+
+          scopeProviders.forEach((provider) => {
+            const checkbox = controls.providerChecks?.[provider];
+            if (checkbox) {
+              const mode = providers?.[provider]?.mode || "browser";
+              checkbox.checked = mode !== "none";
+            }
+          });
+
+          updateProxyFieldsVisibility(scope);
+          clearProxyStatus(scope);
+        });
+      }
+
+      saveSettings(() => {
+        setTransientStatus(t("optionsProxyImportSuccess"));
+      });
+    } catch (error) {
+      setTransientStatus(`${t("optionsProxyImportFailed")}: ${error.message || t("commonUnknownError")}`, true);
+    }
+  }
+
+  function setTransientStatus(message, isError = false) {
+    status.textContent = message;
+    status.style.color = isError ? "#dc2626" : "#059669";
+    status.classList.remove("hidden");
+    setTimeout(() => {
+      status.classList.add("hidden");
+      status.style.color = "";
+      status.textContent = t("optionsStatusSaved");
+    }, 3000);
+  }
+
+  function attachModelDatalist(input, listId, models) {
+    if (!input || !Array.isArray(models)) {
+      return;
+    }
+
+    let datalist = document.getElementById(listId);
+    if (!datalist) {
+      datalist = document.createElement("datalist");
+      datalist.id = listId;
+      document.body.appendChild(datalist);
+    }
+
+    datalist.innerHTML = "";
+    models.forEach((model) => {
+      const option = document.createElement("option");
+      option.value = model;
+      datalist.appendChild(option);
+    });
+  }
+
+  function backgroundFetchJson(url, options = {}, proxyConfig) {
+    return new Promise((resolve, reject) => {
+      chrome.runtime.sendMessage(
+        {
+          type: "fetch-with-proxy",
+          url,
+          options,
+          proxyConfig,
+        },
+        (response) => {
+          if (chrome.runtime.lastError) {
+            reject(new Error(chrome.runtime.lastError.message));
+            return;
+          }
+
+          resolve(response || { ok: false, error: t("commonUnknownError") });
+        }
+      );
+    });
+  }
+
+  function refreshRemoteModelChoices(silent = false) {
+    Object.keys(MODEL_LIST_CONFIG).forEach((provider) => {
+      refreshRemoteModelChoicesForProvider(provider, { silent });
+    });
+  }
+
+  async function refreshRemoteModelChoicesForProvider(provider, options = {}) {
+    const { silent = false } = options;
+    const config = MODEL_LIST_CONFIG[provider];
+    if (!config) {
+      return;
+    }
+
+    const presetModels = REMOTE_MODEL_PRESETS[provider] || [];
+    const button = config.button;
+    if (button) {
+      button.disabled = true;
+    }
+
+    try {
+      let models = [...presetModels];
+      if (typeof config.fetcher === "function" && config.getApiKey()) {
+        const remoteModels = await config.fetcher(config.getApiKey(), config.getProxyConfig?.());
+        models = mergeModelLists(remoteModels, presetModels);
+        setProviderStatus(provider, "success", t("optionsLoadedRemoteModels", models.length));
+      } else if (!silent) {
+        if (presetModels.length) {
+          setProviderStatus(provider, "info", t("optionsLoadedPresetModels", presetModels.length));
+        } else {
+          setProviderStatus(provider, "info", t("optionsModelListUnavailable"));
+        }
+      }
+
+      attachModelDatalist(config.input, config.listId, models);
+
+      if (!config.input.value.trim() && models.length) {
+        config.input.value = models[0];
+      }
+    } catch (error) {
+      attachModelDatalist(config.input, config.listId, presetModels);
+      if (!silent) {
+        const fallbackMessage = presetModels.length
+          ? t("optionsModelListFallbackPresets", presetModels.length)
+          : (error.message || t("commonUnknownError"));
+        setProviderStatus(provider, presetModels.length ? "info" : "error", fallbackMessage);
+      }
+    } finally {
+      if (button) {
+        button.disabled = false;
+      }
+    }
+  }
+
+  function mergeModelLists(primary, fallback) {
+    const seen = new Set();
+    return [...(primary || []), ...(fallback || [])].filter((item) => {
+      const value = String(item || "").trim();
+      if (!value || seen.has(value)) {
+        return false;
+      }
+      seen.add(value);
+      return true;
+    });
+  }
+
+  async function fetchOpenAIModelList(apiKey, proxyConfig) {
+    const response = await backgroundFetchJson("https://api.openai.com/v1/models", {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
+    }, proxyConfig);
+    if (!response.ok) {
+      throw new Error(response.error || `HTTP ${response.status}`);
+    }
+    return (response.data?.data || [])
+      .map((item) => item?.id)
+      .filter((id) => /^gpt|^o[13]|^chatgpt/i.test(id || ""));
+  }
+
+  async function fetchGeminiModelList(apiKey, proxyConfig) {
+    const response = await backgroundFetchJson(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`, {}, proxyConfig);
+    if (!response.ok) {
+      throw new Error(response.error || `HTTP ${response.status}`);
+    }
+    return (response.data?.models || [])
+      .filter((item) => Array.isArray(item?.supportedGenerationMethods) && item.supportedGenerationMethods.includes("generateContent"))
+      .map((item) => String(item.name || "").replace(/^models\//, ""))
+      .filter(Boolean);
+  }
+
+  async function fetchAnthropicModelList(apiKey, proxyConfig) {
+    const response = await backgroundFetchJson("https://api.anthropic.com/v1/models", {
+      headers: {
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+      },
+    }, proxyConfig);
+    if (!response.ok) {
+      throw new Error(response.error || `HTTP ${response.status}`);
+    }
+    return (response.data?.data || response.data?.models || [])
+      .map((item) => item?.id || item?.name)
+      .filter(Boolean);
+  }
+
+  async function fetchGiteeAIModelList(apiKey, proxyConfig) {
+    const response = await backgroundFetchJson("https://ai.gitee.com/v1/models", {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
+    }, proxyConfig);
+    if (!response.ok) {
+      throw new Error(response.error || `HTTP ${response.status}`);
+    }
+    return (response.data?.data || response.data?.models || [])
+      .map((item) => item?.id || item?.name)
+      .filter(Boolean);
+  }
+
+  function initializeProviderIndicators() {
+    [
+      deepseekKey,
+      deepseekModel,
+      openaiKey,
+      openaiModel,
+      geminiKey,
+      geminiModel,
+      anthropicKey,
+      anthropicModel,
+      doubaoKey,
+      doubaoModel,
+      ollamaUrl,
+      ollamaModel,
+      dockeraiUrl,
+      dockeraiModel,
+      foundrylocalUrl,
+      foundrylocalModel,
+      koboldcppUrl,
+      giteeaiKey,
+      giteeaiModel,
+      githubcopilotKey,
+      githubcopilotModel,
+    ].forEach((element) => {
+      element.addEventListener("input", refreshProviderIndicators);
+      element.addEventListener("change", refreshProviderIndicators);
+    });
+
+    refreshProviderIndicators();
+  }
+
+  function refreshProviderIndicators() {
+    setProviderState(
+      "deepseek",
+      deepseekKey.value.trim() && deepseekModel.value.trim() ? "info" : "warning",
+      deepseekKey.value.trim() && deepseekModel.value.trim() ? t("optionsStateConfigured") : t("optionsStateNeedsConfig")
+    );
+    setProviderState(
+      "openai",
+      openaiKey.value.trim() && openaiModel.value.trim() ? "info" : "warning",
+      openaiKey.value.trim() && openaiModel.value.trim() ? t("optionsStateConfigured") : t("optionsStateNeedsConfig")
+    );
+    setProviderState(
+      "gemini",
+      geminiKey.value.trim() && geminiModel.value.trim() ? "info" : "warning",
+      geminiKey.value.trim() && geminiModel.value.trim() ? t("optionsStateConfigured") : t("optionsStateNeedsConfig")
+    );
+    setProviderState(
+      "anthropic",
+      anthropicKey.value.trim() && anthropicModel.value.trim() ? "info" : "warning",
+      anthropicKey.value.trim() && anthropicModel.value.trim() ? t("optionsStateConfigured") : t("optionsStateNeedsConfig")
+    );
+    setProviderState(
+      "giteeai",
+      giteeaiKey.value.trim() && giteeaiModel.value.trim() ? "info" : "warning",
+      giteeaiKey.value.trim() && giteeaiModel.value.trim() ? t("optionsStateConfigured") : t("optionsStateNeedsConfig")
+    );
+    setProviderState(
+      "githubcopilot",
+      githubcopilotKey.value.trim() && githubcopilotModel.value.trim() ? "info" : "warning",
+      githubcopilotKey.value.trim() && githubcopilotModel.value.trim() ? t("optionsStateConfigured") : t("optionsStateNeedsConfig")
+    );
+    setProviderState(
+      "doubao",
+      doubaoKey.value.trim() && doubaoModel.value.trim() ? "info" : "warning",
+      doubaoKey.value.trim() && doubaoModel.value.trim() ? t("optionsStateConfigured") : t("optionsStateNeedsConfig")
+    );
+    setProviderState("ollama", ollamaUrl.value.trim() ? "info" : "warning", ollamaUrl.value.trim() ? t("optionsStateLocalService") : t("optionsStateNeedsConfig"));
+    setProviderState("dockerai", dockeraiUrl.value.trim() ? "info" : "warning", dockeraiUrl.value.trim() ? t("optionsStateLocalService") : t("optionsStateNeedsConfig"));
+    setProviderState("foundrylocal", foundrylocalUrl.value.trim() ? "info" : "warning", foundrylocalUrl.value.trim() ? t("optionsStateLocalService") : t("optionsStateNeedsConfig"));
+    setProviderState("koboldcpp", koboldcppUrl.value.trim() ? "info" : "warning", koboldcppUrl.value.trim() ? t("optionsStateLocalService") : t("optionsStateNeedsConfig"));
+  }
+
+  function initializeTestButtons() {
+    Object.entries(providerTestBtns).forEach(([provider, button]) => {
+      button?.addEventListener("click", () => {
+        runProviderConnectionTest(provider);
+      });
+    });
+  }
+
+  async function runProviderConnectionTest(provider) {
+    const button = providerTestBtns[provider];
+    if (button) {
+      button.disabled = true;
+    }
+
+    setProviderState(provider, "info", t("optionsStateTesting"));
+    setProviderStatus(provider, "info", t("optionsTestingConnection"));
+
+    try {
+      let result;
+
+      switch (provider) {
+        case "ollama":
+          result = await testOllamaConnection();
+          break;
+        case "dockerai":
+          result = await testDockeraiConnection();
+          break;
+        case "foundrylocal":
+          result = await testFoundryLocalConnection();
+          break;
+        case "koboldcpp":
+          result = await fetchKoboldcppInfo();
+          break;
+        case "deepseek":
+        case "openai":
+        case "anthropic":
+        case "giteeai":
+        case "githubcopilot":
+        case "doubao":
+          result = await testRemoteProviderConnection(provider);
+          break;
+        case "gemini":
+          result = await testGeminiConnection();
+          break;
+        default:
+          throw new Error(t("commonUnknownError"));
+      }
+
+      const successMessage = result?.message || t("optionsTestSuccess");
+      setProviderState(provider, "success", t("optionsStateConnected"));
+      setProviderStatus(provider, "success", successMessage);
+    } catch (error) {
+      setProviderState(provider, "error", t("optionsStateFailed"));
+      setProviderStatus(provider, "error", error.message || t("commonUnknownError"));
+    } finally {
+      if (button) {
+        button.disabled = false;
+      }
+    }
+  }
+
+  function setProviderState(provider, type, text) {
+    const stateEl = providerStateEls[provider];
+    if (!stateEl) {
+      return;
+    }
+
+    stateEl.className = `provider-state ${type}`;
+    stateEl.textContent = text;
+  }
+
+  function setProviderStatus(provider, type, text) {
+    const statusEl = providerStatusEls[provider];
+    if (!statusEl) {
+      return;
+    }
+
+    statusEl.textContent = text;
+    statusEl.className = `ollama-status ${type}`;
+  }
+
+  async function testOllamaConnection() {
+    const response = await new Promise((resolve) => {
+      chrome.runtime.sendMessage(
+        { type: "ollama-list-models", url: ollamaUrl.value.trim(), proxyConfig: getProxyFormConfig("ollama") },
+        (message) => resolve({
+          message,
+          runtimeError: chrome.runtime.lastError,
+        })
+      );
+    });
+
+    if (response.runtimeError) {
+      throw new Error(t("optionsCannotConnectBackground", response.runtimeError.message));
+    }
+
+    if (!response.message?.ok) {
+      throw new Error(t("optionsCannotConnectOllama", response.message?.error || t("optionsOllamaEnsureRunning")));
+    }
+
+    const models = response.message.models || [];
+    return {
+      message: t("optionsTestSuccessWithCount", models.length),
+    };
+  }
+
+  async function testDockeraiConnection() {
+    const url = (dockeraiUrl.value.trim() || "http://localhost:12434").replace(/\/+$/, "");
+    const response = await backgroundFetchJson(`${url}/v1/models`, {}, getProxyFormConfig("dockerai"));
+    if (!response.ok) {
+      throw new Error(response.error || `HTTP ${response.status}`);
+    }
+
+    if (!Array.isArray(response.data?.data)) {
+      throw new Error(t("optionsFetchDockerModelsFailed"));
+    }
+
+    return {
+      message: t("optionsTestSuccessWithCount", response.data.data.length),
+    };
+  }
+
+  async function testFoundryLocalConnection() {
+    const url = (foundrylocalUrl.value.trim() || "http://localhost:5273").replace(/\/+$/, "");
+    const response = await backgroundFetchJson(`${url}/v1/models`, {}, getProxyFormConfig("foundrylocal"));
+    if (!response.ok) {
+      throw new Error(response.error || `HTTP ${response.status}`);
+    }
+
+    if (!Array.isArray(response.data?.data)) {
+      throw new Error(t("optionsFetchFoundryLocalModelsFailed"));
+    }
+
+    return {
+      message: t("optionsTestSuccessWithCount", response.data.data.length),
+    };
+  }
+
+  async function fetchKoboldcppInfo() {
+    const url = (koboldcppUrl.value.trim() || "http://localhost:5001").replace(/\/+$/, "");
+    koboldcppCurrentModel.textContent = "--";
+    koboldcppVersion.textContent = "--";
+    setProviderState("koboldcpp", "info", t("optionsStateTesting"));
+    setProviderStatus("koboldcpp", "info", t("optionsFetchingCurrentModelVersion"));
+
+    const modelResponse = await backgroundFetchJson(`${url}/api/v1/model`, {}, getProxyFormConfig("koboldcpp"));
+    const modelData = modelResponse.data || {};
+    if (!modelResponse.ok || !modelData?.result) {
+      throw new Error(modelResponse.error || t("optionsCannotGetModelName"));
+    }
+
+    koboldcppCurrentModel.textContent = modelData.result;
+
+    try {
+      const versionResponse = await backgroundFetchJson(`${url}/api/v1/info/version`, {}, getProxyFormConfig("koboldcpp"));
+      const versionData = versionResponse.data || {};
+      koboldcppVersion.textContent = versionResponse.ok && versionData?.result ? versionData.result : "--";
+    } catch {
+      koboldcppVersion.textContent = "--";
+    }
+
+    const message = t("optionsTestSuccessModel", modelData.result);
+    setProviderState("koboldcpp", "success", t("optionsStateConnected"));
+    setProviderStatus("koboldcpp", "success", message);
+    return { message };
+  }
+
+  async function testRemoteProviderConnection(provider) {
+    const config = getRemoteProviderConfig(provider);
+    if (!config.apiKey || !config.model) {
+      throw new Error(t("optionsTestMissingConfig"));
+    }
+
+    const response = await backgroundFetchJson(
+      config.apiUrl,
+      {
+        method: "POST",
+        headers: config.headers,
+        body: JSON.stringify(config.body),
+      },
+      getProxyFormConfig(provider)
+    );
+    if (!response.ok) {
+      throw new Error(response.error || `HTTP ${response.status}`);
+    }
+
+    return {
+      message: t("optionsTestSuccessModel", config.model),
+    };
+  }
+
+  async function testGeminiConnection() {
+    const apiKey = geminiKey.value.trim();
+    const model = geminiModel.value.trim();
+    if (!apiKey || !model) {
+      throw new Error(t("optionsTestMissingConfig"));
+    }
+
+    const response = await backgroundFetchJson(
+      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: "user",
+              parts: [{ text: "ping" }],
+            },
+          ],
+          generationConfig: {
+            temperature: 0,
+            maxOutputTokens: 8,
+          },
+        }),
+      },
+      getProxyFormConfig("gemini")
+    );
+    if (!response.ok) {
+      throw new Error(response.error || `HTTP ${response.status}`);
+    }
+
+    return {
+      message: t("optionsTestSuccessModel", model),
+    };
+  }
+
+  function getRemoteProviderConfig(provider) {
+    if (provider === "openai") {
+      return {
+        apiKey: openaiKey.value.trim(),
+        model: openaiModel.value.trim(),
+        apiUrl: "https://api.openai.com/v1/chat/completions",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${openaiKey.value.trim()}`,
+        },
+        body: {
+          model: openaiModel.value.trim() || "gpt-4.1-mini",
+          messages: [{ role: "user", content: "ping" }],
+          max_tokens: 8,
+          temperature: 0,
+        },
+      };
+    }
+
+    if (provider === "deepseek") {
+      return {
+        apiKey: deepseekKey.value.trim(),
+        model: deepseekModel.value.trim(),
+        apiUrl: "https://api.deepseek.com/chat/completions",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${deepseekKey.value.trim()}`,
+        },
+        body: {
+          model: deepseekModel.value.trim() || "deepseek-chat",
+          messages: [{ role: "user", content: "ping" }],
+          max_tokens: 1,
+          temperature: 0,
+        },
+      };
+    }
+
+    if (provider === "anthropic") {
+      return {
+        apiKey: anthropicKey.value.trim(),
+        model: anthropicModel.value.trim(),
+        apiUrl: "https://api.anthropic.com/v1/messages",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": anthropicKey.value.trim(),
+          "anthropic-version": "2023-06-01",
+        },
+        body: {
+          model: anthropicModel.value.trim() || "claude-3-5-sonnet-latest",
+          max_tokens: 8,
+          messages: [{ role: "user", content: "ping" }],
+        },
+      };
+    }
+
+    if (provider === "giteeai") {
+      return {
+        apiKey: giteeaiKey.value.trim(),
+        model: giteeaiModel.value.trim(),
+        apiUrl: "https://ai.gitee.com/v1/chat/completions",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Failover-Enabled": "true",
+          Authorization: `Bearer ${giteeaiKey.value.trim()}`,
+        },
+        body: {
+          model: giteeaiModel.value.trim() || "Qwen3-8B",
+          messages: [{ role: "user", content: "ping" }],
+          stream: false,
+          max_tokens: 1,
+          temperature: 0,
+        },
+      };
+    }
+
+    if (provider === "githubcopilot") {
+      return {
+        apiKey: githubcopilotKey.value.trim(),
+        model: githubcopilotModel.value.trim(),
+        apiUrl: "https://models.github.ai/inference/chat/completions",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${githubcopilotKey.value.trim()}`,
+        },
+        body: {
+          model: githubcopilotModel.value.trim() || "openai/gpt-4.1-mini",
+          messages: [{ role: "user", content: "ping" }],
+          max_tokens: 8,
+          temperature: 0,
+        },
+      };
+    }
+
+    return {
+      apiKey: doubaoKey.value.trim(),
+      model: doubaoModel.value.trim(),
+      apiUrl: "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${doubaoKey.value.trim()}`,
+      },
+      body: {
+        model: doubaoModel.value.trim() || "doubao-pro-256k",
+        messages: [{ role: "user", content: "ping" }],
+        max_tokens: 1,
+        temperature: 0,
+      },
+    };
+  }
 
   /**
    * 从 Ollama 获取本地模型列表，填充下拉框
@@ -148,7 +1498,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ollamaRefreshBtn.disabled = true;
 
     chrome.runtime.sendMessage(
-      { type: "ollama-list-models", url: ollamaUrl.value.trim() },
+      { type: "ollama-list-models", url: ollamaUrl.value.trim(), proxyConfig: getProxyFormConfig("ollama") },
       (response) => {
         ollamaRefreshBtn.disabled = false;
 
@@ -219,6 +1569,7 @@ document.addEventListener("DOMContentLoaded", () => {
         type: "ollama-pull-model",
         url: ollamaUrl.value.trim(),
         model: modelToPull,
+        proxyConfig: getProxyFormConfig("ollama"),
       },
       (response) => {
         ollamaRefreshBtn.disabled = false;
@@ -244,6 +1595,11 @@ document.addEventListener("DOMContentLoaded", () => {
    * 设置 Ollama 状态提示
    */
   function setOllamaStatus(type, text) {
+    setProviderState(
+      "ollama",
+      type === "error" ? "error" : type === "success" ? "success" : "info",
+      type === "error" ? t("optionsStateFailed") : type === "success" ? t("optionsStateConnected") : t("optionsStateTesting")
+    );
     ollamaStatusEl.textContent = text;
     ollamaStatusEl.className = "ollama-status " + type;
   }
@@ -255,11 +1611,11 @@ document.addEventListener("DOMContentLoaded", () => {
     setDockeraiStatus("info", t("optionsFetchingDockerModels"));
     dockeraiRefreshBtn.disabled = true;
     const url = dockeraiUrl.value.trim() || "http://localhost:12434";
-    fetch(`${url.replace(/\/+$/, "")}/v1/models`)
-      .then(res => res.json())
-      .then(data => {
+    backgroundFetchJson(`${url.replace(/\/+$/, "")}/v1/models`, {}, getProxyFormConfig("dockerai"))
+      .then((response) => {
         dockeraiRefreshBtn.disabled = false;
-        if (!data.data || !Array.isArray(data.data)) {
+        const data = response.data || {};
+        if (!response.ok || !data.data || !Array.isArray(data.data)) {
           setDockeraiStatus("error", t("optionsFetchDockerModelsFailed"));
           return;
         }
@@ -269,6 +1625,27 @@ document.addEventListener("DOMContentLoaded", () => {
       .catch(err => {
         dockeraiRefreshBtn.disabled = false;
         setDockeraiStatus("error", t("optionsCannotConnectDockerAI", err.message || t("commonUnknownError")));
+      });
+  }
+
+  function fetchFoundryLocalModels(selectedModel) {
+    setFoundryLocalStatus("info", t("optionsFetchingFoundryLocalModels"));
+    foundrylocalRefreshBtn.disabled = true;
+    const url = foundrylocalUrl.value.trim() || "http://localhost:5273";
+    backgroundFetchJson(`${url.replace(/\/+$/, "")}/v1/models`, {}, getProxyFormConfig("foundrylocal"))
+      .then((response) => {
+        foundrylocalRefreshBtn.disabled = false;
+        const data = response.data || {};
+        if (!response.ok || !data.data || !Array.isArray(data.data)) {
+          setFoundryLocalStatus("error", t("optionsFetchFoundryLocalModelsFailed"));
+          return;
+        }
+        populateFoundryLocalModelSelect(data.data, selectedModel);
+        setFoundryLocalStatus("success", t("optionsFoundDockerModels", data.data.length));
+      })
+      .catch((err) => {
+        foundrylocalRefreshBtn.disabled = false;
+        setFoundryLocalStatus("error", t("optionsCannotConnectFoundryLocal", err.message || t("commonUnknownError")));
       });
   }
 
@@ -297,7 +1674,47 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function setDockeraiStatus(type, text) {
+    setProviderState(
+      "dockerai",
+      type === "error" ? "error" : type === "success" ? "success" : "info",
+      type === "error" ? t("optionsStateFailed") : type === "success" ? t("optionsStateConnected") : t("optionsStateTesting")
+    );
     dockeraiStatusEl.textContent = text;
     dockeraiStatusEl.className = "ollama-status " + type;
+  }
+
+  function populateFoundryLocalModelSelect(models, selectedModel) {
+    foundrylocalModel.innerHTML = "";
+    if (!models.length) {
+      const opt = document.createElement("option");
+      opt.value = "";
+      opt.textContent = t("optionsNoModels");
+      foundrylocalModel.appendChild(opt);
+      return;
+    }
+
+    models.forEach((model) => {
+      const opt = document.createElement("option");
+      opt.value = model.id || model.name || model.model || model;
+      opt.textContent = model.id || model.name || model.model || model;
+      foundrylocalModel.appendChild(opt);
+    });
+
+    if (selectedModel) {
+      const exists = Array.from(foundrylocalModel.options).some((opt) => opt.value === selectedModel);
+      if (exists) {
+        foundrylocalModel.value = selectedModel;
+      }
+    }
+  }
+
+  function setFoundryLocalStatus(type, text) {
+    setProviderState(
+      "foundrylocal",
+      type === "error" ? "error" : type === "success" ? "success" : "info",
+      type === "error" ? t("optionsStateFailed") : type === "success" ? t("optionsStateConnected") : t("optionsStateTesting")
+    );
+    foundrylocalStatusEl.textContent = text;
+    foundrylocalStatusEl.className = "ollama-status " + type;
   }
 });

@@ -1,6 +1,7 @@
 // Service Worker - 后台处理
 
 const t = (key, substitutions) => chrome.i18n.getMessage(key, substitutions) || "";
+const PROXY_SETTING_FIELDS = ["mode", "scheme", "host", "port", "username", "password"];
 
 chrome.runtime.onInstalled.addListener(() => {
   console.log(t("backgroundInstalledLog"));
@@ -83,32 +84,102 @@ function updateOllamaRules() {
   });
 }
 
+function normalizeProxyConfig(proxyConfig) {
+  if (!proxyConfig || typeof proxyConfig !== "object") {
+    return null;
+  }
+
+  const mode = ["none", "browser", "custom"].includes(proxyConfig.mode)
+    ? proxyConfig.mode
+    : "browser";
+
+  let host = String(proxyConfig.host || "").trim();
+  let scheme = String(proxyConfig.scheme || "http").trim().toLowerCase();
+  const schemeMatch = host.match(/^(https?|socks5?):\/\/(.+)$/i);
+  if (schemeMatch) {
+    scheme = schemeMatch[1].toLowerCase();
+    host = schemeMatch[2];
+  }
+
+  if (!["http", "https", "socks5"].includes(scheme)) {
+    scheme = "http";
+  }
+
+  host = host.replace(/\/+$/, "");
+
+  const parsedPort = Number.parseInt(String(proxyConfig.port || "").trim(), 10);
+  const port = Number.isFinite(parsedPort) ? parsedPort : undefined;
+
+  return {
+    mode,
+    scheme,
+    host,
+    port,
+    username: String(proxyConfig.username || "").trim(),
+    password: String(proxyConfig.password || ""),
+  };
+}
+
+function getProxySettingSnapshot() {
+  return new Promise((resolve) => {
+    chrome.proxy.settings.get({ incognito: false }, (details) => {
+      resolve(details || null);
+    });
+  });
+}
+
+async function performJsonFetch(url, options = {}, proxyConfig) {
+  const normalized = normalizeProxyConfig(proxyConfig);
+  if (normalized && normalized.mode !== "browser") {
+    console.info("Ignoring proxy override and following the browser/system proxy settings.", normalized.mode);
+  }
+
+  const response = await fetch(url, {
+    method: options.method || "GET",
+    headers: options.headers || {},
+    body: options.body,
+  });
+  const data = await response.json().catch(() => ({}));
+
+  return {
+    ok: response.ok,
+    status: response.status,
+    data,
+    error: data.error?.message || data.message || response.statusText,
+  };
+}
+
+function getProviderProxyConfig(data, provider) {
+  const result = {};
+  PROXY_SETTING_FIELDS.forEach((field) => {
+    result[field] = data?.[`${provider}_proxy_${field}`] || "";
+  });
+
+  if (!result.mode) {
+    result.mode = "browser";
+  }
+
+  return result;
+}
+
 // 代理 fetch 请求（解决 Ollama 等本地服务的 CORS 问题）
 // 使用长连接端口保持 service worker 存活
 chrome.runtime.onConnect.addListener((port) => {
   if (port.name !== "fetch-proxy") return;
 
   port.onMessage.addListener(async (message) => {
-    const { url, options, requestId } = message;
+    const { url, options, proxyConfig, requestId } = message;
     try {
-      // 重新构建 Request，确保在 service worker 上下文中正确发起
-      const fetchOptions = {
-        method: options.method || "POST",
-        headers: options.headers || {},
-        body: options.body,
-      };
-      const res = await fetch(url, fetchOptions);
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
+      const response = await performJsonFetch(url, options, proxyConfig);
+      if (!response.ok) {
         port.postMessage({
           requestId,
           ok: false,
-          status: res.status,
-          error: errData.error?.message || res.statusText,
+          status: response.status,
+          error: response.error,
         });
       } else {
-        const data = await res.json();
-        port.postMessage({ requestId, ok: true, data });
+        port.postMessage({ requestId, ok: true, data: response.data });
       }
     } catch (err) {
       port.postMessage({
@@ -139,15 +210,42 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     return true;
   }
 
+  if (message?.type === "get-browser-proxy") {
+    getProxySettingSnapshot()
+      .then((details) => {
+        sendResponse({ ok: true, proxy: details || null });
+      })
+      .catch((error) => {
+        sendResponse({ ok: false, error: error.message || t("commonUnknownError") });
+      });
+    return true;
+  }
+
+  if (message?.type === "fetch-with-proxy") {
+    performJsonFetch(message.url, message.options, message.proxyConfig)
+      .then((response) => {
+        sendResponse(response);
+      })
+      .catch((error) => {
+        sendResponse({
+          ok: false,
+          error: error.message || t("commonNetworkRequestFailed"),
+        });
+      });
+    return true;
+  }
+
   // 列出 Ollama 本地模型
   if (message?.type === "ollama-list-models") {
     const baseUrl = (message.url || "http://localhost:11434").replace(/\/+$/, "");
-    fetch(`${baseUrl}/api/tags`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
-      .then((data) => {
+    const proxyConfig = message.proxyConfig || getProviderProxyConfig(message, "ollama");
+    performJsonFetch(`${baseUrl}/api/tags`, { method: "GET" }, proxyConfig)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(response.error || `HTTP ${response.status}`);
+        }
+
+        const data = response.data || {};
         const models = (data.models || []).map((m) => ({
           name: m.name,
           size: m.size,
@@ -165,16 +263,22 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message?.type === "ollama-pull-model") {
     const baseUrl = (message.url || "http://localhost:11434").replace(/\/+$/, "");
     const modelName = message.model || "qwen2.5:7b";
-    fetch(`${baseUrl}/api/pull`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: modelName, stream: false }),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
-      .then((data) => {
+    const proxyConfig = message.proxyConfig || getProviderProxyConfig(message, "ollama");
+    performJsonFetch(
+      `${baseUrl}/api/pull`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: modelName, stream: false }),
+      },
+      proxyConfig
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(response.error || `HTTP ${response.status}`);
+        }
+
+        const data = response.data || {};
         sendResponse({ ok: true, status: data.status || "success" });
       })
       .catch((err) => {

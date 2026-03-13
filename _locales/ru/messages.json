@@ -164,6 +164,96 @@
   "optionsHeading": {
     "message": "⚙️ AI-суммаризатор страниц - Настройки"
   },
+  "optionsPageDescription": {
+    "message": "Используйте вкладки, карточки по группам и сворачиваемые панели, чтобы удобнее управлять локальными моделями и онлайн API."
+  },
+  "optionsTabAll": {
+    "message": "Все"
+  },
+  "optionsTabLocal": {
+    "message": "Локальные модели"
+  },
+  "optionsTabOnline": {
+    "message": "Онлайн API"
+  },
+  "optionsGroupLocal": {
+    "message": "🖥️ Локальные модели"
+  },
+  "optionsGroupLocalHint": {
+    "message": "Управляйте моделями, запущенными локально или в сервисе локальной сети."
+  },
+  "optionsGroupOnline": {
+    "message": "☁️ Онлайн API моделей"
+  },
+  "optionsGroupOnlineHint": {
+    "message": "Храните облачные API-ключи и названия моделей в одном месте."
+  },
+  "optionsCollapse": {
+    "message": "Свернуть"
+  },
+  "optionsExpand": {
+    "message": "Развернуть"
+  },
+  "optionsSearchPlaceholder": {
+    "message": "Искать провайдера, модель или настройку"
+  },
+  "optionsClearSearch": {
+    "message": "Очистить"
+  },
+  "optionsEmptyState": {
+    "message": "Подходящие провайдеры или настройки не найдены."
+  },
+  "optionsBadgeLocal": {
+    "message": "Локально"
+  },
+  "optionsBadgeOnline": {
+    "message": "API"
+  },
+  "optionsStateUntested": {
+    "message": "Не проверено"
+  },
+  "optionsStateNeedsConfig": {
+    "message": "Нужно настроить"
+  },
+  "optionsStateConfigured": {
+    "message": "Настроено"
+  },
+  "optionsStateLocalService": {
+    "message": "Локальный сервис"
+  },
+  "optionsStateConnected": {
+    "message": "Подключено"
+  },
+  "optionsStateFailed": {
+    "message": "Ошибка подключения"
+  },
+  "optionsStateTesting": {
+    "message": "Проверка"
+  },
+  "optionsTestConnection": {
+    "message": "Проверить подключение"
+  },
+  "optionsTestingConnection": {
+    "message": "⏳ Проверка подключения..."
+  },
+  "optionsTestHintLocal": {
+    "message": "Проверьте доступность локального сервиса и возможность загрузки списка моделей."
+  },
+  "optionsTestHintOnline": {
+    "message": "Проверьте, может ли текущий API-ключ и модель подключиться к удалённому сервису."
+  },
+  "optionsTestSuccess": {
+    "message": "✅ Подключение успешно"
+  },
+  "optionsTestSuccessWithCount": {
+    "message": "✅ Подключение успешно, найдено моделей: $1"
+  },
+  "optionsTestSuccessModel": {
+    "message": "✅ Подключение успешно, текущая модель: $1"
+  },
+  "optionsTestMissingConfig": {
+    "message": "Сначала заполните API-ключ и модель, затем повторите проверку."
+  },
   "optionsSectionDeepSeek": {
     "message": "🤖 DeepSeek"
   },

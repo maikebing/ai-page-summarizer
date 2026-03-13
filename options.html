@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN" data-i18n-title="optionsTitle">
 <head>
   <meta charset="UTF-8">
@@ -11,26 +11,346 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      max-width: 500px;
-      margin: 40px auto;
-      padding: 20px;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 24px;
       color: #1f2937;
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
     }
-    h1 { font-size: 22px; margin-bottom: 24px; }
-    .section {
+
+    .page-shell {
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(229, 231, 235, 0.9);
+      border-radius: 24px;
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+      padding: 28px;
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+    }
+
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
       margin-bottom: 24px;
-      padding: 16px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
     }
-    .section h2 {
-      font-size: 16px;
-      margin-bottom: 12px;
+
+    .header-copy h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .header-copy p {
+      font-size: 14px;
+      color: #6b7280;
+      line-height: 1.6;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .tab-bar {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 6px;
+      background: #eef2ff;
+      border-radius: 14px;
+      margin-bottom: 24px;
+    }
+
+    .tab-btn {
+      border: none;
+      background: transparent;
+      color: #4338ca;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.16);
+      color: #312e81;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .search-wrap {
       display: flex;
       align-items: center;
       gap: 8px;
+      flex: 1;
+      min-width: 260px;
+      padding: 10px 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      background: #ffffff;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
     }
+
+    .search-wrap input {
+      border: none;
+      box-shadow: none;
+      padding: 0;
+      background: transparent;
+    }
+
+    .search-wrap input:focus {
+      box-shadow: none;
+    }
+
+    .search-icon {
+      color: #6b7280;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .search-clear {
+      margin-top: 0;
+      padding: 6px 12px;
+      font-size: 13px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4338ca;
+      white-space: nowrap;
+    }
+
+    .provider-group {
+      margin-bottom: 24px;
+      border: 1px solid #e5e7eb;
+      border-radius: 20px;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .group-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 20px;
+      background: linear-gradient(135deg, #f8fafc, #eef2ff);
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .group-title {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .title-with-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .group-badge,
+    .provider-badge,
+    .provider-state {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .group-badge {
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .group-badge.local,
+    .provider-badge.local {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .group-badge.online,
+    .provider-badge.online {
+      background: #ede9fe;
+      color: #6d28d9;
+    }
+
+    .group-subtitle {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+
+    .group-toggle {
+      margin: 0;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #4338ca;
+      border: 1px solid #c7d2fe;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .group-content {
+      padding: 20px;
+    }
+
+    .provider-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      align-items: start;
+    }
+
+    .provider-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      background: #f9fafb;
+      overflow: hidden;
+    }
+
+    .provider-card > summary {
+      list-style: none;
+      padding: 16px 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #111827;
+      background: #fff;
+    }
+
+    .provider-card > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .provider-card > summary::after {
+      content: "▾";
+      color: #6b7280;
+      font-size: 14px;
+      transition: transform 0.2s ease;
+      margin-left: 10px;
+    }
+
+    .provider-card[open] > summary::after {
+      transform: rotate(180deg);
+    }
+
+    .provider-summary-main {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .provider-summary-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+
+    .provider-summary-label {
+      min-width: 0;
+    }
+
+    .provider-state {
+      border: 1px solid #d1d5db;
+      background: #f9fafb;
+      color: #6b7280;
+    }
+
+    .provider-state::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.9;
+    }
+
+    .provider-state.info {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+      color: #1d4ed8;
+    }
+
+    .provider-state.success {
+      background: #ecfdf5;
+      border-color: #a7f3d0;
+      color: #047857;
+    }
+
+    .provider-state.warning {
+      background: #fffbeb;
+      border-color: #fde68a;
+      color: #b45309;
+    }
+
+    .provider-state.error {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #dc2626;
+    }
+
+    .provider-card-body {
+      padding: 0 18px 18px;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .card-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      margin-bottom: 8px;
+    }
+
+    .toolbar-note {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .section {
+      margin-bottom: 0;
+    }
+
     label {
       display: block;
       font-size: 13px;
@@ -44,11 +364,19 @@
       border: 1px solid #d1d5db;
       border-radius: 6px;
       font-size: 14px;
+      background: #ffffff;
     }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.14);
+    }
+
     button {
       margin-top: 20px;
       padding: 10px 24px;
-      background: #6366f1;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
       color: #fff;
       border: none;
       border-radius: 8px;
@@ -65,14 +393,146 @@
     .btn-secondary {
       background: #6b7280;
     }
+
+    .btn-outline {
+      background: #fff;
+      color: #374151;
+      border: 1px solid #d1d5db;
+    }
+
     .model-row {
       display: flex;
       gap: 6px;
       align-items: center;
       margin-top: 4px;
     }
-    .model-row select {
+    .model-row select,
+    .model-row input {
       flex: 1;
+    }
+    .proxy-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .proxy-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .proxy-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .proxy-status {
+      margin-top: 10px;
+      font-size: 12px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      display: none;
+    }
+    .proxy-status.info {
+      display: block;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e40af;
+    }
+    .proxy-status.success {
+      display: block;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #065f46;
+    }
+    .proxy-status.error {
+      display: block;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
+    }
+    .proxy-grid .span-2 {
+      grid-column: span 2;
+    }
+
+    .proxy-settings-group {
+      margin-bottom: 24px;
+    }
+
+    .proxy-settings-body {
+      display: grid;
+      gap: 14px;
+    }
+
+    .proxy-scope-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      background: #f8fafc;
+      overflow: hidden;
+    }
+
+    .proxy-scope-card > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #111827;
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .proxy-scope-card > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .proxy-scope-card > summary::after {
+      content: "▾";
+      color: #6b7280;
+      font-size: 14px;
+      transition: transform 0.2s ease;
+    }
+
+    .proxy-scope-card[open] > summary::after {
+      transform: rotate(180deg);
+    }
+
+    .proxy-scope-body {
+      padding: 14px 16px 16px;
+      background: #f8fafc;
+    }
+
+    .proxy-provider-checks {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 8px;
+    }
+
+    .proxy-provider-check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      padding: 8px 10px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #374151;
+      font-size: 13px;
+    }
+
+    .proxy-provider-check input {
+      width: auto;
+      margin: 0;
+      padding: 0;
     }
     .ollama-status {
       margin-top: 8px;
@@ -126,91 +586,629 @@
     .meta-refresh-btn {
       margin-left: 8px;
     }
+
+    .save-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .status {
+      margin-top: 0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .empty-state {
+      margin-top: 12px;
+      padding: 20px;
+      border: 1px dashed #c7d2fe;
+      border-radius: 16px;
+      background: #f8fafc;
+      color: #6b7280;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        padding: 16px;
+      }
+
+      .page-shell {
+        padding: 20px;
+        border-radius: 20px;
+      }
+
+      .page-header,
+      .save-bar,
+      .group-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .tab-bar {
+        width: 100%;
+      }
+
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .header-actions {
+        justify-content: stretch;
+      }
+
+      .tab-btn {
+        flex: 1 1 calc(50% - 8px);
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 0;
+      }
+
+      .page-shell {
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        padding: 16px;
+      }
+
+      .header-copy h1 {
+        font-size: 24px;
+      }
+
+      .provider-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tab-btn {
+        flex: 1 1 100%;
+      }
+
+      .model-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .proxy-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .proxy-grid .span-2 {
+        grid-column: span 1;
+      }
+
+      .provider-card > summary {
+        align-items: flex-start;
+      }
+    }
   </style>
 </head>
 <body>
-  <h1 data-i18n="optionsHeading">⚙️ AI Page Summarizer - Settings</h1>
-
-  <div class="section">
-    <h2 data-i18n="optionsSectionDeepSeek">🤖 DeepSeek</h2>
-    <label for="deepseek-key" data-i18n="optionsLabelApiKey">API Key</label>
-    <input type="password" id="deepseek-key" data-i18n-placeholder="optionsPlaceholderDeepSeekKey" placeholder="sk-xxxxxxxxxxxxxxxx">
-    <p class="hint" data-i18n-html="optionsHintDeepSeekHtml">Get it from the DeepSeek Open Platform.</p>
-    <label for="deepseek-model" data-i18n="optionsLabelModel">Model</label>
-    <select id="deepseek-model">
-      <option value="deepseek-chat">deepseek-chat (V3)</option>
-      <option value="deepseek-reasoner">deepseek-reasoner (R1)</option>
-    </select>
-  </div>
-
-  <div class="section">
-    <h2 data-i18n="optionsSectionGiteeAI">🐱 Gitee AI</h2>
-    <label for="giteeai-key" data-i18n="optionsLabelApiKey">API Key</label>
-    <input type="password" id="giteeai-key" data-i18n-placeholder="optionsPlaceholderGiteeKey" placeholder="your-gitee-ai-key">
-    <p class="hint" data-i18n-html="optionsHintGiteeKeyHtml">Get it from the Gitee AI Console.</p>
-    <label for="giteeai-model" data-i18n="optionsLabelModel">Model</label>
-    <input type="text" id="giteeai-model" data-i18n-placeholder="optionsPlaceholderGiteeModel" placeholder="Qwen3-8B">
-    <p class="hint" data-i18n="optionsHintGiteeModel">Enter a model name such as Qwen3-8B.</p>
-  </div>
-
-  <div class="section">
-    <h2 data-i18n="optionsSectionDoubao">🔥 Doubao</h2>
-    <label for="doubao-key" data-i18n="optionsLabelApiKey">API Key</label>
-    <input type="password" id="doubao-key" data-i18n-placeholder="optionsPlaceholderDoubaoKey" placeholder="your-ark-api-key">
-    <p class="hint" data-i18n-html="optionsHintDoubaoHtml">Get it from the Volcengine Ark Console.</p>
-    <label for="doubao-model" data-i18n="optionsLabelEndpoint">Model / Endpoint ID</label>
-    <input type="text" id="doubao-model" data-i18n-placeholder="optionsPlaceholderDoubaoModel" placeholder="doubao-pro-256k or your endpoint ID">
-    <p class="hint" data-i18n="optionsHintDoubaoModel">Enter a model name or your endpoint ID.</p>
-  </div>
-
-  <div class="section">
-    <h2 data-i18n="optionsSectionOllama">🦙 Ollama (local model)</h2>
-    <label for="ollama-url" data-i18n="optionsLabelServerUrl">Server URL</label>
-    <input type="text" id="ollama-url" data-i18n-placeholder="optionsPlaceholderOllamaUrl" placeholder="http://localhost:11434">
-    <p class="hint" data-i18n-html="optionsHintOllamaUrlHtml">Ollama runs on http://localhost:11434 by default.</p>
-    <label for="ollama-model" data-i18n="optionsSelectModel">Select model</label>
-    <div class="model-row">
-      <select id="ollama-model">
-        <option value="" data-i18n="optionsClickRefreshModels">Click "Refresh" to load models</option>
-      </select>
-      <button type="button" class="btn-sm" id="ollama-refresh-btn" data-i18n="optionsRefreshButton">🔄 Refresh</button>
-    </div>
-    <div id="ollama-status" class="ollama-status"></div>
-
-  </div>
-
-  
-  <div class="section">
-    <h2 data-i18n="optionsSectionDockerAI">🐳 Docker Desktop AI</h2>
-    <label for="dockerai-url" data-i18n="optionsLabelApiUrl">API URL</label>
-    <input type="text" id="dockerai-url" data-i18n-placeholder="optionsPlaceholderDockerUrl" placeholder="http://localhost:12434">
-      <p class="hint" data-i18n-html="optionsHintDockerUrlHtml">Docker Desktop AI runs on http://localhost:12434 by default.</p>
-      <label for="dockerai-model" data-i18n="optionsSelectModel">Select model</label>
-      <div class="model-row">
-        <select id="dockerai-model">
-          <option value="" data-i18n="optionsClickRefreshModels">Click "Refresh" to load models</option>
-        </select>
-        <button type="button" class="btn-sm" id="dockerai-refresh-btn" data-i18n="optionsRefreshButton">🔄 Refresh</button>
+  <div class="page-shell">
+    <div class="page-header">
+      <div class="header-copy">
+        <h1 data-i18n="optionsHeading">鈿欙笍 AI Page Summarizer - Settings</h1>
+        <p data-i18n="optionsPageDescription">Use tabs, grouped cards, and collapsible rows to manage local and online model settings more efficiently.</p>
       </div>
-      <div id="dockerai-status" class="ollama-status"></div>
-  </div>
-
-  <div class="section">
-    <h2 data-i18n="optionsSectionKoboldCpp">🦄 KoboldCpp (local model)</h2>
-    <div class="koboldcpp-meta">
-      <span class="meta-label" data-i18n="optionsCurrentModelLabel">Current model:</span>
-      <span id="koboldcpp-current-model" class="meta-value">--</span>
-      <span class="meta-label meta-label-spaced" data-i18n="optionsVersionLabel">Version:</span>
-      <span id="koboldcpp-version" class="meta-value">--</span>
-      <button type="button" class="btn-sm btn-secondary meta-refresh-btn" id="koboldcpp-refresh-btn" data-i18n="optionsRefreshButton">🔄 Refresh</button>
     </div>
-    <label for="koboldcpp-url" data-i18n="optionsLabelServerUrl">Server URL</label>
-    <input type="text" id="koboldcpp-url" data-i18n-placeholder="optionsPlaceholderKoboldUrl" placeholder="http://localhost:5001">
-    <p class="hint" data-i18n-html="optionsHintKoboldUrlHtml">KoboldCpp runs on http://localhost:5001 by default.</p>
-    <div id="koboldcpp-status" class="ollama-status"></div>
+
+    <div class="tab-bar" role="tablist" aria-label="Settings tabs">
+      <button type="button" class="tab-btn active" role="tab" aria-selected="true" data-tab="all" data-i18n="optionsTabAll">All</button>
+      <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="local" data-i18n="optionsTabLocal">Local models</button>
+      <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="online" data-i18n="optionsTabOnline">Online APIs</button>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="search-icon">馃攳</span>
+        <input type="text" id="provider-search" data-i18n-placeholder="optionsSearchPlaceholder" placeholder="Search providers, models, or settings">
+        <button type="button" class="search-clear hidden" id="clear-search-btn" data-i18n="optionsClearSearch">Clear</button>
+      </div>
+    </div>
+
+    <section class="provider-group proxy-settings-group">
+      <div class="group-header">
+        <div>
+          <div class="group-title">代理设置</div>
+          <div class="group-subtitle">仅保留两套代理配置：本地模型与在线模型。可勾选哪些 Provider 使用代理。</div>
+        </div>
+      </div>
+      <div class="group-content proxy-settings-body">
+        <details class="proxy-scope-card" open>
+          <summary>本地模型代理</summary>
+          <div class="proxy-scope-body">
+            <label for="proxy-local-mode" data-i18n="optionsProxyModeLabel">Proxy</label>
+            <select id="proxy-local-mode">
+              <option value="browser" data-i18n="optionsProxyModeBrowser">Use browser proxy</option>
+              <option value="none" data-i18n="optionsProxyModeNone">Do not use proxy</option>
+              <option value="custom" data-i18n="optionsProxyModeCustom">Use custom proxy</option>
+            </select>
+            <div class="proxy-toolbar">
+              <p class="hint">本地组内勾选的 Provider 将使用这一套代理。</p>
+              <div class="proxy-actions">
+                <button type="button" class="btn-sm btn-outline" id="proxy-local-test-btn" data-i18n="optionsProxyTestButton">Test proxy</button>
+              </div>
+            </div>
+            <div class="proxy-grid hidden" id="proxy-local-custom-fields">
+              <div class="span-2">
+                <label for="proxy-local-scheme" data-i18n="optionsProxySchemeLabel">Protocol</label>
+                <select id="proxy-local-scheme">
+                  <option value="http" data-i18n="optionsProxySchemeHttp">HTTP</option>
+                  <option value="https" data-i18n="optionsProxySchemeHttps">HTTPS</option>
+                  <option value="socks5" data-i18n="optionsProxySchemeSocks5">SOCKS5</option>
+                </select>
+              </div>
+              <div>
+                <label for="proxy-local-host" data-i18n="optionsProxyHostLabel">Server address</label>
+                <input type="text" id="proxy-local-host" data-i18n-placeholder="optionsProxyHostPlaceholder" placeholder="127.0.0.1">
+              </div>
+              <div>
+                <label for="proxy-local-port" data-i18n="optionsProxyPortLabel">Port</label>
+                <input type="number" id="proxy-local-port" data-i18n-placeholder="optionsProxyPortPlaceholder" placeholder="7890">
+              </div>
+              <div>
+                <label for="proxy-local-username" data-i18n="optionsProxyUsernameLabel">Username</label>
+                <input type="text" id="proxy-local-username" data-i18n-placeholder="optionsProxyUsernamePlaceholder" placeholder="optional">
+              </div>
+              <div>
+                <label for="proxy-local-password" data-i18n="optionsProxyPasswordLabel">Password</label>
+                <input type="password" id="proxy-local-password" data-i18n-placeholder="optionsProxyPasswordPlaceholder" placeholder="optional">
+              </div>
+            </div>
+            <div id="proxy-local-status" class="proxy-status"></div>
+            <div class="proxy-provider-checks">
+              <label class="proxy-provider-check"><input type="checkbox" id="proxy-local-enable-ollama">Ollama</label>
+              <label class="proxy-provider-check"><input type="checkbox" id="proxy-local-enable-dockerai">Docker Desktop AI</label>
+              <label class="proxy-provider-check"><input type="checkbox" id="proxy-local-enable-foundrylocal">Foundry Local</label>
+              <label class="proxy-provider-check"><input type="checkbox" id="proxy-local-enable-koboldcpp">KoboldCpp</label>
+            </div>
+          </div>
+        </details>
+
+        <details class="proxy-scope-card" open>
+          <summary>在线模型代理</summary>
+          <div class="proxy-scope-body">
+            <label for="proxy-online-mode" data-i18n="optionsProxyModeLabel">Proxy</label>
+            <select id="proxy-online-mode">
+              <option value="browser" data-i18n="optionsProxyModeBrowser">Use browser proxy</option>
+              <option value="none" data-i18n="optionsProxyModeNone">Do not use proxy</option>
+              <option value="custom" data-i18n="optionsProxyModeCustom">Use custom proxy</option>
+            </select>
+            <div class="proxy-toolbar">
+              <p class="hint">在线组内勾选的 Provider 将使用这一套代理。</p>
+              <div class="proxy-actions">
+                <button type="button" class="btn-sm btn-outline" id="proxy-online-test-btn" data-i18n="optionsProxyTestButton">Test proxy</button>
+              </div>
+            </div>
+            <div class="proxy-grid hidden" id="proxy-online-custom-fields">
+              <div class="span-2">
+                <label for="proxy-online-scheme" data-i18n="optionsProxySchemeLabel">Protocol</label>
+                <select id="proxy-online-scheme">
+                  <option value="http" data-i18n="optionsProxySchemeHttp">HTTP</option>
+                  <option value="https" data-i18n="optionsProxySchemeHttps">HTTPS</option>
+                  <option value="socks5" data-i18n="optionsProxySchemeSocks5">SOCKS5</option>
+                </select>
+              </div>
+              <div>
+                <label for="proxy-online-host" data-i18n="optionsProxyHostLabel">Server address</label>
+                <input type="text" id="proxy-online-host" data-i18n-placeholder="optionsProxyHostPlaceholder" placeholder="127.0.0.1">
+              </div>
+              <div>
+                <label for="proxy-online-port" data-i18n="optionsProxyPortLabel">Port</label>
+                <input type="number" id="proxy-online-port" data-i18n-placeholder="optionsProxyPortPlaceholder" placeholder="7890">
+              </div>
+              <div>
+                <label for="proxy-online-username" data-i18n="optionsProxyUsernameLabel">Username</label>
+                <input type="text" id="proxy-online-username" data-i18n-placeholder="optionsProxyUsernamePlaceholder" placeholder="optional">
+              </div>
+              <div>
+                <label for="proxy-online-password" data-i18n="optionsProxyPasswordLabel">Password</label>
+                <input type="password" id="proxy-online-password" data-i18n-placeholder="optionsProxyPasswordPlaceholder" placeholder="optional">
+              </div>
+            </div>
+            <div id="proxy-online-status" class="proxy-status"></div>
+            <div class="proxy-provider-checks">
+              <label class="proxy-provider-check"><input type="checkbox" id="proxy-online-enable-deepseek">DeepSeek</label>
+              <label class="proxy-provider-check"><input type="checkbox" id="proxy-online-enable-openai">OpenAI</label>
+              <label class="proxy-provider-check"><input type="checkbox" id="proxy-online-enable-gemini">Gemini</label>
+              <label class="proxy-provider-check"><input type="checkbox" id="proxy-online-enable-anthropic">Anthropic</label>
+              <label class="proxy-provider-check"><input type="checkbox" id="proxy-online-enable-giteeai">Gitee AI</label>
+              <label class="proxy-provider-check"><input type="checkbox" id="proxy-online-enable-githubcopilot">GitHub Models</label>
+              <label class="proxy-provider-check"><input type="checkbox" id="proxy-online-enable-doubao">Doubao</label>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="provider-group" data-group="local">
+      <div class="group-header">
+        <div>
+          <div class="group-title">
+            <span class="title-with-badge">
+              <span data-i18n="optionsGroupLocal">馃枼锔?Local models</span>
+              <span class="group-badge local" data-i18n="optionsBadgeLocal">Local</span>
+            </span>
+          </div>
+          <div class="group-subtitle" data-i18n="optionsGroupLocalHint">Run models on your local machine or LAN service.</div>
+        </div>
+        <button type="button" class="group-toggle" data-group-toggle="local" data-i18n="optionsCollapse">Collapse</button>
+      </div>
+      <div class="group-content" data-group-content="local">
+        <div class="provider-grid">
+          <details class="provider-card" data-provider-id="ollama" open>
+            <summary>
+              <span class="provider-summary-main">
+                <span class="provider-summary-top">
+                  <span class="provider-summary-label" data-i18n="optionsSectionOllama">馃 Ollama (local model)</span>
+                  <span class="provider-badge local" data-i18n="optionsBadgeLocal">Local</span>
+                </span>
+              </span>
+              <span class="provider-state info" id="provider-state-ollama" data-i18n="optionsStateUntested">Not tested</span>
+            </summary>
+            <div class="provider-card-body section">
+              <div class="card-toolbar">
+                <span class="toolbar-note" data-i18n="optionsTestHintLocal">Test whether the local service is reachable and the model list can be loaded.</span>
+                <div class="toolbar-actions">
+                  <button type="button" class="btn-sm btn-outline" id="ollama-test-btn" data-i18n="optionsTestConnection">Test connection</button>
+                </div>
+              </div>
+              <label for="ollama-url" data-i18n="optionsLabelServerUrl">Server URL</label>
+              <input type="text" id="ollama-url" data-i18n-placeholder="optionsPlaceholderOllamaUrl" placeholder="http://localhost:11434">
+              <p class="hint" data-i18n-html="optionsHintOllamaUrlHtml">Ollama runs on http://localhost:11434 by default.</p>
+              <label for="ollama-model" data-i18n="optionsSelectModel">Select model</label>
+              <div class="model-row">
+                <select id="ollama-model">
+                  <option value="" data-i18n="optionsClickRefreshModels">Click "Refresh" to load models</option>
+                </select>
+                <button type="button" class="btn-sm" id="ollama-refresh-btn" data-i18n="optionsRefreshButton">馃攧 Refresh</button>
+              </div>
+              <div id="ollama-status" class="ollama-status"></div>
+            </div>
+          </details>
+
+          <details class="provider-card" data-provider-id="dockerai" open>
+            <summary>
+              <span class="provider-summary-main">
+                <span class="provider-summary-top">
+                  <span class="provider-summary-label" data-i18n="optionsSectionDockerAI">馃惓 Docker Desktop AI</span>
+                  <span class="provider-badge local" data-i18n="optionsBadgeLocal">Local</span>
+                </span>
+              </span>
+              <span class="provider-state info" id="provider-state-dockerai" data-i18n="optionsStateUntested">Not tested</span>
+            </summary>
+            <div class="provider-card-body section">
+              <div class="card-toolbar">
+                <span class="toolbar-note" data-i18n="optionsTestHintLocal">Test whether the local service is reachable and the model list can be loaded.</span>
+                <div class="toolbar-actions">
+                  <button type="button" class="btn-sm btn-outline" id="dockerai-test-btn" data-i18n="optionsTestConnection">Test connection</button>
+                </div>
+              </div>
+              <label for="dockerai-url" data-i18n="optionsLabelApiUrl">API URL</label>
+              <input type="text" id="dockerai-url" data-i18n-placeholder="optionsPlaceholderDockerUrl" placeholder="http://localhost:12434">
+              <p class="hint" data-i18n-html="optionsHintDockerUrlHtml">Docker Desktop AI runs on http://localhost:12434 by default.</p>
+              <label for="dockerai-model" data-i18n="optionsSelectModel">Select model</label>
+              <div class="model-row">
+                <select id="dockerai-model">
+                  <option value="" data-i18n="optionsClickRefreshModels">Click "Refresh" to load models</option>
+                </select>
+                <button type="button" class="btn-sm" id="dockerai-refresh-btn" data-i18n="optionsRefreshButton">馃攧 Refresh</button>
+              </div>
+              <div id="dockerai-status" class="ollama-status"></div>
+            </div>
+          </details>
+
+          <details class="provider-card" data-provider-id="foundrylocal" open>
+            <summary>
+              <span class="provider-summary-main">
+                <span class="provider-summary-top">
+                  <span class="provider-summary-label" data-i18n="optionsSectionFoundryLocal">馃獰 Foundry Local</span>
+                  <span class="provider-badge local" data-i18n="optionsBadgeLocal">Local</span>
+                </span>
+              </span>
+              <span class="provider-state info" id="provider-state-foundrylocal" data-i18n="optionsStateUntested">Not tested</span>
+            </summary>
+            <div class="provider-card-body section">
+              <div class="card-toolbar">
+                <span class="toolbar-note" data-i18n="optionsTestHintLocal">Test whether the local service is reachable and the model list can be loaded.</span>
+                <div class="toolbar-actions">
+                  <button type="button" class="btn-sm btn-outline" id="foundrylocal-test-btn" data-i18n="optionsTestConnection">Test connection</button>
+                </div>
+              </div>
+              <label for="foundrylocal-url" data-i18n="optionsLabelApiUrl">API URL</label>
+              <input type="text" id="foundrylocal-url" data-i18n-placeholder="optionsPlaceholderFoundryLocalUrl" placeholder="http://localhost:5273">
+              <p class="hint" data-i18n-html="optionsHintFoundryLocalUrlHtml">Foundry Local commonly exposes an OpenAI-compatible endpoint on localhost. Update the port if needed.</p>
+              <label for="foundrylocal-model" data-i18n="optionsSelectModel">Select model</label>
+              <div class="model-row">
+                <select id="foundrylocal-model">
+                  <option value="" data-i18n="optionsClickRefreshModels">Click "Refresh" to load models</option>
+                </select>
+                <button type="button" class="btn-sm" id="foundrylocal-refresh-btn" data-i18n="optionsRefreshButton">馃攧 Refresh</button>
+              </div>
+              <div id="foundrylocal-status" class="ollama-status"></div>
+            </div>
+          </details>
+
+          <details class="provider-card" data-provider-id="koboldcpp" open>
+            <summary>
+              <span class="provider-summary-main">
+                <span class="provider-summary-top">
+                  <span class="provider-summary-label" data-i18n="optionsSectionKoboldCpp">馃 KoboldCpp (local model)</span>
+                  <span class="provider-badge local" data-i18n="optionsBadgeLocal">Local</span>
+                </span>
+              </span>
+              <span class="provider-state info" id="provider-state-koboldcpp" data-i18n="optionsStateUntested">Not tested</span>
+            </summary>
+            <div class="provider-card-body section">
+              <div class="card-toolbar">
+                <span class="toolbar-note" data-i18n="optionsTestHintLocal">Test whether the local service is reachable and the model list can be loaded.</span>
+                <div class="toolbar-actions">
+                  <button type="button" class="btn-sm btn-outline" id="koboldcpp-test-btn" data-i18n="optionsTestConnection">Test connection</button>
+                </div>
+              </div>
+              <div class="koboldcpp-meta">
+                <span class="meta-label" data-i18n="optionsCurrentModelLabel">Current model:</span>
+                <span id="koboldcpp-current-model" class="meta-value">--</span>
+                <span class="meta-label meta-label-spaced" data-i18n="optionsVersionLabel">Version:</span>
+                <span id="koboldcpp-version" class="meta-value">--</span>
+                <button type="button" class="btn-sm btn-secondary meta-refresh-btn" id="koboldcpp-refresh-btn" data-i18n="optionsRefreshButton">馃攧 Refresh</button>
+              </div>
+              <label for="koboldcpp-url" data-i18n="optionsLabelServerUrl">Server URL</label>
+              <input type="text" id="koboldcpp-url" data-i18n-placeholder="optionsPlaceholderKoboldUrl" placeholder="http://localhost:5001">
+              <p class="hint" data-i18n-html="optionsHintKoboldUrlHtml">KoboldCpp runs on http://localhost:5001 by default.</p>
+              <div id="koboldcpp-status" class="ollama-status"></div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="provider-group" data-group="online">
+      <div class="group-header">
+        <div>
+          <div class="group-title">
+            <span class="title-with-badge">
+              <span data-i18n="optionsGroupOnline">鈽侊笍 Online model APIs</span>
+              <span class="group-badge online" data-i18n="optionsBadgeOnline">API</span>
+            </span>
+          </div>
+          <div class="group-subtitle" data-i18n="optionsGroupOnlineHint">Manage cloud API keys and model names in one place.</div>
+        </div>
+        <button type="button" class="group-toggle" data-group-toggle="online" data-i18n="optionsCollapse">Collapse</button>
+      </div>
+      <div class="group-content" data-group-content="online">
+        <div class="provider-grid">
+          <details class="provider-card" data-provider-id="deepseek" open>
+            <summary>
+              <span class="provider-summary-main">
+                <span class="provider-summary-top">
+                  <span class="provider-summary-label" data-i18n="optionsSectionDeepSeek">馃 DeepSeek</span>
+                  <span class="provider-badge online" data-i18n="optionsBadgeOnline">API</span>
+                </span>
+              </span>
+              <span class="provider-state warning" id="provider-state-deepseek" data-i18n="optionsStateNeedsConfig">Needs setup</span>
+            </summary>
+            <div class="provider-card-body section">
+              <div class="card-toolbar">
+                <span class="toolbar-note" data-i18n="optionsTestHintOnline">Verify whether the API key and model can reach the remote service.</span>
+                <div class="toolbar-actions">
+                  <button type="button" class="btn-sm btn-outline" id="deepseek-test-btn" data-i18n="optionsTestConnection">Test connection</button>
+                </div>
+              </div>
+              <label for="deepseek-key" data-i18n="optionsLabelApiKey">API Key</label>
+              <input type="password" id="deepseek-key" data-i18n-placeholder="optionsPlaceholderDeepSeekKey" placeholder="sk-xxxxxxxxxxxxxxxx">
+              <p class="hint" data-i18n-html="optionsHintDeepSeekHtml">Get it from the DeepSeek Open Platform.</p>
+              <label for="deepseek-model" data-i18n="optionsLabelModel">Model</label>
+              <select id="deepseek-model">
+                <option value="deepseek-chat">deepseek-chat (V3)</option>
+                <option value="deepseek-reasoner">deepseek-reasoner (R1)</option>
+              </select>
+              <div id="deepseek-status" class="ollama-status"></div>
+            </div>
+          </details>
+
+          <details class="provider-card" data-provider-id="openai" open>
+            <summary>
+              <span class="provider-summary-main">
+                <span class="provider-summary-top">
+                  <span class="provider-summary-label" data-i18n="optionsSectionOpenAI">馃煝 OpenAI GPT</span>
+                  <span class="provider-badge online" data-i18n="optionsBadgeOnline">API</span>
+                </span>
+              </span>
+              <span class="provider-state warning" id="provider-state-openai" data-i18n="optionsStateNeedsConfig">Needs setup</span>
+            </summary>
+            <div class="provider-card-body section">
+              <div class="card-toolbar">
+                <span class="toolbar-note" data-i18n="optionsTestHintOnline">Verify whether the API key and model can reach the remote service.</span>
+                <div class="toolbar-actions">
+                  <button type="button" class="btn-sm btn-outline" id="openai-test-btn" data-i18n="optionsTestConnection">Test connection</button>
+                </div>
+              </div>
+              <label for="openai-key" data-i18n="optionsLabelApiKey">API Key</label>
+              <input type="password" id="openai-key" data-i18n-placeholder="optionsPlaceholderOpenAIKey" placeholder="sk-xxxxxxxxxxxxxxxx">
+              <p class="hint" data-i18n-html="optionsHintOpenAIHtml">Get it from the OpenAI dashboard.</p>
+              <label for="openai-model" data-i18n="optionsLabelModel">Model</label>
+              <div class="model-row">
+                <input type="text" id="openai-model" list="openai-model-list" data-i18n-placeholder="optionsPlaceholderOpenAIModel" placeholder="gpt-4.1-mini">
+                <button type="button" class="btn-sm" id="openai-refresh-models-btn" data-i18n="optionsRefreshButton">馃攧 Refresh</button>
+              </div>
+              <p class="hint" data-i18n="optionsHintOpenAIModel">Enter a GPT model such as gpt-4.1-mini.</p>
+              <div id="openai-status" class="ollama-status"></div>
+            </div>
+          </details>
+
+          <details class="provider-card" data-provider-id="gemini" open>
+            <summary>
+              <span class="provider-summary-main">
+                <span class="provider-summary-top">
+                  <span class="provider-summary-label" data-i18n="optionsSectionGemini">鉁?Google Gemini</span>
+                  <span class="provider-badge online" data-i18n="optionsBadgeOnline">API</span>
+                </span>
+              </span>
+              <span class="provider-state warning" id="provider-state-gemini" data-i18n="optionsStateNeedsConfig">Needs setup</span>
+            </summary>
+            <div class="provider-card-body section">
+              <div class="card-toolbar">
+                <span class="toolbar-note" data-i18n="optionsTestHintOnline">Verify whether the API key and model can reach the remote service.</span>
+                <div class="toolbar-actions">
+                  <button type="button" class="btn-sm btn-outline" id="gemini-test-btn" data-i18n="optionsTestConnection">Test connection</button>
+                </div>
+              </div>
+              <label for="gemini-key" data-i18n="optionsLabelApiKey">API Key</label>
+              <input type="password" id="gemini-key" data-i18n-placeholder="optionsPlaceholderGeminiKey" placeholder="AIza...">
+              <p class="hint" data-i18n-html="optionsHintGeminiHtml">Get it from Google AI Studio.</p>
+              <label for="gemini-model" data-i18n="optionsLabelModel">Model</label>
+              <div class="model-row">
+                <input type="text" id="gemini-model" list="gemini-model-list" data-i18n-placeholder="optionsPlaceholderGeminiModel" placeholder="gemini-2.0-flash">
+                <button type="button" class="btn-sm" id="gemini-refresh-models-btn" data-i18n="optionsRefreshButton">馃攧 Refresh</button>
+              </div>
+              <p class="hint" data-i18n="optionsHintGeminiModel">Enter a Gemini model such as gemini-2.0-flash.</p>
+              <div id="gemini-status" class="ollama-status"></div>
+            </div>
+          </details>
+
+          <details class="provider-card" data-provider-id="anthropic" open>
+            <summary>
+              <span class="provider-summary-main">
+                <span class="provider-summary-top">
+                  <span class="provider-summary-label" data-i18n="optionsSectionAnthropic">馃煚 Anthropic Claude</span>
+                  <span class="provider-badge online" data-i18n="optionsBadgeOnline">API</span>
+                </span>
+              </span>
+              <span class="provider-state warning" id="provider-state-anthropic" data-i18n="optionsStateNeedsConfig">Needs setup</span>
+            </summary>
+            <div class="provider-card-body section">
+              <div class="card-toolbar">
+                <span class="toolbar-note" data-i18n="optionsTestHintOnline">Verify whether the API key and model can reach the remote service.</span>
+                <div class="toolbar-actions">
+                  <button type="button" class="btn-sm btn-outline" id="anthropic-test-btn" data-i18n="optionsTestConnection">Test connection</button>
+                </div>
+              </div>
+              <label for="anthropic-key" data-i18n="optionsLabelApiKey">API Key</label>
+              <input type="password" id="anthropic-key" data-i18n-placeholder="optionsPlaceholderAnthropicKey" placeholder="sk-ant-...">
+              <p class="hint" data-i18n-html="optionsHintAnthropicHtml">Get it from the Anthropic Console.</p>
+              <label for="anthropic-model" data-i18n="optionsLabelModel">Model</label>
+              <div class="model-row">
+                <input type="text" id="anthropic-model" list="anthropic-model-list" data-i18n-placeholder="optionsPlaceholderAnthropicModel" placeholder="claude-3-5-sonnet-latest">
+                <button type="button" class="btn-sm" id="anthropic-refresh-models-btn" data-i18n="optionsRefreshButton">馃攧 Refresh</button>
+              </div>
+              <p class="hint" data-i18n="optionsHintAnthropicModel">Enter a Claude model such as claude-3-5-sonnet-latest.</p>
+              <div id="anthropic-status" class="ollama-status"></div>
+            </div>
+          </details>
+
+          <details class="provider-card" data-provider-id="giteeai" open>
+            <summary>
+              <span class="provider-summary-main">
+                <span class="provider-summary-top">
+                  <span class="provider-summary-label" data-i18n="optionsSectionGiteeAI">馃惐 Gitee AI</span>
+                  <span class="provider-badge online" data-i18n="optionsBadgeOnline">API</span>
+                </span>
+              </span>
+              <span class="provider-state warning" id="provider-state-giteeai" data-i18n="optionsStateNeedsConfig">Needs setup</span>
+            </summary>
+            <div class="provider-card-body section">
+              <div class="card-toolbar">
+                <span class="toolbar-note" data-i18n="optionsTestHintOnline">Verify whether the API key and model can reach the remote service.</span>
+                <div class="toolbar-actions">
+                  <button type="button" class="btn-sm btn-outline" id="giteeai-test-btn" data-i18n="optionsTestConnection">Test connection</button>
+                </div>
+              </div>
+              <label for="giteeai-key" data-i18n="optionsLabelApiKey">API Key</label>
+              <input type="password" id="giteeai-key" data-i18n-placeholder="optionsPlaceholderGiteeKey" placeholder="your-gitee-ai-key">
+              <p class="hint" data-i18n-html="optionsHintGiteeKeyHtml">Get it from the Gitee AI Console.</p>
+              <label for="giteeai-model" data-i18n="optionsLabelModel">Model</label>
+              <div class="model-row">
+                <input type="text" id="giteeai-model" list="giteeai-model-list" data-i18n-placeholder="optionsPlaceholderGiteeModel" placeholder="Qwen3-8B">
+                <button type="button" class="btn-sm" id="giteeai-refresh-models-btn" data-i18n="optionsRefreshButton">馃攧 Refresh</button>
+              </div>
+              <p class="hint" data-i18n="optionsHintGiteeModel">Enter a model name such as Qwen3-8B.</p>
+              <div id="giteeai-status" class="ollama-status"></div>
+            </div>
+          </details>
+
+          <details class="provider-card" data-provider-id="githubcopilot" open>
+            <summary>
+              <span class="provider-summary-main">
+                <span class="provider-summary-top">
+                  <span class="provider-summary-label" data-i18n="optionsSectionGitHubCopilot">馃悪 GitHub Copilot / Models</span>
+                  <span class="provider-badge online" data-i18n="optionsBadgeOnline">API</span>
+                </span>
+              </span>
+              <span class="provider-state warning" id="provider-state-githubcopilot" data-i18n="optionsStateNeedsConfig">Needs setup</span>
+            </summary>
+            <div class="provider-card-body section">
+              <div class="card-toolbar">
+                <span class="toolbar-note" data-i18n="optionsHintGitHubCopilotShort">Use a GitHub PAT with the GitHub Models compatible inference endpoint.</span>
+                <div class="toolbar-actions">
+                  <button type="button" class="btn-sm btn-outline" id="githubcopilot-test-btn" data-i18n="optionsTestConnection">Test connection</button>
+                </div>
+              </div>
+              <label for="githubcopilot-key" data-i18n="optionsLabelApiKey">API Key</label>
+              <input type="password" id="githubcopilot-key" data-i18n-placeholder="optionsPlaceholderGitHubCopilotKey" placeholder="github_pat_xxx">
+              <p class="hint" data-i18n-html="optionsHintGitHubCopilotHtml">Use a GitHub Personal Access Token for GitHub Models.</p>
+              <label for="githubcopilot-model" data-i18n="optionsLabelModel">Model</label>
+              <div class="model-row">
+                <input type="text" id="githubcopilot-model" list="githubcopilot-model-list" data-i18n-placeholder="optionsPlaceholderGitHubCopilotModel" placeholder="openai/gpt-4.1-mini">
+                <button type="button" class="btn-sm" id="githubcopilot-refresh-models-btn" data-i18n="optionsRefreshButton">馃攧 Refresh</button>
+              </div>
+              <p class="hint" data-i18n="optionsHintGitHubCopilotModel">Enter a GitHub Models model ID such as openai/gpt-4.1-mini.</p>
+              <div id="githubcopilot-status" class="ollama-status"></div>
+            </div>
+          </details>
+
+          <details class="provider-card" data-provider-id="doubao" open>
+            <summary>
+              <span class="provider-summary-main">
+                <span class="provider-summary-top">
+                  <span class="provider-summary-label" data-i18n="optionsSectionDoubao">馃敟 Doubao</span>
+                  <span class="provider-badge online" data-i18n="optionsBadgeOnline">API</span>
+                </span>
+              </span>
+              <span class="provider-state warning" id="provider-state-doubao" data-i18n="optionsStateNeedsConfig">Needs setup</span>
+            </summary>
+            <div class="provider-card-body section">
+              <div class="card-toolbar">
+                <span class="toolbar-note" data-i18n="optionsTestHintOnline">Verify whether the API key and model can reach the remote service.</span>
+                <div class="toolbar-actions">
+                  <button type="button" class="btn-sm btn-outline" id="doubao-test-btn" data-i18n="optionsTestConnection">Test connection</button>
+                </div>
+              </div>
+              <label for="doubao-key" data-i18n="optionsLabelApiKey">API Key</label>
+              <input type="password" id="doubao-key" data-i18n-placeholder="optionsPlaceholderDoubaoKey" placeholder="your-ark-api-key">
+              <p class="hint" data-i18n-html="optionsHintDoubaoHtml">Get it from the Volcengine Ark Console.</p>
+              <label for="doubao-model" data-i18n="optionsLabelEndpoint">Model / Endpoint ID</label>
+              <div class="model-row">
+                <input type="text" id="doubao-model" list="doubao-model-list" data-i18n-placeholder="optionsPlaceholderDoubaoModel" placeholder="doubao-pro-256k or your endpoint ID">
+                <button type="button" class="btn-sm" id="doubao-refresh-models-btn" data-i18n="optionsRefreshButton">馃攧 Refresh</button>
+              </div>
+              <p class="hint" data-i18n="optionsHintDoubaoModel">Enter a model name or your endpoint ID.</p>
+              <div id="doubao-status" class="ollama-status"></div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <p class="empty-state hidden" id="empty-state" data-i18n="optionsEmptyState">No matching providers or settings were found.</p>
+
+    <div class="save-bar">
+      <button id="save-btn" data-i18n="optionsSaveButton">馃捑 Save settings</button>
+      <p class="status hidden" id="status" data-i18n="optionsStatusSaved">鉁?Settings saved!</p>
+    </div>
   </div>
-<button id="save-btn" data-i18n="optionsSaveButton">💾 Save settings</button>
-  <p class="status hidden" id="status" data-i18n="optionsStatusSaved">✅ Settings saved!</p>
 
   <script src="i18n.js"></script>
   <script src="options.js"></script>

@@ -17,6 +17,18 @@
   "providerDeepSeek": {
     "message": "DeepSeek"
   },
+  "providerOpenAI": {
+    "message": "OpenAI GPT"
+  },
+  "providerGemini": {
+    "message": "Google Gemini"
+  },
+  "providerAnthropic": {
+    "message": "Anthropic Claude"
+  },
+  "providerGitHubCopilot": {
+    "message": "GitHub Copilot"
+  },
   "providerDoubao": {
     "message": "豆包"
   },
@@ -25,6 +37,9 @@
   },
   "providerDockerAI": {
     "message": "Docker Desktop AI"
+  },
+  "providerFoundryLocal": {
+    "message": "Foundry Local"
   },
   "providerKoboldCppLocal": {
     "message": "KoboldCpp（本地）"
@@ -164,11 +179,113 @@
   "optionsHeading": {
     "message": "⚙️ AI 页面总结器 - 设置"
   },
+  "optionsPageDescription": {
+    "message": "使用选项卡、分组卡片和折叠面板，更高效地管理本地模型与在线 API 设置。"
+  },
+  "optionsTabAll": {
+    "message": "全部"
+  },
+  "optionsTabLocal": {
+    "message": "本地模型"
+  },
+  "optionsTabOnline": {
+    "message": "在线 API"
+  },
+  "optionsGroupLocal": {
+    "message": "🖥️ 本地模型"
+  },
+  "optionsGroupLocalHint": {
+    "message": "管理运行在本机或局域网服务上的模型。"
+  },
+  "optionsGroupOnline": {
+    "message": "☁️ 在线模型 API"
+  },
+  "optionsGroupOnlineHint": {
+    "message": "统一管理云端 API Key 和模型名称。"
+  },
+  "optionsCollapse": {
+    "message": "折叠"
+  },
+  "optionsExpand": {
+    "message": "展开"
+  },
+  "optionsSearchPlaceholder": {
+    "message": "搜索模型、服务商或设置项"
+  },
+  "optionsClearSearch": {
+    "message": "清除"
+  },
+  "optionsEmptyState": {
+    "message": "没有找到匹配的服务商或设置项。"
+  },
+  "optionsBadgeLocal": {
+    "message": "本地"
+  },
+  "optionsBadgeOnline": {
+    "message": "API"
+  },
+  "optionsStateUntested": {
+    "message": "未测试"
+  },
+  "optionsStateNeedsConfig": {
+    "message": "待配置"
+  },
+  "optionsStateConfigured": {
+    "message": "已配置"
+  },
+  "optionsStateLocalService": {
+    "message": "本地服务"
+  },
+  "optionsStateConnected": {
+    "message": "已连接"
+  },
+  "optionsStateFailed": {
+    "message": "连接失败"
+  },
+  "optionsStateTesting": {
+    "message": "测试中"
+  },
+  "optionsTestConnection": {
+    "message": "测试连接"
+  },
+  "optionsTestingConnection": {
+    "message": "⏳ 正在测试连接..."
+  },
+  "optionsTestHintLocal": {
+    "message": "测试本地服务是否可访问，以及模型列表是否能正常获取。"
+  },
+  "optionsTestHintOnline": {
+    "message": "验证当前 API Key 和模型配置是否可以访问远程服务。"
+  },
+  "optionsTestSuccess": {
+    "message": "✅ 连接成功"
+  },
+  "optionsTestSuccessWithCount": {
+    "message": "✅ 连接成功，发现 $1 个模型"
+  },
+  "optionsTestSuccessModel": {
+    "message": "✅ 连接成功，当前模型：$1"
+  },
+  "optionsTestMissingConfig": {
+    "message": "请先填写完整的 API Key 和模型信息后再测试。"
+  },
   "optionsSectionDeepSeek": {
     "message": "🤖 DeepSeek"
   },
+  "optionsSectionOpenAI": {
+    "message": "🟢 OpenAI GPT"
+  },
+  "optionsSectionGemini": {
+    "message": "✨ Google Gemini"
+  },
+  "optionsSectionAnthropic": {
+    "message": "🟠 Anthropic Claude"
+  },
   "optionsSectionGiteeAI": {
     "message": "🐱 Gitee AI"
+  },
+  "optionsSectionGitHubCopilot": {
+    "message": "🐙 GitHub Copilot / Models"
   },
   "optionsSectionDoubao": {
     "message": "🔥 豆包（Doubao）"
@@ -178,6 +295,9 @@
   },
   "optionsSectionDockerAI": {
     "message": "🐳 Docker Desktop AI"
+  },
+  "optionsSectionFoundryLocal": {
+    "message": "🪟 Foundry Local"
   },
   "optionsSectionKoboldCpp": {
     "message": "🦄 KoboldCpp（本地模型）"
@@ -191,6 +311,84 @@
   "optionsLabelEndpoint": {
     "message": "模型 / 推理接入点（Endpoint ID）"
   },
+  "optionsProxyModeLabel": {
+    "message": "代理"
+  },
+  "optionsProxyHint": {
+    "message": "可选择不使用代理、沿用浏览器代理，或为当前服务商单独指定代理。"
+  },
+  "optionsProxyModeBrowser": {
+    "message": "使用浏览器代理"
+  },
+  "optionsProxyModeNone": {
+    "message": "不使用代理"
+  },
+  "optionsProxyModeCustom": {
+    "message": "使用指定代理"
+  },
+  "optionsProxySchemeLabel": {
+    "message": "代理类型"
+  },
+  "optionsProxySchemeHttp": {
+    "message": "HTTP"
+  },
+  "optionsProxySchemeHttps": {
+    "message": "HTTPS"
+  },
+  "optionsProxySchemeSocks5": {
+    "message": "SOCKS5"
+  },
+  "optionsProxyHostLabel": {
+    "message": "服务器地址"
+  },
+  "optionsProxyPortLabel": {
+    "message": "端口"
+  },
+  "optionsProxyUsernameLabel": {
+    "message": "用户名"
+  },
+  "optionsProxyPasswordLabel": {
+    "message": "密码"
+  },
+  "optionsProxyHostPlaceholder": {
+    "message": "127.0.0.1"
+  },
+  "optionsProxyPortPlaceholder": {
+    "message": "7890"
+  },
+  "optionsProxyUsernamePlaceholder": {
+    "message": "可选"
+  },
+  "optionsProxyPasswordPlaceholder": {
+    "message": "可选"
+  },
+  "optionsProxyTestButton": {
+    "message": "测试代理"
+  },
+  "optionsProxyTesting": {
+    "message": "⏳ 正在测试代理..."
+  },
+  "optionsProxyTestSuccess": {
+    "message": "✅ 代理可用"
+  },
+  "optionsProxyMissingHostPort": {
+    "message": "请先填写代理服务器地址和端口。"
+  },
+  "optionsProxyExportButton": {
+    "message": "导出代理"
+  },
+  "optionsProxyImportButton": {
+    "message": "导入代理"
+  },
+  "optionsProxyExportSuccess": {
+    "message": "✅ 代理设置已导出"
+  },
+  "optionsProxyImportSuccess": {
+    "message": "✅ 代理设置已导入"
+  },
+  "optionsProxyImportFailed": {
+    "message": "❌ 导入代理设置失败"
+  },
   "optionsLabelServerUrl": {
     "message": "服务器地址"
   },
@@ -202,6 +400,42 @@
   },
   "optionsPlaceholderDeepSeekKey": {
     "message": "sk-xxxxxxxxxxxxxxxx"
+  },
+  "optionsPlaceholderOpenAIKey": {
+    "message": "sk-xxxxxxxxxxxxxxxx"
+  },
+  "optionsHintOpenAIHtml": {
+    "message": "在 <a href=\"https://platform.openai.com/api-keys\" target=\"_blank\">OpenAI 控制台</a> 获取"
+  },
+  "optionsPlaceholderOpenAIModel": {
+    "message": "gpt-4.1-mini"
+  },
+  "optionsHintOpenAIModel": {
+    "message": "填写 GPT 模型名称，例如 gpt-4.1-mini"
+  },
+  "optionsPlaceholderGeminiKey": {
+    "message": "AIza..."
+  },
+  "optionsHintGeminiHtml": {
+    "message": "在 <a href=\"https://aistudio.google.com/app/apikey\" target=\"_blank\">Google AI Studio</a> 获取"
+  },
+  "optionsPlaceholderGeminiModel": {
+    "message": "gemini-2.0-flash"
+  },
+  "optionsHintGeminiModel": {
+    "message": "填写 Gemini 模型名称，例如 gemini-2.0-flash"
+  },
+  "optionsPlaceholderAnthropicKey": {
+    "message": "sk-ant-..."
+  },
+  "optionsHintAnthropicHtml": {
+    "message": "在 <a href=\"https://console.anthropic.com/settings/keys\" target=\"_blank\">Anthropic Console</a> 获取"
+  },
+  "optionsPlaceholderAnthropicModel": {
+    "message": "claude-3-5-sonnet-latest"
+  },
+  "optionsHintAnthropicModel": {
+    "message": "填写 Claude 模型名称，例如 claude-3-5-sonnet-latest"
   },
   "optionsHintDeepSeekHtml": {
     "message": "在 <a href=\"https://platform.deepseek.com/api_keys\" target=\"_blank\">DeepSeek 开放平台</a> 获取"
@@ -220,6 +454,21 @@
   },
   "optionsPlaceholderDoubaoKey": {
     "message": "your-ark-api-key"
+  },
+  "optionsPlaceholderGitHubCopilotKey": {
+    "message": "github_pat_xxx"
+  },
+  "optionsHintGitHubCopilotHtml": {
+    "message": "通过 <a href=\"https://github.com/settings/personal-access-tokens\" target=\"_blank\">GitHub Personal Access Token</a> 调用 GitHub Models 兼容接口"
+  },
+  "optionsHintGitHubCopilotShort": {
+    "message": "使用 GitHub PAT 调用 GitHub Models 兼容推理接口。"
+  },
+  "optionsPlaceholderGitHubCopilotModel": {
+    "message": "openai/gpt-4.1-mini"
+  },
+  "optionsHintGitHubCopilotModel": {
+    "message": "填写 GitHub Models 的模型 ID，例如 openai/gpt-4.1-mini"
   },
   "optionsHintDoubaoHtml": {
     "message": "在 <a href=\"https://console.volcengine.com/ark\" target=\"_blank\">火山引擎 Ark 控制台</a> 获取"
@@ -257,11 +506,29 @@
   "optionsHintKoboldUrlHtml": {
     "message": "KoboldCpp 默认运行在 <code>http://localhost:5001</code>，如有自定义端口请修改"
   },
+  "optionsPlaceholderFoundryLocalUrl": {
+    "message": "http://localhost:5273"
+  },
+  "optionsHintFoundryLocalUrlHtml": {
+    "message": "Foundry Local 通常会在 <code>http://localhost:5273</code> 提供兼容 OpenAI 的接口。修改地址后，请点击“刷新”重新加载模型列表。"
+  },
   "optionsPlaceholderDockerUrl": {
     "message": "http://localhost:12434"
   },
   "optionsHintDockerUrlHtml": {
     "message": "Docker Desktop AI 默认运行在 <code>http://localhost:12434</code>，修改地址后点击“刷新”重新获取模型列表"
+  },
+  "optionsLoadedRemoteModels": {
+    "message": "✅ 已加载 $1 个可选模型"
+  },
+  "optionsLoadedPresetModels": {
+    "message": "✅ 已加载 $1 个推荐模型"
+  },
+  "optionsModelListUnavailable": {
+    "message": "ℹ️ 当前服务商未提供公开模型列表，已为你提供推荐模型。"
+  },
+  "optionsModelListFallbackPresets": {
+    "message": "ℹ️ 获取远程模型列表失败，已改为加载 $1 个推荐模型。"
   },
   "optionsNoLocalModels": {
     "message": "暂无本地模型"
@@ -302,14 +569,23 @@
   "optionsFetchingDockerModels": {
     "message": "⏳ 正在获取 Docker Desktop AI 模型列表..."
   },
+  "optionsFetchingFoundryLocalModels": {
+    "message": "⏳ 正在获取 Foundry Local 模型列表..."
+  },
   "optionsFetchDockerModelsFailed": {
     "message": "❌ 获取模型失败"
+  },
+  "optionsFetchFoundryLocalModelsFailed": {
+    "message": "❌ 获取 Foundry Local 模型列表失败"
   },
   "optionsFoundDockerModels": {
     "message": "✅ 找到 $1 个模型"
   },
   "optionsCannotConnectDockerAI": {
     "message": "❌ 无法连接 Docker Desktop AI：$1"
+  },
+  "optionsCannotConnectFoundryLocal": {
+    "message": "❌ 无法连接 Foundry Local：$1"
   },
   "optionsCurrentModelStatus": {
     "message": "✅ 当前模型：$1"

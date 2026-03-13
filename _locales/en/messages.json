@@ -17,6 +17,18 @@
   "providerDeepSeek": {
     "message": "DeepSeek"
   },
+  "providerOpenAI": {
+    "message": "OpenAI GPT"
+  },
+  "providerGemini": {
+    "message": "Google Gemini"
+  },
+  "providerAnthropic": {
+    "message": "Anthropic Claude"
+  },
+  "providerGitHubCopilot": {
+    "message": "GitHub Copilot"
+  },
   "providerDoubao": {
     "message": "Doubao"
   },
@@ -25,6 +37,9 @@
   },
   "providerDockerAI": {
     "message": "Docker Desktop AI"
+  },
+  "providerFoundryLocal": {
+    "message": "Foundry Local"
   },
   "providerKoboldCppLocal": {
     "message": "KoboldCpp (local)"
@@ -164,11 +179,113 @@
   "optionsHeading": {
     "message": "⚙️ AI Page Summarizer - Settings"
   },
+  "optionsPageDescription": {
+    "message": "Use tabs, grouped cards, and collapsible panels to manage local models and online APIs more efficiently."
+  },
+  "optionsTabAll": {
+    "message": "All"
+  },
+  "optionsTabLocal": {
+    "message": "Local models"
+  },
+  "optionsTabOnline": {
+    "message": "Online APIs"
+  },
+  "optionsGroupLocal": {
+    "message": "🖥️ Local models"
+  },
+  "optionsGroupLocalHint": {
+    "message": "Manage models running on your local machine or LAN service."
+  },
+  "optionsGroupOnline": {
+    "message": "☁️ Online model APIs"
+  },
+  "optionsGroupOnlineHint": {
+    "message": "Manage cloud API keys and model names in one place."
+  },
+  "optionsCollapse": {
+    "message": "Collapse"
+  },
+  "optionsExpand": {
+    "message": "Expand"
+  },
+  "optionsSearchPlaceholder": {
+    "message": "Search providers, models, or settings"
+  },
+  "optionsClearSearch": {
+    "message": "Clear"
+  },
+  "optionsEmptyState": {
+    "message": "No matching providers or settings were found."
+  },
+  "optionsBadgeLocal": {
+    "message": "Local"
+  },
+  "optionsBadgeOnline": {
+    "message": "API"
+  },
+  "optionsStateUntested": {
+    "message": "Not tested"
+  },
+  "optionsStateNeedsConfig": {
+    "message": "Needs setup"
+  },
+  "optionsStateConfigured": {
+    "message": "Configured"
+  },
+  "optionsStateLocalService": {
+    "message": "Local service"
+  },
+  "optionsStateConnected": {
+    "message": "Connected"
+  },
+  "optionsStateFailed": {
+    "message": "Failed"
+  },
+  "optionsStateTesting": {
+    "message": "Testing"
+  },
+  "optionsTestConnection": {
+    "message": "Test connection"
+  },
+  "optionsTestingConnection": {
+    "message": "⏳ Testing connection..."
+  },
+  "optionsTestHintLocal": {
+    "message": "Test whether the local service is reachable and the model list can be loaded."
+  },
+  "optionsTestHintOnline": {
+    "message": "Verify whether the current API key and model can reach the remote service."
+  },
+  "optionsTestSuccess": {
+    "message": "✅ Connection successful"
+  },
+  "optionsTestSuccessWithCount": {
+    "message": "✅ Connection successful, found $1 models"
+  },
+  "optionsTestSuccessModel": {
+    "message": "✅ Connection successful, current model: $1"
+  },
+  "optionsTestMissingConfig": {
+    "message": "Please fill in the API key and model before testing."
+  },
   "optionsSectionDeepSeek": {
     "message": "🤖 DeepSeek"
   },
+  "optionsSectionOpenAI": {
+    "message": "🟢 OpenAI GPT"
+  },
+  "optionsSectionGemini": {
+    "message": "✨ Google Gemini"
+  },
+  "optionsSectionAnthropic": {
+    "message": "🟠 Anthropic Claude"
+  },
   "optionsSectionGiteeAI": {
     "message": "🐱 Gitee AI"
+  },
+  "optionsSectionGitHubCopilot": {
+    "message": "🐙 GitHub Copilot / Models"
   },
   "optionsSectionDoubao": {
     "message": "🔥 Doubao"
@@ -178,6 +295,9 @@
   },
   "optionsSectionDockerAI": {
     "message": "🐳 Docker Desktop AI"
+  },
+  "optionsSectionFoundryLocal": {
+    "message": "🪟 Foundry Local"
   },
   "optionsSectionKoboldCpp": {
     "message": "🦄 KoboldCpp (local model)"
@@ -191,6 +311,84 @@
   "optionsLabelEndpoint": {
     "message": "Model / Endpoint ID"
   },
+  "optionsProxyModeLabel": {
+    "message": "Proxy"
+  },
+  "optionsProxyHint": {
+    "message": "Choose whether to follow the browser proxy or use a dedicated proxy for this provider."
+  },
+  "optionsProxyModeBrowser": {
+    "message": "Use browser proxy"
+  },
+  "optionsProxyModeNone": {
+    "message": "Do not use proxy"
+  },
+  "optionsProxyModeCustom": {
+    "message": "Use custom proxy"
+  },
+  "optionsProxySchemeLabel": {
+    "message": "Proxy type"
+  },
+  "optionsProxySchemeHttp": {
+    "message": "HTTP"
+  },
+  "optionsProxySchemeHttps": {
+    "message": "HTTPS"
+  },
+  "optionsProxySchemeSocks5": {
+    "message": "SOCKS5"
+  },
+  "optionsProxyHostLabel": {
+    "message": "Server address"
+  },
+  "optionsProxyPortLabel": {
+    "message": "Port"
+  },
+  "optionsProxyUsernameLabel": {
+    "message": "Username"
+  },
+  "optionsProxyPasswordLabel": {
+    "message": "Password"
+  },
+  "optionsProxyHostPlaceholder": {
+    "message": "127.0.0.1"
+  },
+  "optionsProxyPortPlaceholder": {
+    "message": "7890"
+  },
+  "optionsProxyUsernamePlaceholder": {
+    "message": "optional"
+  },
+  "optionsProxyPasswordPlaceholder": {
+    "message": "optional"
+  },
+  "optionsProxyTestButton": {
+    "message": "Test proxy"
+  },
+  "optionsProxyTesting": {
+    "message": "⏳ Testing proxy..."
+  },
+  "optionsProxyTestSuccess": {
+    "message": "✅ Proxy is reachable"
+  },
+  "optionsProxyMissingHostPort": {
+    "message": "Please fill in the proxy host and port first."
+  },
+  "optionsProxyExportButton": {
+    "message": "Export proxy"
+  },
+  "optionsProxyImportButton": {
+    "message": "Import proxy"
+  },
+  "optionsProxyExportSuccess": {
+    "message": "✅ Proxy settings exported"
+  },
+  "optionsProxyImportSuccess": {
+    "message": "✅ Proxy settings imported"
+  },
+  "optionsProxyImportFailed": {
+    "message": "❌ Failed to import proxy settings"
+  },
   "optionsLabelServerUrl": {
     "message": "Server URL"
   },
@@ -202,6 +400,42 @@
   },
   "optionsPlaceholderDeepSeekKey": {
     "message": "sk-xxxxxxxxxxxxxxxx"
+  },
+  "optionsPlaceholderOpenAIKey": {
+    "message": "sk-xxxxxxxxxxxxxxxx"
+  },
+  "optionsHintOpenAIHtml": {
+    "message": "Get it from the <a href=\"https://platform.openai.com/api-keys\" target=\"_blank\">OpenAI dashboard</a>."
+  },
+  "optionsPlaceholderOpenAIModel": {
+    "message": "gpt-4.1-mini"
+  },
+  "optionsHintOpenAIModel": {
+    "message": "Enter a GPT model such as gpt-4.1-mini."
+  },
+  "optionsPlaceholderGeminiKey": {
+    "message": "AIza..."
+  },
+  "optionsHintGeminiHtml": {
+    "message": "Get it from <a href=\"https://aistudio.google.com/app/apikey\" target=\"_blank\">Google AI Studio</a>."
+  },
+  "optionsPlaceholderGeminiModel": {
+    "message": "gemini-2.0-flash"
+  },
+  "optionsHintGeminiModel": {
+    "message": "Enter a Gemini model such as gemini-2.0-flash."
+  },
+  "optionsPlaceholderAnthropicKey": {
+    "message": "sk-ant-..."
+  },
+  "optionsHintAnthropicHtml": {
+    "message": "Get it from the <a href=\"https://console.anthropic.com/settings/keys\" target=\"_blank\">Anthropic Console</a>."
+  },
+  "optionsPlaceholderAnthropicModel": {
+    "message": "claude-3-5-sonnet-latest"
+  },
+  "optionsHintAnthropicModel": {
+    "message": "Enter a Claude model such as claude-3-5-sonnet-latest."
   },
   "optionsHintDeepSeekHtml": {
     "message": "Get it from the <a href=\"https://platform.deepseek.com/api_keys\" target=\"_blank\">DeepSeek Open Platform</a>."
@@ -220,6 +454,21 @@
   },
   "optionsPlaceholderDoubaoKey": {
     "message": "your-ark-api-key"
+  },
+  "optionsPlaceholderGitHubCopilotKey": {
+    "message": "github_pat_xxx"
+  },
+  "optionsHintGitHubCopilotHtml": {
+    "message": "Use a <a href=\"https://github.com/settings/personal-access-tokens\" target=\"_blank\">GitHub Personal Access Token</a> with the GitHub Models compatible endpoint."
+  },
+  "optionsHintGitHubCopilotShort": {
+    "message": "Use a GitHub PAT with the GitHub Models compatible inference endpoint."
+  },
+  "optionsPlaceholderGitHubCopilotModel": {
+    "message": "openai/gpt-4.1-mini"
+  },
+  "optionsHintGitHubCopilotModel": {
+    "message": "Enter a GitHub Models model ID such as openai/gpt-4.1-mini."
   },
   "optionsHintDoubaoHtml": {
     "message": "Get it from the <a href=\"https://console.volcengine.com/ark\" target=\"_blank\">Volcengine Ark Console</a>."
@@ -263,11 +512,29 @@
   "optionsHintDockerUrlHtml": {
     "message": "Docker Desktop AI runs on <code>http://localhost:12434</code> by default. After changing the address, click \"Refresh\" to reload the model list."
   },
+  "optionsPlaceholderFoundryLocalUrl": {
+    "message": "http://localhost:5273"
+  },
+  "optionsHintFoundryLocalUrlHtml": {
+    "message": "Foundry Local usually exposes an OpenAI-compatible endpoint on <code>http://localhost:5273</code>. After changing the address, click \"Refresh\" to reload the model list."
+  },
   "optionsNoLocalModels": {
     "message": "No local models"
   },
   "optionsNoModels": {
     "message": "No models"
+  },
+  "optionsLoadedRemoteModels": {
+    "message": "✅ Loaded $1 selectable models"
+  },
+  "optionsLoadedPresetModels": {
+    "message": "✅ Loaded $1 recommended models"
+  },
+  "optionsModelListUnavailable": {
+    "message": "ℹ️ This provider does not expose a public model list. Recommended models are available instead."
+  },
+  "optionsModelListFallbackPresets": {
+    "message": "ℹ️ Failed to load the remote model list. Loaded $1 recommended models instead."
   },
   "optionsSaveButton": {
     "message": "💾 Save settings"
@@ -302,14 +569,23 @@
   "optionsFetchingDockerModels": {
     "message": "⏳ Fetching Docker Desktop AI models..."
   },
+  "optionsFetchingFoundryLocalModels": {
+    "message": "⏳ Fetching Foundry Local models..."
+  },
   "optionsFetchDockerModelsFailed": {
     "message": "❌ Failed to get the model list"
+  },
+  "optionsFetchFoundryLocalModelsFailed": {
+    "message": "❌ Failed to get the Foundry Local model list"
   },
   "optionsFoundDockerModels": {
     "message": "✅ Found $1 model(s)"
   },
   "optionsCannotConnectDockerAI": {
     "message": "❌ Unable to connect to Docker Desktop AI: $1"
+  },
+  "optionsCannotConnectFoundryLocal": {
+    "message": "❌ Unable to connect to Foundry Local: $1"
   },
   "optionsCurrentModelStatus": {
     "message": "✅ Current model: $1"

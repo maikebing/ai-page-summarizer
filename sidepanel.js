@@ -420,7 +420,7 @@ function extractPageContent() {
 async function callAI(provider, content, pageTitle, pageUrl) {
   const { t } = window.AppI18n;
   const config = await getAPIConfig(provider);
-  if (provider !== "ollama" && provider !== "dockerai" && provider !== "koboldcpp" && provider !== "giteeai" && !config.apiKey) {
+  if (!isLocalProvider(provider) && !config.apiKey) {
     throw new Error(t("sidepanelApiKeyMissing", getProviderLabel(provider)));
   }
   const prompt = t("sidepanelSummaryPrompt", [pageTitle || t("commonUnavailable"), pageUrl || t("commonUnavailable"), content]);
@@ -428,112 +428,7 @@ async function callAI(provider, content, pageTitle, pageUrl) {
     { role: "system", content: t("sidepanelAssistantSummaryRole") },
     { role: "user", content: prompt },
   ];
-  let apiUrl;
-  let headers;
-  let body;
-  if (provider === "deepseek") {
-    apiUrl = "https://api.deepseek.com/chat/completions";
-    headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${config.apiKey}`,
-    };
-    body = JSON.stringify({
-      model: config.model || "deepseek-chat",
-      messages,
-      max_tokens: 2000,
-      temperature: 0.3,
-    });
-  } else if (provider === "ollama") {
-    const baseUrl = (config.url || "http://localhost:11434").replace(/\/+$/, "");
-    apiUrl = `${baseUrl}/api/chat`;
-    headers = {
-      "Content-Type": "application/json",
-    };
-    body = JSON.stringify({
-      model: config.model || "qwen2.5:7b",
-      messages,
-      stream: false,
-    });
-  } else if (provider === "dockerai") {
-    const baseUrl = (config.url || "http://localhost:8080").replace(/\/+$/, "");
-    apiUrl = `${baseUrl}/v1/chat/completions`;
-    headers = {
-      "Content-Type": "application/json",
-    };
-    body = JSON.stringify({
-      model: config.model || "qwen2.5-7b",
-      messages,
-      max_tokens: 2000,
-      temperature: 0.3,
-    });
-  } else if (provider === "koboldcpp") {
-    const baseUrl = (config.url || "http://localhost:5001").replace(/\/+$/, "");
-    apiUrl = `${baseUrl}/v1/chat/completions`;
-    headers = {
-      "Content-Type": "application/json",
-    };
-    body = JSON.stringify({
-      model: config.model || "llama.cpp",
-      messages,
-      max_tokens: 2000,
-      temperature: 0.3,
-    });
-  } else if (provider === "giteeai") {
-    apiUrl = "https://ai.gitee.com/v1/chat/completions";
-    headers = {
-      "Content-Type": "application/json",
-      "X-Failover-Enabled": "true",
-      Authorization: `Bearer ${config.apiKey}`,
-    };
-    body = JSON.stringify({
-      model: config.model || "Qwen3-8B",
-      messages,
-      stream: false,
-      max_tokens: 1024,
-      temperature: 0.7,
-      top_p: 0.7,
-      top_k: 50,
-      frequency_penalty: 1
-    });
-  } else {
-    apiUrl = "https://ark.cn-beijing.volces.com/api/v3/chat/completions";
-    headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${config.apiKey}`,
-    };
-    body = JSON.stringify({
-      model: config.model || "doubao-pro-256k",
-      messages,
-      max_tokens: 2000,
-      temperature: 0.3,
-    });
-  }
-  let response, data;
-  if (provider === "ollama") {
-    response = await proxyFetch(apiUrl, { method: "POST", headers, body });
-    if (!response.ok) {
-      const errData = { error: { message: response.error } };
-      throw new Error(t("sidepanelApiRequestFailed", [response.status || "?", errData.error?.message || response.statusText || response.error || t("commonUnknownError")]));
-    }
-    data = response.data;
-    return data.message?.content || t("sidepanelNoSummaryResult");
-  } else if (provider === "dockerai" || provider === "koboldcpp") {
-    response = await fetch(apiUrl, { method: "POST", headers, body });
-    if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      throw new Error(t("sidepanelApiRequestFailed", [response.status || "?", errData.error?.message || response.statusText || response.error || t("commonUnknownError")]));
-    }
-    data = await response.json();
-    return data.choices?.[0]?.message?.content || t("sidepanelNoSummaryResult");
-  } else {
-    response = await fetch(apiUrl, { method: "POST", headers, body });
-    if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      throw new Error(t("sidepanelApiRequestFailed", [response.status || "?", errData.error?.message || response.statusText || response.error || t("commonUnknownError")]));
-    }
-    data = await response.json();
-    return data.choices?.[0]?.message?.content || t("sidepanelNoSummaryResult");
-  }
+  return await executeProviderRequest(provider, config, messages, 0.3, "sidepanelNoSummaryResult");
 }
 
 /**
@@ -542,109 +437,295 @@ async function callAI(provider, content, pageTitle, pageUrl) {
 async function callChatAI(provider, messages) {
   const { t } = window.AppI18n;
   const config = await getAPIConfig(provider);
-  if (provider !== "ollama" && provider !== "dockerai" && provider !== "koboldcpp" && provider !== "giteeai" && !config.apiKey) {
+  if (!isLocalProvider(provider) && !config.apiKey) {
     throw new Error(t("sidepanelApiKeyMissing", getProviderLabel(provider)));
   }
-  let apiUrl;
-  let headers;
-  let body;
+  return await executeProviderRequest(provider, config, messages, 0.5, "sidepanelNoReplyResult");
+}
+
+function isLocalProvider(provider) {
+  return provider === "ollama" || provider === "dockerai" || provider === "foundrylocal" || provider === "koboldcpp";
+}
+
+async function executeProviderRequest(provider, config, messages, temperature, emptyMessageKey) {
+  const { t } = window.AppI18n;
+  const request = buildProviderRequest(provider, config, messages, temperature);
+
+  const response = await proxyFetch(request.apiUrl, {
+    method: "POST",
+    headers: request.headers,
+    body: request.body,
+  }, config.proxy);
+
+  if (!response.ok) {
+    throw new Error(t("sidepanelApiRequestFailed", [response.status || "?", getProviderErrorMessage(provider, response.data || { error: { message: response.error } }, response.error)]));
+  }
+
+  return extractProviderText(provider, response.data, emptyMessageKey);
+}
+
+function buildProviderRequest(provider, config, messages, temperature) {
   if (provider === "deepseek") {
-    apiUrl = "https://api.deepseek.com/chat/completions";
-    headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${config.apiKey}`,
+    return {
+      apiUrl: "https://api.deepseek.com/chat/completions",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${config.apiKey}`,
+      },
+      body: JSON.stringify({
+        model: config.model || "deepseek-chat",
+        messages,
+        max_tokens: 2000,
+        temperature,
+      }),
     };
-    body = JSON.stringify({
-      model: config.model || "deepseek-chat",
-      messages,
-      max_tokens: 2000,
-      temperature: 0.5,
-    });
-  } else if (provider === "ollama") {
+  }
+
+  if (provider === "openai") {
+    return {
+      apiUrl: "https://api.openai.com/v1/chat/completions",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${config.apiKey}`,
+      },
+      body: JSON.stringify({
+        model: config.model || "gpt-4.1-mini",
+        messages,
+        max_tokens: 2000,
+        temperature,
+      }),
+    };
+  }
+
+  if (provider === "gemini") {
+    const { systemInstruction, contents } = convertMessagesForGemini(messages);
+    return {
+      apiUrl: `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(config.model || "gemini-2.0-flash")}:generateContent?key=${encodeURIComponent(config.apiKey)}`,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...(systemInstruction ? { systemInstruction } : {}),
+        contents,
+        generationConfig: {
+          temperature,
+          maxOutputTokens: 2048,
+        },
+      }),
+    };
+  }
+
+  if (provider === "anthropic") {
+    const { system, messages: anthropicMessages } = convertMessagesForAnthropic(messages);
+    return {
+      apiUrl: "https://api.anthropic.com/v1/messages",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": config.apiKey,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: config.model || "claude-3-5-sonnet-latest",
+        system,
+        messages: anthropicMessages,
+        max_tokens: 2000,
+        temperature,
+      }),
+    };
+  }
+
+  if (provider === "ollama") {
     const baseUrl = (config.url || "http://localhost:11434").replace(/\/+$/, "");
-    apiUrl = `${baseUrl}/api/chat`;
-    headers = { "Content-Type": "application/json" };
-    body = JSON.stringify({
-      model: config.model || "qwen2.5:7b",
-      messages,
-      stream: false,
-    });
-  } else if (provider === "dockerai") {
+    return {
+      apiUrl: `${baseUrl}/api/chat`,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: config.model || "qwen2.5:7b",
+        messages,
+        stream: false,
+      }),
+    };
+  }
+
+  if (provider === "dockerai") {
     const baseUrl = (config.url || "http://localhost:8080").replace(/\/+$/, "");
-    apiUrl = `${baseUrl}/v1/chat/completions`;
-    headers = { "Content-Type": "application/json" };
-    body = JSON.stringify({
-      model: config.model || "qwen2.5-7b",
-      messages,
-      max_tokens: 2000,
-      temperature: 0.5,
-    });
-  } else if (provider === "koboldcpp") {
+    return {
+      apiUrl: `${baseUrl}/v1/chat/completions`,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: config.model || "qwen2.5-7b",
+        messages,
+        max_tokens: 2000,
+        temperature,
+      }),
+    };
+  }
+
+  if (provider === "foundrylocal") {
+    const baseUrl = (config.url || "http://localhost:5273").replace(/\/+$/, "");
+    return {
+      apiUrl: `${baseUrl}/v1/chat/completions`,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: config.model || "",
+        messages,
+        max_tokens: 2000,
+        temperature,
+      }),
+    };
+  }
+
+  if (provider === "koboldcpp") {
     const baseUrl = (config.url || "http://localhost:5001").replace(/\/+$/, "");
-    apiUrl = `${baseUrl}/v1/chat/completions`;
-    headers = { "Content-Type": "application/json" };
-    body = JSON.stringify({
-      model: config.model || "llama.cpp",
-      messages,
-      max_tokens: 2000,
-      temperature: 0.5,
-    });
-  } else if (provider === "giteeai") {
-    apiUrl = "https://ai.gitee.com/v1/chat/completions";
-    headers = {
-      "Content-Type": "application/json",
-      "X-Failover-Enabled": "true",
-      Authorization: `Bearer ${config.apiKey}`,
+    return {
+      apiUrl: `${baseUrl}/v1/chat/completions`,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: config.model || "llama.cpp",
+        messages,
+        max_tokens: 2000,
+        temperature,
+      }),
     };
-    body = JSON.stringify({
-      model: config.model || "Qwen3-8B",
-      messages,
-      stream: false,
-      max_tokens: 1024,
-      temperature: 0.7,
-      top_p: 0.7,
-      top_k: 50,
-      frequency_penalty: 1
-    });
-  } else {
-    apiUrl = "https://ark.cn-beijing.volces.com/api/v3/chat/completions";
-    headers = {
+  }
+
+  if (provider === "giteeai") {
+    return {
+      apiUrl: "https://ai.gitee.com/v1/chat/completions",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Failover-Enabled": "true",
+        Authorization: `Bearer ${config.apiKey}`,
+      },
+      body: JSON.stringify({
+        model: config.model || "Qwen3-8B",
+        messages,
+        stream: false,
+        max_tokens: 1024,
+        temperature: Math.max(temperature, 0.5),
+        top_p: 0.7,
+        top_k: 50,
+        frequency_penalty: 1,
+      }),
+    };
+  }
+
+  if (provider === "githubcopilot") {
+    return {
+      apiUrl: "https://models.github.ai/inference/chat/completions",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${config.apiKey}`,
+      },
+      body: JSON.stringify({
+        model: config.model || "openai/gpt-4.1-mini",
+        messages,
+        max_tokens: 2000,
+        temperature,
+      }),
+    };
+  }
+
+  return {
+    apiUrl: "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+    headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${config.apiKey}`,
-    };
-    body = JSON.stringify({
+    },
+    body: JSON.stringify({
       model: config.model || "doubao-pro-256k",
       messages,
       max_tokens: 2000,
-      temperature: 0.5,
-    });
-  }
-  let response, data;
+      temperature,
+    }),
+  };
+}
+
+function extractProviderText(provider, data, emptyMessageKey) {
+  const { t } = window.AppI18n;
+
   if (provider === "ollama") {
-    response = await proxyFetch(apiUrl, { method: "POST", headers, body });
-    if (!response.ok) {
-      const errData = { error: { message: response.error } };
-      throw new Error(t("sidepanelApiRequestFailed", [response.status || "?", errData.error?.message || response.statusText || response.error || t("commonUnknownError")]));
-    }
-    data = response.data;
-    return data.message?.content || t("sidepanelNoReplyResult");
-  } else if (provider === "dockerai" || provider === "koboldcpp") {
-    response = await fetch(apiUrl, { method: "POST", headers, body });
-    if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      throw new Error(t("sidepanelApiRequestFailed", [response.status || "?", errData.error?.message || response.statusText || response.error || t("commonUnknownError")]));
-    }
-    data = await response.json();
-    return data.choices?.[0]?.message?.content || t("sidepanelNoReplyResult");
-  } else {
-    response = await fetch(apiUrl, { method: "POST", headers, body });
-    if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      throw new Error(t("sidepanelApiRequestFailed", [response.status || "?", errData.error?.message || response.statusText || response.error || t("commonUnknownError")]));
-    }
-    data = await response.json();
-    return data.choices?.[0]?.message?.content || t("sidepanelNoReplyResult");
+    return data.message?.content || t(emptyMessageKey);
   }
+
+  if (provider === "gemini") {
+    return data.candidates?.[0]?.content?.parts?.map((part) => part.text || "").join("") || t(emptyMessageKey);
+  }
+
+  if (provider === "anthropic") {
+    return data.content?.map((part) => part.text || "").join("") || t(emptyMessageKey);
+  }
+
+  return data.choices?.[0]?.message?.content || t(emptyMessageKey);
+}
+
+function getProviderErrorMessage(provider, data, statusText) {
+  if (provider === "anthropic") {
+    return data.error?.message || data.message || statusText || window.AppI18n.t("commonUnknownError");
+  }
+
+  if (provider === "gemini") {
+    return data.error?.message || statusText || window.AppI18n.t("commonUnknownError");
+  }
+
+  return data.error?.message || statusText || window.AppI18n.t("commonUnknownError");
+}
+
+function convertMessagesForGemini(messages) {
+  const systemMessages = [];
+  const contents = [];
+
+  messages.forEach((message) => {
+    if (message.role === "system") {
+      systemMessages.push(message.content);
+      return;
+    }
+
+    contents.push({
+      role: message.role === "assistant" ? "model" : "user",
+      parts: [{ text: message.content }],
+    });
+  });
+
+  while (contents[0]?.role === "model") {
+    const firstModelMessage = contents.shift();
+    const modelText = firstModelMessage?.parts?.map((part) => part.text || "").join("") || "";
+    if (modelText) {
+      systemMessages.push(modelText);
+    }
+  }
+
+  return {
+    systemInstruction: systemMessages.length
+      ? { parts: [{ text: systemMessages.join("\n\n") }] }
+      : undefined,
+    contents,
+  };
+}
+
+function convertMessagesForAnthropic(messages) {
+  const systemParts = messages
+    .filter((message) => message.role === "system")
+    .map((message) => message.content);
+
+  const nonSystemMessages = messages
+    .filter((message) => message.role !== "system")
+    .map((message) => ({
+      role: message.role === "assistant" ? "assistant" : "user",
+      content: message.content,
+    }));
+
+  while (nonSystemMessages[0]?.role === "assistant") {
+    const firstAssistant = nonSystemMessages.shift();
+    if (firstAssistant?.content) {
+      systemParts.push(firstAssistant.content);
+    }
+  }
+
+  return {
+    system: systemParts.join("\n\n"),
+    messages: nonSystemMessages,
+  };
 }
 
 function getProviderLabel(provider) {
@@ -653,12 +734,22 @@ function getProviderLabel(provider) {
   switch (provider) {
     case "deepseek":
       return t("providerDeepSeek");
+    case "openai":
+      return t("providerOpenAI");
+    case "gemini":
+      return t("providerGemini");
+    case "anthropic":
+      return t("providerAnthropic");
+    case "githubcopilot":
+      return t("providerGitHubCopilot");
     case "doubao":
       return t("providerDoubao");
     case "ollama":
       return t("providerOllamaLocal");
     case "dockerai":
       return t("providerDockerAI");
+    case "foundrylocal":
+      return t("providerFoundryLocal");
     case "koboldcpp":
       return t("providerKoboldCppLocal");
     case "giteeai":
@@ -671,42 +762,146 @@ function getProviderLabel(provider) {
 function getAPIConfig(provider) {
   return new Promise((resolve) => {
     if (provider === "ollama") {
-      chrome.storage.sync.get(["ollama_url", "ollama_model"], (data) => {
+      chrome.storage.sync.get(["ollama_url", "ollama_model", ...getProviderProxyStorageKeys("ollama")], (data) => {
         resolve({
           url: data.ollama_url || "http://localhost:11434",
           model: data.ollama_model || "qwen2.5:7b",
+          proxy: getStoredProxyConfig(data, "ollama"),
         });
       });
     } else if (provider === "dockerai") {
-      chrome.storage.sync.get(["dockerai_url", "dockerai_model"], (data) => {
+      chrome.storage.sync.get(["dockerai_url", "dockerai_model", ...getProviderProxyStorageKeys("dockerai")], (data) => {
         resolve({
           url: data.dockerai_url || "http://localhost:8080",
           model: data.dockerai_model || "qwen2.5-7b",
+          proxy: getStoredProxyConfig(data, "dockerai"),
+        });
+      });
+    } else if (provider === "foundrylocal") {
+      chrome.storage.sync.get(["foundrylocal_url", "foundrylocal_model", ...getProviderProxyStorageKeys("foundrylocal")], (data) => {
+        resolve({
+          url: data.foundrylocal_url || "http://localhost:5273",
+          model: data.foundrylocal_model || "",
+          proxy: getStoredProxyConfig(data, "foundrylocal"),
+        });
+      });
+    } else if (provider === "openai") {
+      chrome.storage.sync.get(["openai_api_key", "openai_model", ...getProviderProxyStorageKeys("openai")], (data) => {
+        resolve({
+          apiKey: data.openai_api_key || "",
+          model: data.openai_model || "gpt-4.1-mini",
+          proxy: getStoredProxyConfig(data, "openai"),
+        });
+      });
+    } else if (provider === "gemini") {
+      chrome.storage.sync.get(["gemini_api_key", "gemini_model", ...getProviderProxyStorageKeys("gemini")], (data) => {
+        resolve({
+          apiKey: data.gemini_api_key || "",
+          model: data.gemini_model || "gemini-2.0-flash",
+          proxy: getStoredProxyConfig(data, "gemini"),
+        });
+      });
+    } else if (provider === "anthropic") {
+      chrome.storage.sync.get(["anthropic_api_key", "anthropic_model", ...getProviderProxyStorageKeys("anthropic")], (data) => {
+        resolve({
+          apiKey: data.anthropic_api_key || "",
+          model: data.anthropic_model || "claude-3-5-sonnet-latest",
+          proxy: getStoredProxyConfig(data, "anthropic"),
         });
       });
     } else if (provider === "giteeai") {
-      chrome.storage.sync.get(["giteeai_api_key", "giteeai_model"], (data) => {
+      chrome.storage.sync.get(["giteeai_api_key", "giteeai_model", ...getProviderProxyStorageKeys("giteeai")], (data) => {
         resolve({
           apiKey: data["giteeai_api_key"] || "",
           model: data["giteeai_model"] || "Qwen3-8B",
+          proxy: getStoredProxyConfig(data, "giteeai"),
+        });
+      });
+    } else if (provider === "githubcopilot") {
+      chrome.storage.sync.get(["githubcopilot_api_key", "githubcopilot_model", ...getProviderProxyStorageKeys("githubcopilot")], (data) => {
+        resolve({
+          apiKey: data.githubcopilot_api_key || "",
+          model: data.githubcopilot_model || "openai/gpt-4.1-mini",
+          proxy: getStoredProxyConfig(data, "githubcopilot"),
         });
       });
     } else {
-      chrome.storage.sync.get([`${provider}_api_key`, `${provider}_model`], (data) => {
+      chrome.storage.sync.get([`${provider}_api_key`, `${provider}_model`, ...getProviderProxyStorageKeys(provider)], (data) => {
         resolve({
           apiKey: data[`${provider}_api_key`] || "",
           model: data[`${provider}_model`] || "",
+          proxy: getStoredProxyConfig(data, provider),
         });
       });
     }
   });
 }
 
+function getProxyScopeForProvider(provider) {
+  return isLocalProvider(provider) ? "local" : "online";
+}
+
+function getProviderProxyStorageKeys(provider) {
+  const scope = getProxyScopeForProvider(provider);
+  const sharedPrefix = `proxy_${scope}_`;
+
+  return [
+    `${sharedPrefix}mode`,
+    `${sharedPrefix}scheme`,
+    `${sharedPrefix}host`,
+    `${sharedPrefix}port`,
+    `${sharedPrefix}username`,
+    `${sharedPrefix}password`,
+    `${sharedPrefix}enabled_providers`,
+    `${provider}_proxy_mode`,
+    `${provider}_proxy_scheme`,
+    `${provider}_proxy_host`,
+    `${provider}_proxy_port`,
+    `${provider}_proxy_username`,
+    `${provider}_proxy_password`,
+  ];
+}
+
+function getStoredProxyConfig(data, provider) {
+  const scope = getProxyScopeForProvider(provider);
+  const sharedPrefix = `proxy_${scope}_`;
+  const sharedEnabled = data?.[`${sharedPrefix}enabled_providers`];
+
+  const sharedConfig = {
+    mode: data?.[`${sharedPrefix}mode`] || "",
+    scheme: data?.[`${sharedPrefix}scheme`] || "http",
+    host: data?.[`${sharedPrefix}host`] || "",
+    port: data?.[`${sharedPrefix}port`] || "",
+    username: data?.[`${sharedPrefix}username`] || "",
+    password: data?.[`${sharedPrefix}password`] || "",
+  };
+
+  const legacyConfig = {
+    mode: data?.[`${provider}_proxy_mode`] || "browser",
+    scheme: data?.[`${provider}_proxy_scheme`] || "http",
+    host: data?.[`${provider}_proxy_host`] || "",
+    port: data?.[`${provider}_proxy_port`] || "",
+    username: data?.[`${provider}_proxy_username`] || "",
+    password: data?.[`${provider}_proxy_password`] || "",
+  };
+
+  if (sharedConfig.mode) {
+    const enabled = Array.isArray(sharedEnabled)
+      ? sharedEnabled.includes(provider)
+      : true;
+    return enabled ? sharedConfig : { ...sharedConfig, mode: "none" };
+  }
+
+  return {
+    ...legacyConfig,
+  };
+}
+
 /**
  * 通过 background service worker 代理 fetch 请求
  * 先 ping 唤醒 worker，再建立长连接，解决 Ollama 长时间推理 + CORS 问题
  */
-async function proxyFetch(url, options) {
+async function proxyFetch(url, options, proxyConfig) {
   // 先 ping 唤醒 service worker
   await new Promise((resolve) => {
     chrome.runtime.sendMessage({ type: "ping" }, () => {
@@ -720,7 +915,7 @@ async function proxyFetch(url, options) {
   const maxRetries = 2;
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
-      return await _doPortFetch(url, options);
+      return await _doPortFetch(url, options, proxyConfig);
     } catch (err) {
       if (attempt < maxRetries - 1) {
         // 等待一下再重试
@@ -732,7 +927,7 @@ async function proxyFetch(url, options) {
   }
 }
 
-function _doPortFetch(url, options) {
+function _doPortFetch(url, options, proxyConfig) {
   return new Promise((resolve, reject) => {
     try {
       const port = chrome.runtime.connect({ name: "fetch-proxy" });
@@ -755,7 +950,7 @@ function _doPortFetch(url, options) {
         reject(new Error(err?.message || window.AppI18n.t("sidepanelBackgroundDisconnected")));
       });
 
-      port.postMessage({ url, options, requestId });
+      port.postMessage({ url, options, proxyConfig, requestId });
     } catch (err) {
       reject(new Error(err.message || window.AppI18n.t("sidepanelCannotConnectBackground")));
     }

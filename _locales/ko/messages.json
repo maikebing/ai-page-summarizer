@@ -164,6 +164,96 @@
   "optionsHeading": {
     "message": "⚙️ AI 페이지 요약기 - 설정"
   },
+  "optionsPageDescription": {
+    "message": "탭, 그룹 카드, 접이식 패널로 로컬 모델과 온라인 API 설정을 더 효율적으로 관리하세요."
+  },
+  "optionsTabAll": {
+    "message": "전체"
+  },
+  "optionsTabLocal": {
+    "message": "로컬 모델"
+  },
+  "optionsTabOnline": {
+    "message": "온라인 API"
+  },
+  "optionsGroupLocal": {
+    "message": "🖥️ 로컬 모델"
+  },
+  "optionsGroupLocalHint": {
+    "message": "로컬 장치 또는 LAN 서비스에서 실행되는 모델을 관리합니다."
+  },
+  "optionsGroupOnline": {
+    "message": "☁️ 온라인 모델 API"
+  },
+  "optionsGroupOnlineHint": {
+    "message": "클라우드 API 키와 모델 이름을 한곳에서 관리합니다."
+  },
+  "optionsCollapse": {
+    "message": "접기"
+  },
+  "optionsExpand": {
+    "message": "펼치기"
+  },
+  "optionsSearchPlaceholder": {
+    "message": "공급자, 모델 또는 설정 검색"
+  },
+  "optionsClearSearch": {
+    "message": "지우기"
+  },
+  "optionsEmptyState": {
+    "message": "일치하는 공급자 또는 설정을 찾을 수 없습니다."
+  },
+  "optionsBadgeLocal": {
+    "message": "로컬"
+  },
+  "optionsBadgeOnline": {
+    "message": "API"
+  },
+  "optionsStateUntested": {
+    "message": "미테스트"
+  },
+  "optionsStateNeedsConfig": {
+    "message": "설정 필요"
+  },
+  "optionsStateConfigured": {
+    "message": "설정됨"
+  },
+  "optionsStateLocalService": {
+    "message": "로컬 서비스"
+  },
+  "optionsStateConnected": {
+    "message": "연결됨"
+  },
+  "optionsStateFailed": {
+    "message": "연결 실패"
+  },
+  "optionsStateTesting": {
+    "message": "테스트 중"
+  },
+  "optionsTestConnection": {
+    "message": "연결 테스트"
+  },
+  "optionsTestingConnection": {
+    "message": "⏳ 연결 테스트 중..."
+  },
+  "optionsTestHintLocal": {
+    "message": "로컬 서비스에 접근 가능한지, 모델 목록을 불러올 수 있는지 확인합니다."
+  },
+  "optionsTestHintOnline": {
+    "message": "현재 API 키와 모델 설정으로 원격 서비스에 연결할 수 있는지 확인합니다."
+  },
+  "optionsTestSuccess": {
+    "message": "✅ 연결 성공"
+  },
+  "optionsTestSuccessWithCount": {
+    "message": "✅ 연결 성공, 모델 $1개를 찾았습니다"
+  },
+  "optionsTestSuccessModel": {
+    "message": "✅ 연결 성공, 현재 모델: $1"
+  },
+  "optionsTestMissingConfig": {
+    "message": "테스트 전에 API 키와 모델을 모두 입력하세요."
+  },
   "optionsSectionDeepSeek": {
     "message": "🤖 DeepSeek"
   },
