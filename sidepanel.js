@@ -423,9 +423,9 @@ async function callAI(provider, content, pageTitle, pageUrl) {
   if (!isLocalProvider(provider) && !config.apiKey) {
     throw new Error(t("sidepanelApiKeyMissing", getProviderLabel(provider)));
   }
-  const prompt = t("sidepanelSummaryPrompt", [pageTitle || t("commonUnavailable"), pageUrl || t("commonUnavailable"), content]);
+  const prompt = t("sidepanelSummaryModeUserPrompt", [pageTitle || t("commonUnavailable"), pageUrl || t("commonUnavailable"), content]);
   const messages = [
-    { role: "system", content: t("sidepanelAssistantSummaryRole") },
+    { role: "system", content: t("sidepanelSummaryModeSystemPrompt") },
     { role: "user", content: prompt },
   ];
   return await executeProviderRequest(provider, config, messages, 0.3, "sidepanelNoSummaryResult");
@@ -435,7 +435,7 @@ async function callAI(provider, content, pageTitle, pageUrl) {
  * 对话模式：发送完整对话历史给 AI
  */
 async function callChatAI(provider, messages) {
-  const { t } = window.AppI18n;
+          content: t("sidepanelFollowupPageSystemPrompt", [cachedPageTitle || t("commonUnavailable"), cachedPageUrl || t("commonUnavailable"), cachedPageContent])
   const config = await getAPIConfig(provider);
   if (!isLocalProvider(provider) && !config.apiKey) {
     throw new Error(t("sidepanelApiKeyMissing", getProviderLabel(provider)));
@@ -478,7 +478,7 @@ function buildProviderRequest(provider, config, messages, temperature) {
         Authorization: `Bearer ${config.apiKey}`,
       },
       body: JSON.stringify({
-        model: config.model || "deepseek-chat",
+            content: t("sidepanelFollowupSelectionSystemPrompt", [cachedPageTitle || t("commonUnavailable"), cachedPageUrl || t("commonUnavailable"), cachedPageContent])
         messages,
         max_tokens: 2000,
         temperature,

@@ -135,16 +135,16 @@
     "message": "Unable to connect to the Ollama service. Please check:\n1. Whether Ollama is running (ollama serve)\n2. Whether the OLLAMA_ORIGINS=* environment variable is set before startup\n   Windows: set OLLAMA_ORIGINS=* then run ollama serve\n   Mac/Linux: OLLAMA_ORIGINS=* ollama serve"
   },
   "sidepanelAssistantSummaryRole": {
-    "message": "You are a professional content analysis assistant who is good at quickly summarizing the key points of webpages."
+    "message": "You are a professional content analysis assistant who is good at quickly summarizing the key points of webpages. Always reply in the current UI language, which is English."
   },
   "sidepanelSummaryPrompt": {
-    "message": "Please summarize the following webpage in English. Requirements:\n1. Start with one sentence describing the main idea\n2. Then list 3-5 key points\n3. Highlight any important data or conclusions\n\nPage title: $1\nPage URL: $2\n\nPage content:\n$3"
+    "message": "Please always summarize the following webpage in the current UI language, which is English. Requirements:\n1. Start with one sentence describing the main idea\n2. Then list 3-5 key points\n3. Highlight any important data or conclusions\n4. Do not switch to another language unless a source term must be preserved\n\nPage title: $1\nPage URL: $2\n\nPage content:\n$3"
   },
   "sidepanelPageSummarySystemPrompt": {
-    "message": "You are a professional content analysis assistant. The user is viewing a webpage and you have already summarized it. The user may now ask follow-up questions about this page. Answer based on the webpage content below. If a question goes beyond the page content, you may use your own knowledge, but clearly state which parts come from the page and which parts are your additions.\n\nPage title: $1\nPage URL: $2\n\nPage content:\n$3"
+    "message": "You are a professional content analysis assistant. The user is viewing a webpage and you have already summarized it. The user may now ask follow-up questions about this page. Answer based on the webpage content below, and always reply in the current UI language, which is English. If a question goes beyond the page content, you may use your own knowledge, but clearly state which parts come from the page and which parts are your additions.\n\nPage title: $1\nPage URL: $2\n\nPage content:\n$3"
   },
   "sidepanelSelectionSummarySystemPrompt": {
-    "message": "You are a professional content analysis assistant. The user selected a passage on a webpage and you have already summarized it. The user may now ask follow-up questions about this content. Answer based on the content below. If a question goes beyond the selected content, you may use your own knowledge, but clearly state which parts come from the selected content and which parts are your additions.\n\nPage title: $1\nPage URL: $2\n\nSelected content:\n$3"
+    "message": "You are a professional content analysis assistant. The user selected a passage on a webpage and you have already summarized it. The user may now ask follow-up questions about this content. Answer based on the content below, and always reply in the current UI language, which is English. If a question goes beyond the selected content, you may use your own knowledge, but clearly state which parts come from the selected content and which parts are your additions.\n\nPage title: $1\nPage URL: $2\n\nSelected content:\n$3"
   },
   "commonUnavailable": {
     "message": "Unavailable"
