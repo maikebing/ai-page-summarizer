@@ -123,20 +123,61 @@ function cleanupLegacyNetworkSettings() {
   });
 }
 
-async function performJsonFetch(url, options = {}) {
-  const response = await fetch(url, {
-    method: options.method || "GET",
-    headers: options.headers || {},
-    body: options.body,
-  });
-  const data = await response.json().catch(() => ({}));
+function getRequestHost(url) {
+  try {
+    return new URL(url).host;
+  } catch {
+    return "";
+  }
+}
 
-  return {
-    ok: response.ok,
-    status: response.status,
-    data,
-    error: data.error?.message || data.message || response.statusText,
-  };
+function getNetworkErrorMessage(url, error) {
+  const host = getRequestHost(url);
+
+  if (error?.name === "AbortError") {
+    return t("backgroundRequestTimedOut", host || t("commonUnavailable"));
+  }
+
+  if (host === "models.github.ai") {
+    return t("backgroundCannotReachGitHubModels");
+  }
+
+  if (host) {
+    return t("backgroundCannotReachRemoteHost", host);
+  }
+
+  return error?.message || t("commonNetworkRequestFailed");
+}
+
+async function performJsonFetch(url, options = {}) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 25000);
+
+  try {
+    const response = await fetch(url, {
+      method: options.method || "GET",
+      headers: options.headers || {},
+      body: options.body,
+      signal: controller.signal,
+    });
+    const data = await response.json().catch(() => ({}));
+
+    return {
+      ok: response.ok,
+      status: response.status,
+      data,
+      error: data.error?.message || data.message || response.statusText,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      status: 0,
+      data: {},
+      error: getNetworkErrorMessage(url, error),
+    };
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 chrome.runtime.onConnect.addListener((port) => {
@@ -193,12 +234,6 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       .then((response) => {
         sendResponse(response);
       })
-      .catch((error) => {
-        sendResponse({
-          ok: false,
-          error: error.message || t("commonNetworkRequestFailed"),
-        });
-      });
     return true;
   }
 

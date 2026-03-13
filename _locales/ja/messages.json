@@ -137,6 +137,15 @@
   "commonNetworkRequestFailed": {
     "message": "ネットワークリクエストに失敗しました"
   },
+  "backgroundCannotReachGitHubModels": {
+    "message": "GitHub Models（models.github.ai）に接続できません。現在のネットワーク、DNS、システムファイアウォール、または経路上でこのドメインが遮断されていないか確認してください。"
+  },
+  "backgroundCannotReachRemoteHost": {
+    "message": "リモートホストに接続できません: $1"
+  },
+  "backgroundRequestTimedOut": {
+    "message": "リクエストがタイムアウトしました: $1"
+  },
   "commonUnknownError": {
     "message": "不明なエラー"
   },
@@ -174,7 +183,7 @@
     "message": "ローカルモデル"
   },
   "optionsTabOnline": {
-    "message": "オンライン API"
+    "message": "オンライン AI モデル API"
   },
   "optionsGroupLocal": {
     "message": "🖥️ ローカルモデル"
@@ -235,6 +244,48 @@
   },
   "optionsTestingConnection": {
     "message": "⏳ 接続を確認しています..."
+  },
+  "optionsNetworkDiagnosticsButton": {
+    "message": "ネットワーク診断"
+  },
+  "optionsNetworkDiagnosticsTitle": {
+    "message": "ネットワーク診断"
+  },
+  "optionsNetworkDiagnosticsHint": {
+    "message": "現在のブラウザーのネットワーク経路とプロキシ設定を使って、各 provider の到達性を確認します。"
+  },
+  "optionsNetworkDiagnosticsIdle": {
+    "message": "「ネットワーク診断」をクリックして確認を開始します。"
+  },
+  "optionsNetworkDiagnosticsPendingBadge": {
+    "message": "待機中"
+  },
+  "optionsNetworkDiagnosticsPending": {
+    "message": "診断の開始を待っています。"
+  },
+  "optionsNetworkDiagnosticsProgress": {
+    "message": "$2 件中 $1 件目の provider を診断中..."
+  },
+  "optionsNetworkDiagnosticsRunning": {
+    "message": "⏳ 各 provider のネットワーク到達性を確認しています..."
+  },
+  "optionsNetworkDiagnosticsSummary": {
+    "message": "今回の診断結果: 到達可能 $1 件、到達不可 $2 件。"
+  },
+  "optionsNetworkDiagnosticsReachableBadge": {
+    "message": "到達可"
+  },
+  "optionsNetworkDiagnosticsUnreachableBadge": {
+    "message": "到達不可"
+  },
+  "optionsNetworkDiagnosticsReachableStatus": {
+    "message": "ネットワーク到達可、HTTP ステータス: $1"
+  },
+  "optionsNetworkDiagnosticsUnreachable": {
+    "message": "現在のブラウザーのネットワーク経路ではこのエンドポイントに接続できません。"
+  },
+  "optionsNetworkDiagnosticsInvalidUrl": {
+    "message": "URL の形式が無効です。現在の設定を確認してください。"
   },
   "optionsTestHintLocal": {
     "message": "ローカルサービスに接続できるか、モデル一覧を取得できるかを確認します。"
@@ -306,7 +357,7 @@
     "message": "Qwen3-8B"
   },
   "optionsHintGiteeModel": {
-    "message": "Qwen3-8B のようなモデル名を入力してください。"
+    "message": "ドロップダウンからモデルを選択してください。例: Qwen3-8B。"
   },
   "optionsPlaceholderDoubaoKey": {
     "message": "your-ark-api-key"
@@ -318,7 +369,7 @@
     "message": "doubao-pro-256k または endpoint ID"
   },
   "optionsHintDoubaoModel": {
-    "message": "モデル名または作成したエンドポイントIDを入力してください。"
+    "message": "ドロップダウンからモデルまたはエンドポイントIDを選択してください。"
   },
   "optionsPlaceholderOllamaUrl": {
     "message": "http://localhost:11434"

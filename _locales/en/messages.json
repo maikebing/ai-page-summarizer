@@ -152,6 +152,15 @@
   "commonNetworkRequestFailed": {
     "message": "Network request failed"
   },
+  "backgroundCannotReachGitHubModels": {
+    "message": "Unable to reach GitHub Models (models.github.ai). Check your current network, DNS, system firewall, or whether this domain is blocked on your route."
+  },
+  "backgroundCannotReachRemoteHost": {
+    "message": "Unable to reach remote host: $1"
+  },
+  "backgroundRequestTimedOut": {
+    "message": "Request timed out: $1"
+  },
   "commonUnknownError": {
     "message": "Unknown error"
   },
@@ -180,7 +189,7 @@
     "message": "⚙️ AI Page Summarizer - Settings"
   },
   "optionsPageDescription": {
-    "message": "Use tabs, grouped cards, and collapsible panels to manage local models and online APIs more efficiently."
+    "message": "Use tabs, grouped cards, and collapsible panels to manage local models, online models, and diagnostics more efficiently."
   },
   "optionsTabAll": {
     "message": "All"
@@ -189,7 +198,10 @@
     "message": "Local models"
   },
   "optionsTabOnline": {
-    "message": "Online APIs"
+    "message": "Online models"
+  },
+  "optionsTabAbout": {
+    "message": "About"
   },
   "optionsGroupLocal": {
     "message": "🖥️ Local models"
@@ -198,10 +210,10 @@
     "message": "Manage models running on your local machine or LAN service."
   },
   "optionsGroupOnline": {
-    "message": "☁️ Online model APIs"
+    "message": "☁️ Online models"
   },
   "optionsGroupOnlineHint": {
-    "message": "Manage cloud API keys and model names in one place."
+    "message": "Manage API keys and model names for hosted models in one place."
   },
   "optionsCollapse": {
     "message": "Collapse"
@@ -250,6 +262,129 @@
   },
   "optionsTestingConnection": {
     "message": "⏳ Testing connection..."
+  },
+  "optionsNetworkDiagnosticsButton": {
+    "message": "Network diagnostics"
+  },
+  "optionsNetworkDiagnosticsTitle": {
+    "message": "Network diagnostics"
+  },
+  "optionsNetworkDiagnosticsHint": {
+    "message": "Diagnostics use the browser's current network path and proxy settings to check reachability for each provider."
+  },
+  "optionsNetworkDiagnosticsIdle": {
+    "message": "Click \"Network diagnostics\" to start checking."
+  },
+  "optionsNetworkDiagnosticsPendingBadge": {
+    "message": "Pending"
+  },
+  "optionsNetworkDiagnosticsPending": {
+    "message": "Waiting to start diagnostics."
+  },
+  "optionsNetworkDiagnosticsProgress": {
+    "message": "Running diagnostics for provider $1 of $2..."
+  },
+  "optionsNetworkDiagnosticsRunning": {
+    "message": "⏳ Checking network reachability for all providers..."
+  },
+  "optionsNetworkDiagnosticsSummary": {
+    "message": "This run found $1 reachable providers and $2 unreachable providers."
+  },
+  "optionsNetworkDiagnosticsReachableBadge": {
+    "message": "Reachable"
+  },
+  "optionsNetworkDiagnosticsUnreachableBadge": {
+    "message": "Unreachable"
+  },
+  "optionsNetworkDiagnosticsReachableStatus": {
+    "message": "Network reachable, HTTP status: $1"
+  },
+  "optionsNetworkDiagnosticsUnreachable": {
+    "message": "This endpoint could not be reached through the browser's current network path."
+  },
+  "optionsNetworkDiagnosticsInvalidUrl": {
+    "message": "Invalid URL format. Check the current configuration first."
+  },
+  "optionsAboutTitle": {
+    "message": "About this project"
+  },
+  "optionsAboutSubtitle": {
+    "message": "View repository links, the current version, a project introduction, usage help, and recent UI changes."
+  },
+  "optionsAboutIntroTitle": {
+    "message": "Project introduction"
+  },
+  "optionsAboutIntroItem1": {
+    "message": "Supports full-page summaries, selected-text summaries, and multi-turn follow-up chat in the side panel."
+  },
+  "optionsAboutIntroItem2": {
+    "message": "Works with both hosted and local models so you can switch based on your scenario."
+  },
+  "optionsAboutIntroItem3": {
+    "message": "The settings page includes connection tests, model refresh actions, and network diagnostics."
+  },
+  "optionsAboutHelpTitle": {
+    "message": "Feedback / help"
+  },
+  "optionsAboutQuickStartTitle": {
+    "message": "Quick start"
+  },
+  "optionsAboutQuickStartItem1": {
+    "message": "Finish configuration in the Local models or Online models tab and save your settings first."
+  },
+  "optionsAboutQuickStartItem2": {
+    "message": "Open the side panel and click Summarize current page to generate the first summary."
+  },
+  "optionsAboutQuickStartItem3": {
+    "message": "If something cannot connect, check the provider state in Network diagnostics first."
+  },
+  "optionsAboutHelpGithubIssues": {
+    "message": "GitHub Issues: bug reports and feature requests"
+  },
+  "optionsAboutHelpGiteeIssues": {
+    "message": "Gitee Issues: feedback entry for users in mainland China"
+  },
+  "optionsAboutHelpItem1": {
+    "message": "For first-time use, finish model configuration in Settings before opening the side panel to summarize a page."
+  },
+  "optionsAboutHelpItem2": {
+    "message": "If a connection fails, use Network diagnostics first to check local and hosted provider reachability."
+  },
+  "optionsAboutLinksTitle": {
+    "message": "Repository links"
+  },
+  "optionsAboutMetaTitle": {
+    "message": "Version info"
+  },
+  "optionsAboutVersionLabel": {
+    "message": "Current version"
+  },
+  "optionsAboutPlatformsLabel": {
+    "message": "Supported platforms"
+  },
+  "optionsAboutPlatformsValue": {
+    "message": "Edge / Chrome extension"
+  },
+  "optionsAboutLicenseLabel": {
+    "message": "License"
+  },
+  "optionsAboutDescriptionTitle": {
+    "message": "Description"
+  },
+  "optionsAboutDescriptionBody": {
+    "message": "Summarize webpages with one click, continue with multi-turn chat, and work with hosted providers like DeepSeek, Doubao, and Gitee AI plus local providers such as Ollama, Docker Desktop AI, and KoboldCpp."
+  },
+  "optionsAboutChangelogTitle": {
+    "message": "Changelog"
+  },
+  "optionsAboutChangelogItem1": {
+    "message": "The settings page now uses four main tabs: Local models, Online models, Network diagnostics, and About."
+  },
+  "optionsAboutChangelogItem2": {
+    "message": "Network diagnostics now shows pending, in-progress, and final states per provider, with local providers checked first."
+  },
+  "optionsAboutChangelogItem3": {
+    "message": "Card layouts were aligned to keep heights as consistent as possible within each row."
   },
   "optionsTestHintLocal": {
     "message": "Test whether the local service is reachable and the model list can be loaded."
@@ -311,84 +446,6 @@
   "optionsLabelEndpoint": {
     "message": "Model / Endpoint ID"
   },
-  "optionsProxyModeLabel": {
-    "message": "Proxy"
-  },
-  "optionsProxyHint": {
-    "message": "Choose whether to follow the browser proxy or use a dedicated proxy for this provider."
-  },
-  "optionsProxyModeBrowser": {
-    "message": "Use browser proxy"
-  },
-  "optionsProxyModeNone": {
-    "message": "Do not use proxy"
-  },
-  "optionsProxyModeCustom": {
-    "message": "Use custom proxy"
-  },
-  "optionsProxySchemeLabel": {
-    "message": "Proxy type"
-  },
-  "optionsProxySchemeHttp": {
-    "message": "HTTP"
-  },
-  "optionsProxySchemeHttps": {
-    "message": "HTTPS"
-  },
-  "optionsProxySchemeSocks5": {
-    "message": "SOCKS5"
-  },
-  "optionsProxyHostLabel": {
-    "message": "Server address"
-  },
-  "optionsProxyPortLabel": {
-    "message": "Port"
-  },
-  "optionsProxyUsernameLabel": {
-    "message": "Username"
-  },
-  "optionsProxyPasswordLabel": {
-    "message": "Password"
-  },
-  "optionsProxyHostPlaceholder": {
-    "message": "127.0.0.1"
-  },
-  "optionsProxyPortPlaceholder": {
-    "message": "7890"
-  },
-  "optionsProxyUsernamePlaceholder": {
-    "message": "optional"
-  },
-  "optionsProxyPasswordPlaceholder": {
-    "message": "optional"
-  },
-  "optionsProxyTestButton": {
-    "message": "Test proxy"
-  },
-  "optionsProxyTesting": {
-    "message": "⏳ Testing proxy..."
-  },
-  "optionsProxyTestSuccess": {
-    "message": "✅ Proxy is reachable"
-  },
-  "optionsProxyMissingHostPort": {
-    "message": "Please fill in the proxy host and port first."
-  },
-  "optionsProxyExportButton": {
-    "message": "Export proxy"
-  },
-  "optionsProxyImportButton": {
-    "message": "Import proxy"
-  },
-  "optionsProxyExportSuccess": {
-    "message": "✅ Proxy settings exported"
-  },
-  "optionsProxyImportSuccess": {
-    "message": "✅ Proxy settings imported"
-  },
-  "optionsProxyImportFailed": {
-    "message": "❌ Failed to import proxy settings"
-  },
   "optionsLabelServerUrl": {
     "message": "Server URL"
   },
@@ -411,7 +468,7 @@
     "message": "gpt-4.1-mini"
   },
   "optionsHintOpenAIModel": {
-    "message": "Enter a GPT model such as gpt-4.1-mini."
+    "message": "Choose a GPT model from the dropdown, such as gpt-4.1-mini."
   },
   "optionsPlaceholderGeminiKey": {
     "message": "AIza..."
@@ -423,7 +480,7 @@
     "message": "gemini-2.0-flash"
   },
   "optionsHintGeminiModel": {
-    "message": "Enter a Gemini model such as gemini-2.0-flash."
+    "message": "Choose a Gemini model from the dropdown, such as gemini-2.0-flash."
   },
   "optionsPlaceholderAnthropicKey": {
     "message": "sk-ant-..."
@@ -435,7 +492,7 @@
     "message": "claude-3-5-sonnet-latest"
   },
   "optionsHintAnthropicModel": {
-    "message": "Enter a Claude model such as claude-3-5-sonnet-latest."
+    "message": "Choose a Claude model from the dropdown, such as claude-3-5-sonnet-latest."
   },
   "optionsHintDeepSeekHtml": {
     "message": "Get it from the <a href=\"https://platform.deepseek.com/api_keys\" target=\"_blank\">DeepSeek Open Platform</a>."
@@ -450,7 +507,7 @@
     "message": "Qwen3-8B"
   },
   "optionsHintGiteeModel": {
-    "message": "Enter a model name such as Qwen3-8B."
+    "message": "Choose a model from the dropdown, such as Qwen3-8B."
   },
   "optionsPlaceholderDoubaoKey": {
     "message": "your-ark-api-key"
@@ -468,7 +525,7 @@
     "message": "openai/gpt-4.1-mini"
   },
   "optionsHintGitHubCopilotModel": {
-    "message": "Enter a GitHub Models model ID such as openai/gpt-4.1-mini."
+    "message": "Choose a GitHub Models model ID from the dropdown, such as openai/gpt-4.1-mini."
   },
   "optionsHintDoubaoHtml": {
     "message": "Get it from the <a href=\"https://console.volcengine.com/ark\" target=\"_blank\">Volcengine Ark Console</a>."
@@ -477,7 +534,7 @@
     "message": "doubao-pro-256k or your endpoint ID"
   },
   "optionsHintDoubaoModel": {
-    "message": "Enter a model name or your endpoint ID."
+    "message": "Choose a model or endpoint ID from the dropdown."
   },
   "optionsPlaceholderOllamaUrl": {
     "message": "http://localhost:11434"
@@ -513,10 +570,10 @@
     "message": "Docker Desktop AI runs on <code>http://localhost:12434</code> by default. After changing the address, click \"Refresh\" to reload the model list."
   },
   "optionsPlaceholderFoundryLocalUrl": {
-    "message": "http://localhost:5273"
+    "message": "http://127.0.0.1:55928/"
   },
   "optionsHintFoundryLocalUrlHtml": {
-    "message": "Foundry Local usually exposes an OpenAI-compatible endpoint on <code>http://localhost:5273</code>. After changing the address, click \"Refresh\" to reload the model list."
+    "message": "Foundry Local runs on <code>http://127.0.0.1:55928/</code> by default. After changing the address, click \"Refresh\" to reload the model list."
   },
   "optionsNoLocalModels": {
     "message": "No local models"

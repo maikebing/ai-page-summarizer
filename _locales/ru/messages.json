@@ -137,6 +137,15 @@
   "commonNetworkRequestFailed": {
     "message": "Ошибка сетевого запроса"
   },
+  "backgroundCannotReachGitHubModels": {
+    "message": "Не удается подключиться к GitHub Models (models.github.ai). Проверьте текущую сеть, DNS, системный брандмауэр и не блокируется ли этот домен по вашему маршруту."
+  },
+  "backgroundCannotReachRemoteHost": {
+    "message": "Не удается подключиться к удаленному хосту: $1"
+  },
+  "backgroundRequestTimedOut": {
+    "message": "Время ожидания запроса истекло: $1"
+  },
   "commonUnknownError": {
     "message": "Неизвестная ошибка"
   },
@@ -174,7 +183,7 @@
     "message": "Локальные модели"
   },
   "optionsTabOnline": {
-    "message": "Онлайн API"
+    "message": "Онлайн API AI-моделей"
   },
   "optionsGroupLocal": {
     "message": "🖥️ Локальные модели"
@@ -235,6 +244,48 @@
   },
   "optionsTestingConnection": {
     "message": "⏳ Проверка подключения..."
+  },
+  "optionsNetworkDiagnosticsButton": {
+    "message": "Сетевая диагностика"
+  },
+  "optionsNetworkDiagnosticsTitle": {
+    "message": "Сетевая диагностика"
+  },
+  "optionsNetworkDiagnosticsHint": {
+    "message": "Диагностика использует текущий сетевой маршрут браузера и его прокси-настройки, чтобы проверить доступность каждого provider."
+  },
+  "optionsNetworkDiagnosticsIdle": {
+    "message": "Нажмите «Сетевая диагностика», чтобы начать проверку."
+  },
+  "optionsNetworkDiagnosticsPendingBadge": {
+    "message": "Ожидание"
+  },
+  "optionsNetworkDiagnosticsPending": {
+    "message": "Ожидает запуска диагностики."
+  },
+  "optionsNetworkDiagnosticsProgress": {
+    "message": "Проверяется provider $1 из $2..."
+  },
+  "optionsNetworkDiagnosticsRunning": {
+    "message": "⏳ Проверяется сетевая доступность всех provider..."
+  },
+  "optionsNetworkDiagnosticsSummary": {
+    "message": "Результат диагностики: доступно $1, недоступно $2."
+  },
+  "optionsNetworkDiagnosticsReachableBadge": {
+    "message": "Доступно"
+  },
+  "optionsNetworkDiagnosticsUnreachableBadge": {
+    "message": "Недоступно"
+  },
+  "optionsNetworkDiagnosticsReachableStatus": {
+    "message": "Сеть доступна, HTTP-статус: $1"
+  },
+  "optionsNetworkDiagnosticsUnreachable": {
+    "message": "Не удалось подключиться к этой точке через текущий сетевой маршрут браузера."
+  },
+  "optionsNetworkDiagnosticsInvalidUrl": {
+    "message": "Неверный формат URL. Сначала проверьте текущие настройки."
   },
   "optionsTestHintLocal": {
     "message": "Проверьте доступность локального сервиса и возможность загрузки списка моделей."
@@ -306,7 +357,7 @@
     "message": "Qwen3-8B"
   },
   "optionsHintGiteeModel": {
-    "message": "Введите имя модели, например Qwen3-8B."
+    "message": "Выберите модель из выпадающего списка, например Qwen3-8B."
   },
   "optionsPlaceholderDoubaoKey": {
     "message": "your-ark-api-key"
@@ -318,7 +369,7 @@
     "message": "doubao-pro-256k или ваш endpoint ID"
   },
   "optionsHintDoubaoModel": {
-    "message": "Введите имя модели или ваш endpoint ID."
+    "message": "Выберите модель или endpoint ID из выпадающего списка."
   },
   "optionsPlaceholderOllamaUrl": {
     "message": "http://localhost:11434"

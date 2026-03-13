@@ -152,6 +152,15 @@
   "commonNetworkRequestFailed": {
     "message": "网络请求失败"
   },
+  "backgroundCannotReachGitHubModels": {
+    "message": "无法连接 GitHub Models 服务（models.github.ai）。请检查当前网络、DNS、系统防火墙或运营商链路是否拦截了该域名。"
+  },
+  "backgroundCannotReachRemoteHost": {
+    "message": "无法连接远程主机：$1"
+  },
+  "backgroundRequestTimedOut": {
+    "message": "请求超时：$1"
+  },
   "commonUnknownError": {
     "message": "未知错误"
   },
@@ -180,7 +189,7 @@
     "message": "⚙️ AI 页面总结器 - 设置"
   },
   "optionsPageDescription": {
-    "message": "使用选项卡、分组卡片和折叠面板，更高效地管理本地模型与在线 API 设置。"
+    "message": "使用选项卡、分组卡片和折叠面板，更高效地管理本地模型、在线模型与诊断信息。"
   },
   "optionsTabAll": {
     "message": "全部"
@@ -189,7 +198,10 @@
     "message": "本地模型"
   },
   "optionsTabOnline": {
-    "message": "在线 API"
+    "message": "在线模型"
+  },
+  "optionsTabAbout": {
+    "message": "关于"
   },
   "optionsGroupLocal": {
     "message": "🖥️ 本地模型"
@@ -198,10 +210,10 @@
     "message": "管理运行在本机或局域网服务上的模型。"
   },
   "optionsGroupOnline": {
-    "message": "☁️ 在线模型 API"
+    "message": "☁️ 在线模型"
   },
   "optionsGroupOnlineHint": {
-    "message": "统一管理云端 API Key 和模型名称。"
+    "message": "统一管理云端模型的 API Key 和模型名称。"
   },
   "optionsCollapse": {
     "message": "折叠"
@@ -250,6 +262,129 @@
   },
   "optionsTestingConnection": {
     "message": "⏳ 正在测试连接..."
+  },
+  "optionsNetworkDiagnosticsButton": {
+    "message": "网络诊断"
+  },
+  "optionsNetworkDiagnosticsTitle": {
+    "message": "网络诊断"
+  },
+  "optionsNetworkDiagnosticsHint": {
+    "message": "诊断会沿用浏览器当前的网络路径与代理设置，对各 provider 做可达性检查。"
+  },
+  "optionsNetworkDiagnosticsIdle": {
+    "message": "点击“网络诊断”开始检查。"
+  },
+  "optionsNetworkDiagnosticsPendingBadge": {
+    "message": "待诊断"
+  },
+  "optionsNetworkDiagnosticsPending": {
+    "message": "等待开始诊断。"
+  },
+  "optionsNetworkDiagnosticsProgress": {
+    "message": "正在诊断第 $1 / $2 个 provider..."
+  },
+  "optionsNetworkDiagnosticsRunning": {
+    "message": "⏳ 正在检查各 provider 的网络可达性..."
+  },
+  "optionsNetworkDiagnosticsSummary": {
+    "message": "本轮诊断中，$1 个 provider 可达，$2 个 provider 不可达。"
+  },
+  "optionsNetworkDiagnosticsReachableBadge": {
+    "message": "可达"
+  },
+  "optionsNetworkDiagnosticsUnreachableBadge": {
+    "message": "不可达"
+  },
+  "optionsNetworkDiagnosticsReachableStatus": {
+    "message": "网络可达，HTTP 状态：$1"
+  },
+  "optionsNetworkDiagnosticsUnreachable": {
+    "message": "无法通过当前浏览器网络路径连接该端点。"
+  },
+  "optionsNetworkDiagnosticsInvalidUrl": {
+    "message": "地址格式无效，请先检查当前配置。"
+  },
+  "optionsAboutTitle": {
+    "message": "关于这个项目"
+  },
+  "optionsAboutSubtitle": {
+    "message": "查看项目仓库、当前版本、项目介绍、使用帮助以及最近的界面改动说明。"
+  },
+  "optionsAboutIntroTitle": {
+    "message": "项目介绍"
+  },
+  "optionsAboutIntroItem1": {
+    "message": "支持网页全文总结、选中文本总结和侧边栏多轮追问。"
+  },
+  "optionsAboutIntroItem2": {
+    "message": "兼容在线模型和本地模型，可按使用场景灵活切换。"
+  },
+  "optionsAboutIntroItem3": {
+    "message": "设置页内置连接测试、模型刷新与网络诊断能力。"
+  },
+  "optionsAboutHelpTitle": {
+    "message": "反馈入口 / 使用帮助"
+  },
+  "optionsAboutQuickStartTitle": {
+    "message": "快速上手"
+  },
+  "optionsAboutQuickStartItem1": {
+    "message": "先在“本地模型”或“在线模型”页面完成配置并保存。"
+  },
+  "optionsAboutQuickStartItem2": {
+    "message": "打开侧边栏后，点击“总结当前页面”开始生成摘要。"
+  },
+  "optionsAboutQuickStartItem3": {
+    "message": "如遇到连通性问题，先到“网络诊断”页检查 provider 状态。"
+  },
+  "optionsAboutHelpGithubIssues": {
+    "message": "GitHub Issues：问题反馈与功能建议"
+  },
+  "optionsAboutHelpGiteeIssues": {
+    "message": "Gitee Issues：国内访问反馈入口"
+  },
+  "optionsAboutHelpItem1": {
+    "message": "首次使用建议先在设置页完成模型配置，再打开侧边栏执行总结。"
+  },
+  "optionsAboutHelpItem2": {
+    "message": "如遇到连接问题，可先使用“网络诊断”检查本地和在线 provider 可达性。"
+  },
+  "optionsAboutLinksTitle": {
+    "message": "仓库地址"
+  },
+  "optionsAboutMetaTitle": {
+    "message": "版本信息"
+  },
+  "optionsAboutVersionLabel": {
+    "message": "当前版本"
+  },
+  "optionsAboutPlatformsLabel": {
+    "message": "支持平台"
+  },
+  "optionsAboutPlatformsValue": {
+    "message": "Edge / Chrome 扩展"
+  },
+  "optionsAboutLicenseLabel": {
+    "message": "许可证"
+  },
+  "optionsAboutDescriptionTitle": {
+    "message": "项目说明"
+  },
+  "optionsAboutDescriptionBody": {
+    "message": "一键总结网页内容，支持多轮对话，兼容 DeepSeek、豆包、Gitee AI 等在线模型，以及 Ollama、Docker Desktop AI、KoboldCpp 等本地模型。"
+  },
+  "optionsAboutChangelogTitle": {
+    "message": "变更记录"
+  },
+  "optionsAboutChangelogItem1": {
+    "message": "设置页调整为本地模型、在线模型、网络诊断和关于四个主标签页。"
+  },
+  "optionsAboutChangelogItem2": {
+    "message": "网络诊断支持逐项展示待诊断、诊断中和诊断结果，并优先检查本地 provider。"
+  },
+  "optionsAboutChangelogItem3": {
+    "message": "设置页卡片布局统一，尽量保持同一行卡片高度一致。"
   },
   "optionsTestHintLocal": {
     "message": "测试本地服务是否可访问，以及模型列表是否能正常获取。"
@@ -311,84 +446,6 @@
   "optionsLabelEndpoint": {
     "message": "模型 / 推理接入点（Endpoint ID）"
   },
-  "optionsProxyModeLabel": {
-    "message": "代理"
-  },
-  "optionsProxyHint": {
-    "message": "可选择不使用代理、沿用浏览器代理，或为当前服务商单独指定代理。"
-  },
-  "optionsProxyModeBrowser": {
-    "message": "使用浏览器代理"
-  },
-  "optionsProxyModeNone": {
-    "message": "不使用代理"
-  },
-  "optionsProxyModeCustom": {
-    "message": "使用指定代理"
-  },
-  "optionsProxySchemeLabel": {
-    "message": "代理类型"
-  },
-  "optionsProxySchemeHttp": {
-    "message": "HTTP"
-  },
-  "optionsProxySchemeHttps": {
-    "message": "HTTPS"
-  },
-  "optionsProxySchemeSocks5": {
-    "message": "SOCKS5"
-  },
-  "optionsProxyHostLabel": {
-    "message": "服务器地址"
-  },
-  "optionsProxyPortLabel": {
-    "message": "端口"
-  },
-  "optionsProxyUsernameLabel": {
-    "message": "用户名"
-  },
-  "optionsProxyPasswordLabel": {
-    "message": "密码"
-  },
-  "optionsProxyHostPlaceholder": {
-    "message": "127.0.0.1"
-  },
-  "optionsProxyPortPlaceholder": {
-    "message": "7890"
-  },
-  "optionsProxyUsernamePlaceholder": {
-    "message": "可选"
-  },
-  "optionsProxyPasswordPlaceholder": {
-    "message": "可选"
-  },
-  "optionsProxyTestButton": {
-    "message": "测试代理"
-  },
-  "optionsProxyTesting": {
-    "message": "⏳ 正在测试代理..."
-  },
-  "optionsProxyTestSuccess": {
-    "message": "✅ 代理可用"
-  },
-  "optionsProxyMissingHostPort": {
-    "message": "请先填写代理服务器地址和端口。"
-  },
-  "optionsProxyExportButton": {
-    "message": "导出代理"
-  },
-  "optionsProxyImportButton": {
-    "message": "导入代理"
-  },
-  "optionsProxyExportSuccess": {
-    "message": "✅ 代理设置已导出"
-  },
-  "optionsProxyImportSuccess": {
-    "message": "✅ 代理设置已导入"
-  },
-  "optionsProxyImportFailed": {
-    "message": "❌ 导入代理设置失败"
-  },
   "optionsLabelServerUrl": {
     "message": "服务器地址"
   },
@@ -411,7 +468,7 @@
     "message": "gpt-4.1-mini"
   },
   "optionsHintOpenAIModel": {
-    "message": "填写 GPT 模型名称，例如 gpt-4.1-mini"
+    "message": "从下拉框选择 GPT 模型，例如 gpt-4.1-mini"
   },
   "optionsPlaceholderGeminiKey": {
     "message": "AIza..."
@@ -423,7 +480,7 @@
     "message": "gemini-2.0-flash"
   },
   "optionsHintGeminiModel": {
-    "message": "填写 Gemini 模型名称，例如 gemini-2.0-flash"
+    "message": "从下拉框选择 Gemini 模型，例如 gemini-2.0-flash"
   },
   "optionsPlaceholderAnthropicKey": {
     "message": "sk-ant-..."
@@ -435,7 +492,7 @@
     "message": "claude-3-5-sonnet-latest"
   },
   "optionsHintAnthropicModel": {
-    "message": "填写 Claude 模型名称，例如 claude-3-5-sonnet-latest"
+    "message": "从下拉框选择 Claude 模型，例如 claude-3-5-sonnet-latest"
   },
   "optionsHintDeepSeekHtml": {
     "message": "在 <a href=\"https://platform.deepseek.com/api_keys\" target=\"_blank\">DeepSeek 开放平台</a> 获取"
@@ -450,7 +507,7 @@
     "message": "Qwen3-8B"
   },
   "optionsHintGiteeModel": {
-    "message": "填写模型名称，如 Qwen3-8B"
+    "message": "从下拉框选择模型，如 Qwen3-8B"
   },
   "optionsPlaceholderDoubaoKey": {
     "message": "your-ark-api-key"
@@ -468,7 +525,7 @@
     "message": "openai/gpt-4.1-mini"
   },
   "optionsHintGitHubCopilotModel": {
-    "message": "填写 GitHub Models 的模型 ID，例如 openai/gpt-4.1-mini"
+    "message": "从下拉框选择 GitHub Models 的模型 ID，例如 openai/gpt-4.1-mini"
   },
   "optionsHintDoubaoHtml": {
     "message": "在 <a href=\"https://console.volcengine.com/ark\" target=\"_blank\">火山引擎 Ark 控制台</a> 获取"
@@ -477,7 +534,7 @@
     "message": "doubao-pro-256k 或你的 endpoint id"
   },
   "optionsHintDoubaoModel": {
-    "message": "填写模型名称或者你创建的推理接入点 ID"
+    "message": "从下拉框选择模型或推理接入点 ID"
   },
   "optionsPlaceholderOllamaUrl": {
     "message": "http://localhost:11434"
@@ -507,10 +564,10 @@
     "message": "KoboldCpp 默认运行在 <code>http://localhost:5001</code>，如有自定义端口请修改"
   },
   "optionsPlaceholderFoundryLocalUrl": {
-    "message": "http://localhost:5273"
+    "message": "http://127.0.0.1:55928/"
   },
   "optionsHintFoundryLocalUrlHtml": {
-    "message": "Foundry Local 通常会在 <code>http://localhost:5273</code> 提供兼容 OpenAI 的接口。修改地址后，请点击“刷新”重新加载模型列表。"
+    "message": "Foundry Local 默认运行在 <code>http://127.0.0.1:55928/</code>，修改地址后，请点击“刷新”重新加载模型列表。"
   },
   "optionsPlaceholderDockerUrl": {
     "message": "http://localhost:12434"

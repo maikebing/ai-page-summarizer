@@ -90,6 +90,18 @@
       flex-wrap: wrap;
     }
 
+    .toolbar.is-placeholder {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .toolbar-actions-inline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
     .search-wrap {
       display: flex;
       align-items: center;
@@ -116,8 +128,15 @@
 
     .search-icon {
       color: #6b7280;
-      font-size: 14px;
+      width: 16px;
+      height: 16px;
       flex-shrink: 0;
+    }
+
+    .search-icon svg {
+      display: block;
+      width: 100%;
+      height: 100%;
     }
 
     .search-clear {
@@ -220,10 +239,13 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 16px;
-      align-items: start;
+      align-items: stretch;
     }
 
     .provider-card {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
       border: 1px solid #e5e7eb;
       border-radius: 16px;
       background: #f9fafb;
@@ -231,6 +253,8 @@
     }
 
     .provider-card > summary {
+      min-height: 88px;
+      box-sizing: border-box;
       list-style: none;
       padding: 16px 18px;
       cursor: pointer;
@@ -321,6 +345,9 @@
     }
 
     .provider-card-body {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
       padding: 0 18px 18px;
       border-top: 1px solid #e5e7eb;
     }
@@ -492,6 +519,245 @@
       font-size: 14px;
     }
 
+    .diagnostics-panel {
+      margin-bottom: 24px;
+      padding: 16px 18px;
+      border-radius: 16px;
+      border: 1px solid #dbeafe;
+      background: linear-gradient(180deg, #f8fbff 0%, #eff6ff 100%);
+    }
+
+    .diagnostics-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .diagnostics-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin: 0;
+    }
+
+    .diagnostics-hint,
+    .diagnostics-summary {
+      font-size: 12px;
+      color: #4b5563;
+      margin: 4px 0 0;
+      line-height: 1.6;
+    }
+
+    .diagnostics-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+      align-items: stretch;
+    }
+
+    .diagnostic-item {
+      display: flex;
+      flex-direction: column;
+      min-height: 148px;
+      height: 100%;
+      box-sizing: border-box;
+      border-radius: 12px;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .diagnostic-item.success {
+      border-color: #a7f3d0;
+      background: #ecfdf5;
+    }
+
+    .diagnostic-item.error {
+      border-color: #fecaca;
+      background: #fef2f2;
+    }
+
+    .diagnostic-item.info {
+      border-color: #bfdbfe;
+      background: #eff6ff;
+    }
+
+    .diagnostic-item.warning {
+      border-color: #fde68a;
+      background: #fffbeb;
+    }
+
+    .diagnostic-item.pending {
+      border-color: #d1d5db;
+      background: rgba(255, 255, 255, 0.92);
+    }
+
+    .diagnostic-item-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .diagnostic-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .diagnostic-badge {
+      flex-shrink: 0;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .diagnostic-item.success .diagnostic-badge {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .diagnostic-item.error .diagnostic-badge {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .diagnostic-item.info .diagnostic-badge {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .diagnostic-item.warning .diagnostic-badge {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .diagnostic-item.pending .diagnostic-badge {
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .diagnostic-message,
+    .diagnostic-endpoint {
+      font-size: 12px;
+      line-height: 1.5;
+      color: #4b5563;
+      word-break: break-word;
+    }
+
+    .diagnostic-message {
+      flex: 1;
+    }
+
+    .diagnostic-endpoint {
+      margin-top: 6px;
+      color: #6b7280;
+    }
+
+    .about-panel {
+      margin-bottom: 24px;
+      padding: 16px 18px;
+      border-radius: 16px;
+      border: 1px solid #e5e7eb;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+
+    .about-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .about-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #111827;
+      margin: 0;
+    }
+
+    .about-subtitle {
+      font-size: 13px;
+      color: #6b7280;
+      margin: 6px 0 0;
+      line-height: 1.6;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .about-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 180px;
+      padding: 16px;
+      border-radius: 14px;
+      border: 1px solid #e5e7eb;
+      background: rgba(255, 255, 255, 0.96);
+      box-sizing: border-box;
+    }
+
+    .about-card h3 {
+      margin: 0 0 10px;
+      font-size: 15px;
+      color: #111827;
+    }
+
+    .about-card p,
+    .about-card li,
+    .about-card a {
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .about-card p,
+    .about-card ul {
+      margin: 0;
+      color: #4b5563;
+    }
+
+    .about-card ul {
+      padding-left: 18px;
+    }
+
+    .about-card a {
+      color: #2563eb;
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    .about-card a:hover {
+      text-decoration: underline;
+    }
+
+    .about-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .about-meta {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px 12px;
+      color: #4b5563;
+    }
+
+    .about-meta strong {
+      color: #111827;
+    }
+
     @media (max-width: 900px) {
       body {
         padding: 16px;
@@ -573,18 +839,105 @@
     </div>
 
     <div class="tab-bar" role="tablist" aria-label="Settings tabs">
-      <button type="button" class="tab-btn active" role="tab" aria-selected="true" data-tab="all" data-i18n="optionsTabAll">All</button>
-      <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="local" data-i18n="optionsTabLocal">Local models</button>
-      <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="online" data-i18n="optionsTabOnline">Online APIs</button>
+      <button type="button" class="tab-btn active" role="tab" aria-selected="true" data-tab="local" data-i18n="optionsTabLocal">Local models</button>
+      <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="online" data-i18n="optionsTabOnline">Online models</button>
+      <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="diagnostics" data-i18n="optionsNetworkDiagnosticsTitle">网络诊断</button>
+      <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="about" data-i18n="optionsTabAbout">关于</button>
     </div>
 
     <div class="toolbar">
       <div class="search-wrap">
-        <span class="search-icon">馃攳</span>
+        <span class="search-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10.5 4a6.5 6.5 0 1 0 4.03 11.6l4.44 4.43 1.06-1.06-4.43-4.44A6.5 6.5 0 0 0 10.5 4Zm0 1.5a5 5 0 1 1 0 10 5 5 0 0 1 0-10Z" fill="currentColor"/>
+          </svg>
+        </span>
         <input type="text" id="provider-search" data-i18n-placeholder="optionsSearchPlaceholder" placeholder="Search providers, models, or settings">
         <button type="button" class="search-clear hidden" id="clear-search-btn" data-i18n="optionsClearSearch">Clear</button>
       </div>
     </div>
+
+    <section class="diagnostics-panel hidden" id="network-diagnostics-panel">
+      <div class="diagnostics-head">
+        <div>
+          <p class="diagnostics-title" data-i18n="optionsNetworkDiagnosticsTitle">网络诊断</p>
+          <p class="diagnostics-hint" data-i18n="optionsNetworkDiagnosticsHint">诊断会沿用浏览器当前的网络路径与代理设置，对各 provider 做可达性检查。</p>
+        </div>
+        <button type="button" class="btn-sm btn-outline" id="network-diagnostics-btn" data-i18n="optionsNetworkDiagnosticsButton">网络诊断</button>
+      </div>
+      <p class="diagnostics-summary" id="network-diagnostics-summary" data-i18n="optionsNetworkDiagnosticsIdle">点击“网络诊断”开始检查。</p>
+      <div class="diagnostics-list" id="network-diagnostics-results"></div>
+    </section>
+
+    <section class="about-panel hidden" id="about-panel">
+      <div class="about-head">
+        <div>
+          <p class="about-title" data-i18n="optionsAboutTitle">关于这个项目</p>
+          <p class="about-subtitle" data-i18n="optionsAboutSubtitle">查看项目仓库、当前版本、项目介绍、使用帮助以及最近的界面改动说明。</p>
+        </div>
+      </div>
+      <div class="about-grid">
+        <article class="about-card">
+          <h3 data-i18n="optionsAboutIntroTitle">项目介绍</h3>
+          <p data-i18n="optionsAboutDescriptionBody">一键总结网页内容，支持多轮对话，兼容 DeepSeek、豆包、Gitee AI 等在线模型，以及 Ollama、Docker Desktop AI、KoboldCpp 等本地模型。</p>
+          <ul>
+            <li data-i18n="optionsAboutIntroItem1">支持网页全文总结、选中文本总结和侧边栏多轮追问。</li>
+            <li data-i18n="optionsAboutIntroItem2">兼容在线模型和本地模型，可按使用场景灵活切换。</li>
+            <li data-i18n="optionsAboutIntroItem3">设置页内置连接测试、模型刷新与网络诊断能力。</li>
+          </ul>
+        </article>
+
+        <article class="about-card">
+          <h3 data-i18n="optionsAboutQuickStartTitle">快速上手</h3>
+          <ul>
+            <li data-i18n="optionsAboutQuickStartItem1">先在“本地模型”或“在线模型”页面完成配置并保存。</li>
+            <li data-i18n="optionsAboutQuickStartItem2">打开侧边栏后，点击“总结当前页面”开始生成摘要。</li>
+            <li data-i18n="optionsAboutQuickStartItem3">如遇到连通性问题，先到“网络诊断”页检查 provider 状态。</li>
+          </ul>
+        </article>
+
+        <article class="about-card">
+          <h3 data-i18n="optionsAboutHelpTitle">反馈入口 / 使用帮助</h3>
+          <div class="about-links">
+            <a href="https://github.com/maikebing/ai-page-summarizer/issues" target="_blank" rel="noreferrer noopener" data-i18n="optionsAboutHelpGithubIssues">GitHub Issues：问题反馈与功能建议</a>
+            <a href="https://gitee.com/maikebing/ai-page-summarizer/issues" target="_blank" rel="noreferrer noopener" data-i18n="optionsAboutHelpGiteeIssues">Gitee Issues：国内访问反馈入口</a>
+          </div>
+          <ul>
+            <li data-i18n="optionsAboutHelpItem1">首次使用建议先在设置页完成模型配置，再打开侧边栏执行总结。</li>
+            <li data-i18n="optionsAboutHelpItem2">如遇到连接问题，可先使用“网络诊断”检查本地和在线 provider 可达性。</li>
+          </ul>
+        </article>
+
+        <article class="about-card">
+          <h3 data-i18n="optionsAboutLinksTitle">仓库地址</h3>
+          <div class="about-links">
+            <a href="https://github.com/maikebing/ai-page-summarizer" target="_blank" rel="noreferrer noopener">GitHub: https://github.com/maikebing/ai-page-summarizer</a>
+            <a href="https://gitee.com/maikebing/ai-page-summarizer" target="_blank" rel="noreferrer noopener">Gitee: https://gitee.com/maikebing/ai-page-summarizer</a>
+          </div>
+        </article>
+
+        <article class="about-card">
+          <h3 data-i18n="optionsAboutMetaTitle">版本信息</h3>
+          <div class="about-meta">
+            <strong data-i18n="optionsAboutVersionLabel">当前版本</strong>
+            <span id="about-version">1.0.0</span>
+            <strong data-i18n="optionsAboutPlatformsLabel">支持平台</strong>
+            <span data-i18n="optionsAboutPlatformsValue">Edge / Chrome 扩展</span>
+            <strong data-i18n="optionsAboutLicenseLabel">许可证</strong>
+            <span>MIT</span>
+          </div>
+        </article>
+
+        <article class="about-card">
+          <h3 data-i18n="optionsAboutChangelogTitle">变更记录</h3>
+          <ul>
+            <li data-i18n="optionsAboutChangelogItem1">设置页调整为本地模型、在线模型、网络诊断和关于四个主标签页。</li>
+            <li data-i18n="optionsAboutChangelogItem2">网络诊断支持逐项展示待诊断、诊断中和诊断结果，并优先检查本地 provider。</li>
+            <li data-i18n="optionsAboutChangelogItem3">设置页卡片布局统一，尽量保持同一行卡片高度一致。</li>
+          </ul>
+        </article>
+      </div>
+    </section>
 
     <section class="provider-group" data-group="local">
       <div class="group-header">
@@ -681,7 +1034,7 @@
                 </div>
               </div>
               <label for="foundrylocal-url" data-i18n="optionsLabelApiUrl">API URL</label>
-              <input type="text" id="foundrylocal-url" data-i18n-placeholder="optionsPlaceholderFoundryLocalUrl" placeholder="http://localhost:5273">
+              <input type="text" id="foundrylocal-url" data-i18n-placeholder="optionsPlaceholderFoundryLocalUrl" placeholder="http://127.0.0.1:55928/">
               <p class="hint" data-i18n-html="optionsHintFoundryLocalUrlHtml">Foundry Local commonly exposes an OpenAI-compatible endpoint on localhost. Update the port if needed.</p>
               <label for="foundrylocal-model" data-i18n="optionsSelectModel">Select model</label>
               <div class="model-row">
@@ -794,10 +1147,10 @@
               <p class="hint" data-i18n-html="optionsHintOpenAIHtml">Get it from the OpenAI dashboard.</p>
               <label for="openai-model" data-i18n="optionsLabelModel">Model</label>
               <div class="model-row">
-                <input type="text" id="openai-model" list="openai-model-list" data-i18n-placeholder="optionsPlaceholderOpenAIModel" placeholder="gpt-4.1-mini">
+                <select id="openai-model"></select>
                 <button type="button" class="btn-sm" id="openai-refresh-models-btn" data-i18n="optionsRefreshButton">馃攧 Refresh</button>
               </div>
-              <p class="hint" data-i18n="optionsHintOpenAIModel">Enter a GPT model such as gpt-4.1-mini.</p>
+              <p class="hint" data-i18n="optionsHintOpenAIModel">Choose a GPT model from the dropdown, such as gpt-4.1-mini.</p>
               <div id="openai-status" class="ollama-status"></div>
             </div>
           </details>
@@ -824,10 +1177,10 @@
               <p class="hint" data-i18n-html="optionsHintGeminiHtml">Get it from Google AI Studio.</p>
               <label for="gemini-model" data-i18n="optionsLabelModel">Model</label>
               <div class="model-row">
-                <input type="text" id="gemini-model" list="gemini-model-list" data-i18n-placeholder="optionsPlaceholderGeminiModel" placeholder="gemini-2.0-flash">
+                <select id="gemini-model"></select>
                 <button type="button" class="btn-sm" id="gemini-refresh-models-btn" data-i18n="optionsRefreshButton">馃攧 Refresh</button>
               </div>
-              <p class="hint" data-i18n="optionsHintGeminiModel">Enter a Gemini model such as gemini-2.0-flash.</p>
+              <p class="hint" data-i18n="optionsHintGeminiModel">Choose a Gemini model from the dropdown, such as gemini-2.0-flash.</p>
               <div id="gemini-status" class="ollama-status"></div>
             </div>
           </details>
@@ -854,10 +1207,10 @@
               <p class="hint" data-i18n-html="optionsHintAnthropicHtml">Get it from the Anthropic Console.</p>
               <label for="anthropic-model" data-i18n="optionsLabelModel">Model</label>
               <div class="model-row">
-                <input type="text" id="anthropic-model" list="anthropic-model-list" data-i18n-placeholder="optionsPlaceholderAnthropicModel" placeholder="claude-3-5-sonnet-latest">
+                <select id="anthropic-model"></select>
                 <button type="button" class="btn-sm" id="anthropic-refresh-models-btn" data-i18n="optionsRefreshButton">馃攧 Refresh</button>
               </div>
-              <p class="hint" data-i18n="optionsHintAnthropicModel">Enter a Claude model such as claude-3-5-sonnet-latest.</p>
+              <p class="hint" data-i18n="optionsHintAnthropicModel">Choose a Claude model from the dropdown, such as claude-3-5-sonnet-latest.</p>
               <div id="anthropic-status" class="ollama-status"></div>
             </div>
           </details>
@@ -884,10 +1237,10 @@
               <p class="hint" data-i18n-html="optionsHintGiteeKeyHtml">Get it from the Gitee AI Console.</p>
               <label for="giteeai-model" data-i18n="optionsLabelModel">Model</label>
               <div class="model-row">
-                <input type="text" id="giteeai-model" list="giteeai-model-list" data-i18n-placeholder="optionsPlaceholderGiteeModel" placeholder="Qwen3-8B">
+                <select id="giteeai-model"></select>
                 <button type="button" class="btn-sm" id="giteeai-refresh-models-btn" data-i18n="optionsRefreshButton">馃攧 Refresh</button>
               </div>
-              <p class="hint" data-i18n="optionsHintGiteeModel">Enter a model name such as Qwen3-8B.</p>
+              <p class="hint" data-i18n="optionsHintGiteeModel">Choose a model from the dropdown, such as Qwen3-8B.</p>
               <div id="giteeai-status" class="ollama-status"></div>
             </div>
           </details>
@@ -914,10 +1267,10 @@
               <p class="hint" data-i18n-html="optionsHintGitHubCopilotHtml">Use a GitHub Personal Access Token for GitHub Models.</p>
               <label for="githubcopilot-model" data-i18n="optionsLabelModel">Model</label>
               <div class="model-row">
-                <input type="text" id="githubcopilot-model" list="githubcopilot-model-list" data-i18n-placeholder="optionsPlaceholderGitHubCopilotModel" placeholder="openai/gpt-4.1-mini">
+                <select id="githubcopilot-model"></select>
                 <button type="button" class="btn-sm" id="githubcopilot-refresh-models-btn" data-i18n="optionsRefreshButton">馃攧 Refresh</button>
               </div>
-              <p class="hint" data-i18n="optionsHintGitHubCopilotModel">Enter a GitHub Models model ID such as openai/gpt-4.1-mini.</p>
+              <p class="hint" data-i18n="optionsHintGitHubCopilotModel">Choose a GitHub Models model ID from the dropdown, such as openai/gpt-4.1-mini.</p>
               <div id="githubcopilot-status" class="ollama-status"></div>
             </div>
           </details>
@@ -944,10 +1297,10 @@
               <p class="hint" data-i18n-html="optionsHintDoubaoHtml">Get it from the Volcengine Ark Console.</p>
               <label for="doubao-model" data-i18n="optionsLabelEndpoint">Model / Endpoint ID</label>
               <div class="model-row">
-                <input type="text" id="doubao-model" list="doubao-model-list" data-i18n-placeholder="optionsPlaceholderDoubaoModel" placeholder="doubao-pro-256k or your endpoint ID">
+                <select id="doubao-model"></select>
                 <button type="button" class="btn-sm" id="doubao-refresh-models-btn" data-i18n="optionsRefreshButton">馃攧 Refresh</button>
               </div>
-              <p class="hint" data-i18n="optionsHintDoubaoModel">Enter a model name or your endpoint ID.</p>
+              <p class="hint" data-i18n="optionsHintDoubaoModel">Choose a model or endpoint ID from the dropdown.</p>
               <div id="doubao-status" class="ollama-status"></div>
             </div>
           </details>
@@ -957,7 +1310,7 @@
 
     <p class="empty-state hidden" id="empty-state" data-i18n="optionsEmptyState">No matching providers or settings were found.</p>
 
-    <div class="save-bar">
+    <div class="save-bar" id="save-bar">
       <button id="save-btn" data-i18n="optionsSaveButton">馃捑 Save settings</button>
       <p class="status hidden" id="status" data-i18n="optionsStatusSaved">鉁?Settings saved!</p>
     </div>

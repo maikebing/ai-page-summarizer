@@ -458,7 +458,12 @@ async function executeProviderRequest(provider, config, messages, temperature, e
   });
 
   if (!response.ok) {
-    throw new Error(t("sidepanelApiRequestFailed", [response.status || "?", getProviderErrorMessage(provider, response.data || { error: { message: response.error } }, response.error)]));
+    const errorMessage = getProviderErrorMessage(provider, response.data || { error: { message: response.error } }, response.error);
+    if (!response.status) {
+      throw new Error(errorMessage || t("commonNetworkRequestFailed"));
+    }
+
+    throw new Error(t("sidepanelApiRequestFailed", [response.status, errorMessage]));
   }
 
   return extractProviderText(provider, response.data, emptyMessageKey);
@@ -562,7 +567,7 @@ function buildProviderRequest(provider, config, messages, temperature) {
   }
 
   if (provider === "foundrylocal") {
-    const baseUrl = (config.url || "http://localhost:5273").replace(/\/+$/, "");
+    const baseUrl = (config.url || "http://127.0.0.1:55928/").replace(/\/+$/, "");
     return {
       apiUrl: `${baseUrl}/v1/chat/completions`,
       headers: { "Content-Type": "application/json" },
@@ -778,7 +783,7 @@ function getAPIConfig(provider) {
     } else if (provider === "foundrylocal") {
       chrome.storage.sync.get(["foundrylocal_url", "foundrylocal_model"], (data) => {
         resolve({
-          url: data.foundrylocal_url || "http://localhost:5273",
+          url: data.foundrylocal_url || "http://127.0.0.1:55928/",
           model: data.foundrylocal_model || "",
         });
       });

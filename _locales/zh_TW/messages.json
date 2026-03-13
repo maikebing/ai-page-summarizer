@@ -137,6 +137,15 @@
   "commonNetworkRequestFailed": {
     "message": "網路請求失敗"
   },
+  "backgroundCannotReachGitHubModels": {
+    "message": "無法連線到 GitHub Models 服務（models.github.ai）。請檢查目前網路、DNS、系統防火牆，或是否有營運商路徑攔截此網域。"
+  },
+  "backgroundCannotReachRemoteHost": {
+    "message": "無法連線到遠端主機：$1"
+  },
+  "backgroundRequestTimedOut": {
+    "message": "請求逾時：$1"
+  },
   "commonUnknownError": {
     "message": "未知錯誤"
   },
@@ -174,7 +183,7 @@
     "message": "本地模型"
   },
   "optionsTabOnline": {
-    "message": "線上 API"
+    "message": "線上 AI 模型 API"
   },
   "optionsGroupLocal": {
     "message": "🖥️ 本地模型"
@@ -235,6 +244,48 @@
   },
   "optionsTestingConnection": {
     "message": "⏳ 正在測試連線..."
+  },
+  "optionsNetworkDiagnosticsButton": {
+    "message": "網路診斷"
+  },
+  "optionsNetworkDiagnosticsTitle": {
+    "message": "網路診斷"
+  },
+  "optionsNetworkDiagnosticsHint": {
+    "message": "診斷會沿用瀏覽器目前的網路路徑與代理設定，檢查各 provider 是否可達。"
+  },
+  "optionsNetworkDiagnosticsIdle": {
+    "message": "點擊「網路診斷」開始檢查。"
+  },
+  "optionsNetworkDiagnosticsPendingBadge": {
+    "message": "待診斷"
+  },
+  "optionsNetworkDiagnosticsPending": {
+    "message": "等待開始診斷。"
+  },
+  "optionsNetworkDiagnosticsProgress": {
+    "message": "正在診斷第 $1 / $2 個 provider..."
+  },
+  "optionsNetworkDiagnosticsRunning": {
+    "message": "⏳ 正在檢查各 provider 的網路可達性..."
+  },
+  "optionsNetworkDiagnosticsSummary": {
+    "message": "本輪診斷結果：可達 $1 個，不可達 $2 個。"
+  },
+  "optionsNetworkDiagnosticsReachableBadge": {
+    "message": "可達"
+  },
+  "optionsNetworkDiagnosticsUnreachableBadge": {
+    "message": "不可達"
+  },
+  "optionsNetworkDiagnosticsReachableStatus": {
+    "message": "網路可達，HTTP 狀態：$1"
+  },
+  "optionsNetworkDiagnosticsUnreachable": {
+    "message": "無法透過目前瀏覽器的網路路徑連線到此端點。"
+  },
+  "optionsNetworkDiagnosticsInvalidUrl": {
+    "message": "網址格式無效，請先檢查目前設定。"
   },
   "optionsTestHintLocal": {
     "message": "測試本地服務是否可連線，以及模型清單能否正常取得。"
@@ -306,7 +357,7 @@
     "message": "Qwen3-8B"
   },
   "optionsHintGiteeModel": {
-    "message": "請輸入模型名稱，例如 Qwen3-8B。"
+    "message": "請從下拉選單選擇模型，例如 Qwen3-8B。"
   },
   "optionsPlaceholderDoubaoKey": {
     "message": "your-ark-api-key"
@@ -318,7 +369,7 @@
     "message": "doubao-pro-256k 或你的 endpoint id"
   },
   "optionsHintDoubaoModel": {
-    "message": "請輸入模型名稱或你建立的端點 ID。"
+    "message": "請從下拉選單選擇模型或端點 ID。"
   },
   "optionsPlaceholderOllamaUrl": {
     "message": "http://localhost:11434"

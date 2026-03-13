@@ -60,6 +60,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const providerSearchInput = document.getElementById("provider-search");
   const clearSearchBtn = document.getElementById("clear-search-btn");
   const emptyState = document.getElementById("empty-state");
+  const toolbar = document.querySelector(".toolbar");
+  const saveBar = document.getElementById("save-bar");
+  const networkDiagnosticsBtn = document.getElementById("network-diagnostics-btn");
+  const networkDiagnosticsPanel = document.getElementById("network-diagnostics-panel");
+  const networkDiagnosticsSummary = document.getElementById("network-diagnostics-summary");
+  const networkDiagnosticsResults = document.getElementById("network-diagnostics-results");
+  const aboutPanel = document.getElementById("about-panel");
+  const aboutVersion = document.getElementById("about-version");
   const tabButtons = Array.from(document.querySelectorAll("[data-tab]"));
   const groupSections = Array.from(document.querySelectorAll("[data-group]"));
   const groupToggleButtons = Array.from(document.querySelectorAll("[data-group-toggle]"));
@@ -115,42 +123,36 @@ document.addEventListener("DOMContentLoaded", () => {
   const MODEL_LIST_CONFIG = {
     openai: {
       input: openaiModel,
-      listId: "openai-model-list",
       button: openaiRefreshModelsBtn,
       getApiKey: () => openaiKey.value.trim(),
       fetcher: fetchOpenAIModelList,
     },
     gemini: {
       input: geminiModel,
-      listId: "gemini-model-list",
       button: geminiRefreshModelsBtn,
       getApiKey: () => geminiKey.value.trim(),
       fetcher: fetchGeminiModelList,
     },
     anthropic: {
       input: anthropicModel,
-      listId: "anthropic-model-list",
       button: anthropicRefreshModelsBtn,
       getApiKey: () => anthropicKey.value.trim(),
       fetcher: fetchAnthropicModelList,
     },
     giteeai: {
       input: giteeaiModel,
-      listId: "giteeai-model-list",
       button: giteeaiRefreshModelsBtn,
       getApiKey: () => giteeaiKey.value.trim(),
       fetcher: fetchGiteeAIModelList,
     },
     githubcopilot: {
       input: githubcopilotModel,
-      listId: "githubcopilot-model-list",
       button: githubcopilotRefreshModelsBtn,
       getApiKey: () => githubcopilotKey.value.trim(),
       fetcher: null,
     },
     doubao: {
       input: doubaoModel,
-      listId: "doubao-model-list",
       button: doubaoRefreshModelsBtn,
       getApiKey: () => doubaoKey.value.trim(),
       fetcher: null,
@@ -158,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
   const UI_STATE_KEY = "options_ui_state";
   const defaultUiState = {
-    activeTab: "all",
+    activeTab: "local",
     search: "",
     groupCollapsed: {
       local: false,
@@ -167,6 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
     providerOpen: {},
   };
   let uiState = cloneUiState(defaultUiState);
+  const diagnosticCardMap = new Map();
 
   initializeTabs();
   initializeGroupToggles();
@@ -176,6 +179,8 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeModelRefreshButtons();
   initializeProviderIndicators();
   initializeTestButtons();
+  initializeNetworkDiagnostics();
+  initializeAboutPanel();
   restoreUiState();
 
   // 加载已保存的设置
@@ -194,27 +199,35 @@ document.addEventListener("DOMContentLoaded", () => {
       "githubcopilot_api_key", "githubcopilot_model"
     ],
     (data) => {
+      const savedOpenAIModel = data.openai_model || "gpt-4.1-mini";
+      const savedGeminiModel = data.gemini_model || "gemini-2.0-flash";
+      const savedAnthropicModel = data.anthropic_model || "claude-3-5-sonnet-latest";
+      const savedDoubaoModel = data.doubao_model || "doubao-pro-256k";
+      const savedGiteeAIModel = data.giteeai_model || "Qwen3-8B";
+      const savedGitHubCopilotModel = data.githubcopilot_model || "openai/gpt-4.1-mini";
+
       deepseekKey.value = data.deepseek_api_key || "";
       deepseekModel.value = data.deepseek_model || "deepseek-chat";
       openaiKey.value = data.openai_api_key || "";
-      openaiModel.value = data.openai_model || "gpt-4.1-mini";
       geminiKey.value = data.gemini_api_key || "";
-      geminiModel.value = data.gemini_model || "gemini-2.0-flash";
       anthropicKey.value = data.anthropic_api_key || "";
-      anthropicModel.value = data.anthropic_model || "claude-3-5-sonnet-latest";
       doubaoKey.value = data.doubao_api_key || "";
-      doubaoModel.value = data.doubao_model || "doubao-pro-256k";
       ollamaUrl.value = data.ollama_url || "http://localhost:11434";
       ollamaModel.value = data.ollama_model || "qwen2.5:7b";
       dockeraiUrl.value = data.dockerai_url || "http://localhost:12434";
       dockeraiModel.value = data.dockerai_model || "docker.io/ai/qwen2.5:7B-Q4_0";
-      foundrylocalUrl.value = data.foundrylocal_url || "http://localhost:5273";
+      foundrylocalUrl.value = data.foundrylocal_url || "http://127.0.0.1:55928/";
       foundrylocalModel.value = data.foundrylocal_model || "";
       koboldcppUrl.value = data.koboldcpp_url || "http://localhost:5001";
       giteeaiKey.value = data.giteeai_api_key || "";
-      giteeaiModel.value = data.giteeai_model || "Qwen3-8B";
       githubcopilotKey.value = data.githubcopilot_api_key || "";
-      githubcopilotModel.value = data.githubcopilot_model || "openai/gpt-4.1-mini";
+
+      setModelSelectOptions(openaiModel, REMOTE_MODEL_PRESETS.openai, savedOpenAIModel);
+      setModelSelectOptions(geminiModel, REMOTE_MODEL_PRESETS.gemini, savedGeminiModel);
+      setModelSelectOptions(anthropicModel, REMOTE_MODEL_PRESETS.anthropic, savedAnthropicModel);
+      setModelSelectOptions(giteeaiModel, REMOTE_MODEL_PRESETS.giteeai, savedGiteeAIModel);
+      setModelSelectOptions(githubcopilotModel, REMOTE_MODEL_PRESETS.githubcopilot, savedGitHubCopilotModel);
+      setModelSelectOptions(doubaoModel, REMOTE_MODEL_PRESETS.doubao, savedDoubaoModel);
 
       refreshProviderIndicators();
 
@@ -285,11 +298,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function initializeTabs() {
-    setActiveTab("all", false);
+    setActiveTab("local", false);
 
     tabButtons.forEach((button) => {
       button.addEventListener("click", () => {
-        setActiveTab(button.dataset.tab || "all");
+        setActiveTab(button.dataset.tab || "local");
       });
     });
   }
@@ -432,13 +445,39 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function applyFilters() {
-    const activeTab = uiState.activeTab || "all";
+    const activeTab = uiState.activeTab || "local";
     const query = normalizeText(uiState.search || "");
+    const isDiagnosticsTab = activeTab === "diagnostics";
+    const isAboutTab = activeTab === "about";
+    const isSpecialTab = isDiagnosticsTab || isAboutTab;
     let visibleCards = 0;
+
+    if (toolbar) {
+      toolbar.classList.remove("hidden");
+      toolbar.classList.toggle("is-placeholder", isAboutTab);
+    }
+
+    if (saveBar) {
+      saveBar.classList.toggle("hidden", isSpecialTab);
+    }
+
+    if (networkDiagnosticsPanel) {
+      networkDiagnosticsPanel.classList.toggle("hidden", !isDiagnosticsTab);
+      if (isDiagnosticsTab) {
+        if (!diagnosticCardMap.size) {
+          renderNetworkDiagnosticTargets();
+        }
+        visibleCards = applyDiagnosticFilters(query);
+      }
+    }
+
+    if (aboutPanel) {
+      aboutPanel.classList.toggle("hidden", !isAboutTab);
+    }
 
     groupSections.forEach((section) => {
       const groupName = section.dataset.group;
-      const isTabMatch = activeTab === "all" || activeTab === groupName;
+      const isTabMatch = !isSpecialTab && activeTab === groupName;
       const cards = Array.from(section.querySelectorAll("[data-provider-id]"));
       let visibleInGroup = 0;
 
@@ -455,7 +494,13 @@ document.addEventListener("DOMContentLoaded", () => {
       section.hidden = !isTabMatch || visibleInGroup === 0;
     });
 
-    emptyState.classList.toggle("hidden", visibleCards > 0);
+    emptyState.classList.toggle("hidden", isAboutTab || visibleCards > 0);
+  }
+
+  function initializeAboutPanel() {
+    if (aboutVersion) {
+      aboutVersion.textContent = chrome.runtime.getManifest()?.version || "--";
+    }
   }
 
   function normalizeText(value) {
@@ -475,12 +520,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function initializeModelPresets() {
-    attachModelDatalist(openaiModel, "openai-model-list", REMOTE_MODEL_PRESETS.openai);
-    attachModelDatalist(geminiModel, "gemini-model-list", REMOTE_MODEL_PRESETS.gemini);
-    attachModelDatalist(anthropicModel, "anthropic-model-list", REMOTE_MODEL_PRESETS.anthropic);
-    attachModelDatalist(giteeaiModel, "giteeai-model-list", REMOTE_MODEL_PRESETS.giteeai);
-    attachModelDatalist(githubcopilotModel, "githubcopilot-model-list", REMOTE_MODEL_PRESETS.githubcopilot);
-    attachModelDatalist(doubaoModel, "doubao-model-list", REMOTE_MODEL_PRESETS.doubao);
+    setModelSelectOptions(openaiModel, REMOTE_MODEL_PRESETS.openai);
+    setModelSelectOptions(geminiModel, REMOTE_MODEL_PRESETS.gemini);
+    setModelSelectOptions(anthropicModel, REMOTE_MODEL_PRESETS.anthropic);
+    setModelSelectOptions(giteeaiModel, REMOTE_MODEL_PRESETS.giteeai);
+    setModelSelectOptions(githubcopilotModel, REMOTE_MODEL_PRESETS.githubcopilot);
+    setModelSelectOptions(doubaoModel, REMOTE_MODEL_PRESETS.doubao);
   }
 
   function initializeModelRefreshButtons() {
@@ -491,24 +536,44 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function attachModelDatalist(input, listId, models) {
-    if (!input || !Array.isArray(models)) {
+  function setModelSelectOptions(select, models, selectedValue) {
+    if (!select || !Array.isArray(models)) {
       return;
     }
 
-    let datalist = document.getElementById(listId);
-    if (!datalist) {
-      datalist = document.createElement("datalist");
-      datalist.id = listId;
-      document.body.appendChild(datalist);
+    const normalizedModels = [];
+    const seen = new Set();
+
+    models.forEach((model) => {
+      const value = String(model || "").trim();
+      if (!value || seen.has(value)) {
+        return;
+      }
+
+      seen.add(value);
+      normalizedModels.push(value);
+    });
+
+    const currentValue = String(selectedValue ?? select.value ?? "").trim();
+    if (currentValue && !seen.has(currentValue)) {
+      normalizedModels.unshift(currentValue);
     }
 
-    datalist.innerHTML = "";
-    models.forEach((model) => {
+    select.innerHTML = "";
+    normalizedModels.forEach((model) => {
       const option = document.createElement("option");
       option.value = model;
-      datalist.appendChild(option);
+      option.textContent = model;
+      select.appendChild(option);
     });
+
+    if (currentValue) {
+      select.value = currentValue;
+    }
+
+    if (!select.value && normalizedModels.length) {
+      select.value = normalizedModels[0];
+    }
   }
 
   function backgroundFetchJson(url, options = {}) {
@@ -564,13 +629,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      attachModelDatalist(config.input, config.listId, models);
+      setModelSelectOptions(config.input, models, config.input.value);
 
       if (!config.input.value.trim() && models.length) {
         config.input.value = models[0];
       }
     } catch (error) {
-      attachModelDatalist(config.input, config.listId, presetModels);
+      setModelSelectOptions(config.input, presetModels, config.input.value);
       if (!silent) {
         const fallbackMessage = presetModels.length
           ? t("optionsModelListFallbackPresets", presetModels.length)
@@ -731,6 +796,206 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function initializeNetworkDiagnostics() {
+    networkDiagnosticsBtn?.addEventListener("click", () => {
+      runNetworkDiagnostics();
+    });
+  }
+
+  async function runNetworkDiagnostics() {
+    if (!networkDiagnosticsBtn || !networkDiagnosticsPanel || !networkDiagnosticsSummary || !networkDiagnosticsResults) {
+      return;
+    }
+
+    const targets = buildNetworkDiagnosticTargets();
+    networkDiagnosticsBtn.disabled = true;
+    networkDiagnosticsPanel.classList.remove("hidden");
+    renderNetworkDiagnosticTargets(targets);
+    networkDiagnosticsSummary.textContent = t("optionsNetworkDiagnosticsProgress", [0, targets.length]);
+
+    try {
+      const results = [];
+
+      for (let index = 0; index < targets.length; index += 1) {
+        const target = targets[index];
+        updateNetworkDiagnosticCard(target.provider, {
+          type: "info",
+          badge: t("optionsStateTesting"),
+          message: t("optionsTestingConnection"),
+        });
+        networkDiagnosticsSummary.textContent = t("optionsNetworkDiagnosticsProgress", [index + 1, targets.length]);
+
+        const result = await diagnoseNetworkTarget(target);
+        results.push(result);
+        updateNetworkDiagnosticCard(target.provider, result);
+      }
+
+      renderNetworkDiagnosticSummary(results);
+    } finally {
+      networkDiagnosticsBtn.disabled = false;
+    }
+  }
+
+  function buildNetworkDiagnosticTargets() {
+    return [
+      { provider: "ollama", url: `${normalizeBaseUrl(ollamaUrl.value, "http://localhost:11434")}/api/tags` },
+      { provider: "dockerai", url: `${normalizeBaseUrl(dockeraiUrl.value, "http://localhost:12434")}/v1/models` },
+      { provider: "foundrylocal", url: `${normalizeBaseUrl(foundrylocalUrl.value, "http://127.0.0.1:55928/")}/v1/models` },
+      { provider: "koboldcpp", url: `${normalizeBaseUrl(koboldcppUrl.value, "http://localhost:5001")}/api/v1/model` },
+      { provider: "deepseek", url: "https://api.deepseek.com/chat/completions" },
+      { provider: "openai", url: "https://api.openai.com/v1/models" },
+      { provider: "gemini", url: "https://generativelanguage.googleapis.com/v1beta/models" },
+      { provider: "anthropic", url: "https://api.anthropic.com/v1/models" },
+      { provider: "giteeai", url: "https://ai.gitee.com/v1/models" },
+      { provider: "githubcopilot", url: "https://models.github.ai/" },
+      { provider: "doubao", url: "https://ark.cn-beijing.volces.com/api/v3/chat/completions" },
+    ];
+  }
+
+  function normalizeBaseUrl(value, fallback) {
+    return String(value || fallback || "").trim().replace(/\/+$/, "");
+  }
+
+  async function diagnoseNetworkTarget(target) {
+    const providerLabel = getProviderDisplayLabel(target.provider);
+    const result = {
+      provider: target.provider,
+      label: providerLabel,
+      endpoint: target.url,
+      type: "error",
+      badge: t("optionsNetworkDiagnosticsUnreachableBadge"),
+      message: t("optionsNetworkDiagnosticsUnreachable"),
+    };
+
+    try {
+      new URL(target.url);
+    } catch {
+      result.message = t("optionsNetworkDiagnosticsInvalidUrl");
+      return result;
+    }
+
+    const response = await backgroundFetchJson(target.url, {});
+
+    if (response.ok) {
+      result.type = "success";
+      result.badge = t("optionsNetworkDiagnosticsReachableBadge");
+      result.message = t("optionsNetworkDiagnosticsReachableStatus", response.status || 200);
+      return result;
+    }
+
+    if (response.status) {
+      result.type = "info";
+      result.badge = t("optionsNetworkDiagnosticsReachableBadge");
+      result.message = t("optionsNetworkDiagnosticsReachableStatus", response.status);
+      return result;
+    }
+
+    result.message = response.error || t("commonNetworkRequestFailed");
+    return result;
+  }
+
+  function renderNetworkDiagnosticTargets(targets = buildNetworkDiagnosticTargets()) {
+    if (!networkDiagnosticsResults) {
+      return;
+    }
+
+    networkDiagnosticsResults.innerHTML = "";
+    diagnosticCardMap.clear();
+
+    targets.forEach((target) => {
+      const card = document.createElement("div");
+      card.className = "diagnostic-item pending";
+
+      const head = document.createElement("div");
+      head.className = "diagnostic-item-head";
+
+      const name = document.createElement("div");
+      name.className = "diagnostic-name";
+      name.textContent = getProviderDisplayLabel(target.provider);
+
+      const badge = document.createElement("span");
+      badge.className = "diagnostic-badge";
+      badge.textContent = t("optionsNetworkDiagnosticsPendingBadge");
+
+      const message = document.createElement("div");
+      message.className = "diagnostic-message";
+      message.textContent = t("optionsNetworkDiagnosticsPending");
+
+      const endpoint = document.createElement("div");
+      endpoint.className = "diagnostic-endpoint";
+      endpoint.textContent = target.url;
+
+      head.appendChild(name);
+      head.appendChild(badge);
+      card.appendChild(head);
+      card.appendChild(message);
+      card.appendChild(endpoint);
+      networkDiagnosticsResults.appendChild(card);
+
+      card.dataset.provider = target.provider;
+      diagnosticCardMap.set(target.provider, { card, badge, message, endpoint });
+    });
+
+    if (networkDiagnosticsSummary) {
+      networkDiagnosticsSummary.textContent = t("optionsNetworkDiagnosticsIdle");
+    }
+  }
+
+  function applyDiagnosticFilters(query) {
+    let visibleCount = 0;
+
+    diagnosticCardMap.forEach((entry) => {
+      const searchText = normalizeText(`${entry.card.dataset.provider || ""} ${entry.card.textContent}`);
+      const matches = !query || searchText.includes(query);
+      entry.card.hidden = !matches;
+
+      if (matches) {
+        visibleCount += 1;
+      }
+    });
+
+    return visibleCount;
+  }
+
+  function updateNetworkDiagnosticCard(provider, result) {
+    const entry = diagnosticCardMap.get(provider);
+    if (!entry) {
+      return;
+    }
+
+    entry.card.className = `diagnostic-item ${result.type}`;
+    entry.badge.textContent = result.badge;
+    entry.message.textContent = result.message;
+    if (result.endpoint) {
+      entry.endpoint.textContent = result.endpoint;
+    }
+  }
+
+  function renderNetworkDiagnosticSummary(results) {
+    const reachableCount = results.filter((item) => item.type === "success" || item.type === "info").length;
+    const failedCount = results.filter((item) => item.type === "error").length;
+
+    networkDiagnosticsSummary.textContent = t("optionsNetworkDiagnosticsSummary", [reachableCount, failedCount]);
+  }
+
+  function getProviderDisplayLabel(provider) {
+    const map = {
+      deepseek: t("optionsSectionDeepSeek"),
+      openai: t("optionsSectionOpenAI"),
+      gemini: t("optionsSectionGemini"),
+      anthropic: t("optionsSectionAnthropic"),
+      giteeai: t("optionsSectionGiteeAI"),
+      githubcopilot: t("optionsSectionGitHubCopilot"),
+      doubao: t("optionsSectionDoubao"),
+      ollama: t("optionsSectionOllama"),
+      dockerai: t("optionsSectionDockerAI"),
+      foundrylocal: t("optionsSectionFoundryLocal"),
+      koboldcpp: t("optionsSectionKoboldCpp"),
+    };
+
+    return map[provider] || provider;
+  }
+
   async function runProviderConnectionTest(provider) {
     const button = providerTestBtns[provider];
     if (button) {
@@ -849,7 +1114,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function testFoundryLocalConnection() {
-    const url = (foundrylocalUrl.value.trim() || "http://localhost:5273").replace(/\/+$/, "");
+    const url = (foundrylocalUrl.value.trim() || "http://127.0.0.1:55928/").replace(/\/+$/, "");
     const response = await backgroundFetchJson(`${url}/v1/models`, {});
     if (!response.ok) {
       throw new Error(response.error || `HTTP ${response.status}`);
@@ -908,6 +1173,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     );
     if (!response.ok) {
+      if (!response.status) {
+        throw new Error(response.error || t("commonNetworkRequestFailed"));
+      }
+
       throw new Error(response.error || `HTTP ${response.status}`);
     }
 
@@ -1207,7 +1476,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function fetchFoundryLocalModels(selectedModel) {
     setFoundryLocalStatus("info", t("optionsFetchingFoundryLocalModels"));
     foundrylocalRefreshBtn.disabled = true;
-    const url = foundrylocalUrl.value.trim() || "http://localhost:5273";
+    const url = foundrylocalUrl.value.trim() || "http://127.0.0.1:55928/";
     backgroundFetchJson(`${url.replace(/\/+$/, "")}/v1/models`, {})
       .then((response) => {
         foundrylocalRefreshBtn.disabled = false;
