@@ -7,12 +7,33 @@ document.addEventListener("DOMContentLoaded", () => {
   const errorMessage = document.getElementById("error-message");
   const copyBtn = document.getElementById("copy-btn");
   const providerSelect = document.getElementById("provider");
+  const summaryStyleQuickSelect = document.getElementById("summary-style-quick");
   const summarizeBtn = document.getElementById("summarize-btn");
+  const toggleConfigBtn = document.getElementById("toggle-config-btn");
+  const advancedControls = document.getElementById("sidepanel-advanced-controls");
   const openOptions = document.getElementById("open-options");
   const chatMessages = document.getElementById("chat-messages");
   const chatInput = document.getElementById("chat-input");
   const chatSendBtn = document.getElementById("chat-send-btn");
   const summaryTimer = document.getElementById("summary-timer");
+  const providerPill = document.getElementById("sidepanel-provider-pill");
+  const providerModePill = document.getElementById("sidepanel-provider-mode-pill");
+  const modelPill = document.getElementById("sidepanel-model-pill");
+  const LOCAL_PROVIDER_IDS = new Set(["ollama", "dockerai", "foundrylocal", "koboldcpp"]);
+  const PROVIDER_MODEL_STORAGE_KEYS = {
+    deepseek: "deepseek_model",
+    openai: "openai_model",
+    gemini: "gemini_model",
+    anthropic: "anthropic_model",
+    githubcopilot: "githubcopilot_model",
+    doubao: "doubao_model",
+    ollama: "ollama_model",
+    dockerai: "dockerai_model",
+    foundrylocal: "foundrylocal_model",
+    giteeai: "giteeai_model",
+  };
+  const SIDEPANEL_UI_STATE_KEY = "sidepanel_ui_state";
+  let headerStatusRequestId = 0;
 
   // 对话历史（包含 system + 页面上下文 + 所有对话）
   let conversationHistory = [];
@@ -22,16 +43,36 @@ document.addEventListener("DOMContentLoaded", () => {
   let cachedPageUrl = "";
   let isChatBusy = false;
 
+  restoreSidepanelUiState();
+
   // 加载上次选择的 provider
-  chrome.storage.sync.get(["provider"], (data) => {
+  chrome.storage.sync.get(["provider", "summary_style"], (data) => {
     if (data.provider) {
       providerSelect.value = data.provider;
     }
+
+    if (summaryStyleQuickSelect) {
+      summaryStyleQuickSelect.value = data.summary_style || "standard";
+    }
+
+    updateHeaderStatus();
   });
 
   providerSelect.addEventListener("change", () => {
     chrome.storage.sync.set({ provider: providerSelect.value });
+    updateHeaderStatus();
   });
+
+  summaryStyleQuickSelect?.addEventListener("change", () => {
+    chrome.storage.sync.set({ summary_style: summaryStyleQuickSelect.value || "standard" });
+    updateHeaderStatus();
+  });
+
+  toggleConfigBtn?.addEventListener("click", () => {
+    setAdvancedControlsExpanded(toggleConfigBtn.getAttribute("aria-expanded") !== "true");
+  });
+
+  updateHeaderStatus();
 
   copyBtn.addEventListener("click", () => {
     navigator.clipboard.writeText(summaryContent.innerText).then(() => {
@@ -62,6 +103,85 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   chatSendBtn.addEventListener("click", handleChatSend);
+
+  function getSelectedOptionText(select) {
+    return select?.selectedOptions?.[0]?.textContent?.trim() || select?.value || "";
+  }
+
+  function restoreSidepanelUiState() {
+    chrome.storage.local.get([SIDEPANEL_UI_STATE_KEY], (data) => {
+      const expanded = Boolean(data?.[SIDEPANEL_UI_STATE_KEY]?.advancedControlsExpanded);
+      setAdvancedControlsExpanded(expanded, false);
+    });
+  }
+
+  function persistSidepanelUiState(advancedControlsExpanded) {
+    chrome.storage.local.set({
+      [SIDEPANEL_UI_STATE_KEY]: {
+        advancedControlsExpanded,
+      },
+    });
+  }
+
+  function setAdvancedControlsExpanded(expanded, persist = true) {
+    if (!toggleConfigBtn || !advancedControls) {
+      return;
+    }
+
+    advancedControls.classList.toggle("hidden", !expanded);
+    toggleConfigBtn.setAttribute("aria-expanded", String(expanded));
+    toggleConfigBtn.title = t(expanded ? "sidepanelCollapseControlsTitle" : "sidepanelExpandControlsTitle");
+    toggleConfigBtn.setAttribute("aria-label", toggleConfigBtn.title);
+
+    if (persist) {
+      persistSidepanelUiState(expanded);
+    }
+  }
+
+  async function getConfiguredModelName(provider) {
+    const storageKey = PROVIDER_MODEL_STORAGE_KEYS[provider];
+    if (!storageKey) {
+      return { name: t("commonUnavailable"), available: false };
+    }
+
+    const data = await new Promise((resolve) => {
+      chrome.storage.sync.get([storageKey], (result) => {
+        resolve(result || {});
+      });
+    });
+    const name = String(data?.[storageKey] || "").trim();
+    return {
+      name: name || t("commonUnavailable"),
+      available: Boolean(name),
+    };
+  }
+
+  async function updateHeaderStatus() {
+    if (!providerPill || !providerModePill || !modelPill) {
+      return;
+    }
+
+    const requestId = ++headerStatusRequestId;
+    const currentProvider = providerSelect.value;
+
+    providerPill.textContent = getSelectedOptionText(providerSelect);
+    modelPill.textContent = t("optionsStateTesting");
+    modelPill.title = t("optionsStateTesting");
+    modelPill.className = "sidepanel-status-pill model pending";
+
+    const isLocalProvider = LOCAL_PROVIDER_IDS.has(currentProvider);
+    providerModePill.textContent = t(isLocalProvider ? "sidepanelProviderModeLocal" : "sidepanelProviderModeOnline");
+    providerModePill.className = `sidepanel-status-pill mode ${isLocalProvider ? "local" : "online"}`;
+
+    const modelInfo = await getConfiguredModelName(currentProvider);
+    if (requestId !== headerStatusRequestId) {
+      return;
+    }
+
+    modelPill.textContent = modelInfo.name;
+    modelPill.title = modelInfo.name;
+    modelPill.className = `sidepanel-status-pill model ${modelInfo.available ? "available" : "unavailable"}`;
+  }
 
   // ===== 发送对话消息 =====
   async function handleChatSend() {
@@ -196,7 +316,7 @@ document.addEventListener("DOMContentLoaded", () => {
       conversationHistory = [
         {
           role: "system",
-          content: t("sidepanelPageSummarySystemPrompt", [cachedPageTitle || t("commonUnavailable"), cachedPageUrl || t("commonUnavailable"), cachedPageContent])
+            content: t("sidepanelFollowupPageSystemPrompt", [cachedPageTitle || t("commonUnavailable"), cachedPageUrl || t("commonUnavailable"), cachedPageContent])
         },
         { role: "assistant", content: summary },
       ];
@@ -245,7 +365,7 @@ document.addEventListener("DOMContentLoaded", () => {
         conversationHistory = [
           {
             role: "system",
-            content: t("sidepanelSelectionSummarySystemPrompt", [cachedPageTitle || t("commonUnavailable"), cachedPageUrl || t("commonUnavailable"), cachedPageContent])
+              content: t("sidepanelFollowupSelectionSystemPrompt", [cachedPageTitle || t("commonUnavailable"), cachedPageUrl || t("commonUnavailable"), cachedPageContent])
           },
           { role: "assistant", content: summary },
         ];
@@ -423,7 +543,13 @@ async function callAI(provider, content, pageTitle, pageUrl) {
   if (!isLocalProvider(provider) && !config.apiKey) {
     throw new Error(t("sidepanelApiKeyMissing", getProviderLabel(provider)));
   }
-  const prompt = t("sidepanelSummaryModeUserPrompt", [pageTitle || t("commonUnavailable"), pageUrl || t("commonUnavailable"), content]);
+  const summaryStyle = await getSummaryStyle();
+  const prompt = t("sidepanelSummaryModeUserPrompt", [
+    pageTitle || t("commonUnavailable"),
+    pageUrl || t("commonUnavailable"),
+    content,
+    getSummaryStyleInstruction(summaryStyle),
+  ]);
   const messages = [
     { role: "system", content: t("sidepanelSummaryModeSystemPrompt") },
     { role: "user", content: prompt },
@@ -435,12 +561,33 @@ async function callAI(provider, content, pageTitle, pageUrl) {
  * 对话模式：发送完整对话历史给 AI
  */
 async function callChatAI(provider, messages) {
-          content: t("sidepanelFollowupPageSystemPrompt", [cachedPageTitle || t("commonUnavailable"), cachedPageUrl || t("commonUnavailable"), cachedPageContent])
   const config = await getAPIConfig(provider);
   if (!isLocalProvider(provider) && !config.apiKey) {
     throw new Error(t("sidepanelApiKeyMissing", getProviderLabel(provider)));
   }
   return await executeProviderRequest(provider, config, messages, 0.5, "sidepanelNoReplyResult");
+}
+
+function getSummaryStyle() {
+  return new Promise((resolve) => {
+    chrome.storage.sync.get(["summary_style"], (data) => {
+      resolve(data.summary_style || "standard");
+    });
+  });
+}
+
+function getSummaryStyleInstruction(style) {
+  const { t } = window.AppI18n;
+
+  switch (style) {
+    case "compact":
+      return t("sidepanelSummaryStyleCompact");
+    case "detailed":
+      return t("sidepanelSummaryStyleDetailed");
+    case "standard":
+    default:
+      return t("sidepanelSummaryStyleStandard");
+  }
 }
 
 function isLocalProvider(provider) {
@@ -478,7 +625,6 @@ function buildProviderRequest(provider, config, messages, temperature) {
         Authorization: `Bearer ${config.apiKey}`,
       },
       body: JSON.stringify({
-            content: t("sidepanelFollowupSelectionSystemPrompt", [cachedPageTitle || t("commonUnavailable"), cachedPageUrl || t("commonUnavailable"), cachedPageContent])
         messages,
         max_tokens: 2000,
         temperature,

@@ -8,26 +8,62 @@
 </head>
 <body class="sidepanel-body">
   <div class="container">
-    <h1 data-i18n="sidepanelHeading">📄 AI Page Summarizer</h1>
-
-    <div class="provider-select">
-      <label for="provider" data-i18n="sidepanelProviderLabel">AI model:</label>
-      <select id="provider">
-        <option value="deepseek" data-i18n="providerDeepSeek">DeepSeek</option>
-        <option value="openai" data-i18n="providerOpenAI">OpenAI GPT</option>
-        <option value="gemini" data-i18n="providerGemini">Google Gemini</option>
-        <option value="anthropic" data-i18n="providerAnthropic">Anthropic Claude</option>
-        <option value="githubcopilot" data-i18n="providerGitHubCopilot">GitHub Copilot</option>
-        <option value="doubao" data-i18n="providerDoubao">Doubao</option>
-        <option value="ollama" data-i18n="providerOllamaLocal">Ollama (local)</option>
-        <option value="dockerai" data-i18n="providerDockerAI">Docker Desktop AI</option>
-        <option value="foundrylocal" data-i18n="providerFoundryLocal">Foundry Local</option>
-        <option value="koboldcpp" data-i18n="providerKoboldCppLocal">KoboldCpp (local)</option>
-        <option value="giteeai" data-i18n="providerGiteeAI">Gitee AI</option>
-      </select>
+    <div class="sidepanel-topbar">
+      <div class="sidepanel-brand">
+        <h1 data-i18n="sidepanelHeading">📄 AI Page Summarizer</h1>
+        <div class="sidepanel-subtitle-row" aria-live="polite">
+          <div class="sidepanel-status-pills">
+            <span class="sidepanel-status-pill provider" id="sidepanel-provider-pill"></span>
+            <span class="sidepanel-status-pill mode" id="sidepanel-provider-mode-pill"></span>
+            <span class="sidepanel-status-pill model" id="sidepanel-model-pill"></span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <button id="summarize-btn" data-i18n="sidepanelSummarizeButton">🔄 Summarize current page</button>
+    <section class="sidepanel-config-card">
+      <div class="sidepanel-actions-row">
+        <button id="summarize-btn" data-i18n="sidepanelSummarizeButton">🔄 Summarize current page</button>
+        <button id="toggle-config-btn" class="sidepanel-toggle-btn" type="button" aria-expanded="false" title="More options">
+          <svg class="sidepanel-toggle-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+            <path d="M3.5 5h13" />
+            <path d="M3.5 10h13" />
+            <path d="M3.5 15h13" />
+            <circle cx="7" cy="5" r="1.8" />
+            <circle cx="12.5" cy="10" r="1.8" />
+            <circle cx="9" cy="15" r="1.8" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="sidepanel-controls hidden" id="sidepanel-advanced-controls">
+        <div class="provider-select">
+          <label for="provider" data-i18n="sidepanelProviderLabel">AI model:</label>
+          <select id="provider">
+            <option value="deepseek" data-i18n="providerDeepSeek">DeepSeek</option>
+            <option value="openai" data-i18n="providerOpenAI">OpenAI GPT</option>
+            <option value="gemini" data-i18n="providerGemini">Google Gemini</option>
+            <option value="anthropic" data-i18n="providerAnthropic">Anthropic Claude</option>
+            <option value="githubcopilot" data-i18n="providerGitHubCopilot">GitHub Copilot</option>
+            <option value="doubao" data-i18n="providerDoubao">Doubao</option>
+            <option value="ollama" data-i18n="providerOllamaLocal">Ollama (local)</option>
+            <option value="dockerai" data-i18n="providerDockerAI">Docker Desktop AI</option>
+            <option value="foundrylocal" data-i18n="providerFoundryLocal">Foundry Local</option>
+            <option value="koboldcpp" data-i18n="providerKoboldCppLocal">KoboldCpp (local)</option>
+            <option value="giteeai" data-i18n="providerGiteeAI">Gitee AI</option>
+          </select>
+        </div>
+
+        <div class="provider-select quick-style-select">
+          <label for="summary-style-quick" data-i18n="sidepanelSummaryStyleLabel">Summary style:</label>
+          <select id="summary-style-quick">
+            <option value="compact" data-i18n="optionsSummaryStyleCompact">Compact</option>
+            <option value="standard" data-i18n="optionsSummaryStyleStandard">Standard</option>
+            <option value="detailed" data-i18n="optionsSummaryStyleDetailed">Detailed</option>
+          </select>
+        </div>
+      </div>
+    </section>
 
     <div id="loading" class="hidden">
       <div class="spinner"></div>
@@ -35,10 +71,14 @@
     </div>
 
     <div id="result" class="hidden">
-      <h2 data-i18n="sidepanelResultHeading">Summary</h2>
+      <div class="result-head">
+        <h2 data-i18n="sidepanelResultHeading">Summary</h2>
+        <div class="result-meta">
+          <span id="summary-timer"></span>
+          <button id="copy-btn" data-i18n="sidepanelCopyButton">📋 Copy</button>
+        </div>
+      </div>
       <div id="summary-content"></div>
-      <button id="copy-btn" data-i18n="sidepanelCopyButton">📋 Copy</button>
-      <span id="summary-timer"></span>
     </div>
 
     <div id="error" class="hidden">
@@ -55,7 +95,7 @@
         <button id="chat-send-btn" data-i18n-title="sidepanelChatSendTitle" title="Send">➤</button>
       </div>
       <div class="chat-footer-row">
-        <a href="#" id="open-options" data-i18n="sidepanelOpenOptionsLink">⚙️ Settings</a>
+        <a href="#" id="open-options" class="sidepanel-settings-link" data-i18n="sidepanelOpenOptionsLink">⚙️ Settings</a>
         <span id="chat-hint" data-i18n="sidepanelChatHint">Enter to send · Shift+Enter for newline</span>
       </div>
     </div>

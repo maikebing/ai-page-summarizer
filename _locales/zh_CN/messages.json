@@ -74,11 +74,26 @@
   "sidepanelHeading": {
     "message": "📄 AI 页面总结器"
   },
+  "sidepanelSubtitleStatus": {
+    "message": "当前配置"
+  },
+  "sidepanelProviderModeLocal": {
+    "message": "本地"
+  },
+  "sidepanelProviderModeOnline": {
+    "message": "在线"
+  },
   "sidepanelProviderLabel": {
     "message": "选择 AI 模型："
   },
   "sidepanelSummarizeButton": {
     "message": "🔄 总结当前页面"
+  },
+  "sidepanelExpandControlsTitle": {
+    "message": "展开模型和风格选项"
+  },
+  "sidepanelCollapseControlsTitle": {
+    "message": "折叠模型和风格选项"
   },
   "sidepanelLoadingText": {
     "message": "正在读取页面并总结..."
@@ -100,6 +115,9 @@
   },
   "sidepanelOpenOptionsLink": {
     "message": "⚙️ 设置"
+  },
+  "sidepanelSummaryStyleLabel": {
+    "message": "总结风格："
   },
   "sidepanelChatHint": {
     "message": "Enter 发送 · Shift+Enter 换行"
@@ -134,16 +152,25 @@
   "sidepanelOllamaConnectLong": {
     "message": "无法连接 Ollama 服务。请检查：\n1. Ollama 是否已启动（ollama serve）\n2. 启动前设置环境变量 OLLAMA_ORIGINS=*\n   Windows: set OLLAMA_ORIGINS=* 然后 ollama serve\n   Mac/Linux: OLLAMA_ORIGINS=* ollama serve"
   },
-  "sidepanelAssistantSummaryRole": {
+  "sidepanelSummaryModeSystemPrompt": {
     "message": "你是一个专业的内容分析助手，擅长快速总结网页内容的核心要点。请始终使用当前界面语言（简体中文）输出。"
   },
-  "sidepanelSummaryPrompt": {
-    "message": "请始终使用当前界面语言（简体中文）总结以下网页，要求：\n1. 先用一句话概括主旨\n2. 然后列出 3-5 个关键要点\n3. 如果有重要数据或结论，请特别标注\n4. 除非原文专有名词必须保留，否则不要切换到其他语言\n\n网页标题：$1\n网页地址：$2\n\n网页内容：\n$3"
+  "sidepanelSummaryModeUserPrompt": {
+    "message": "请始终使用当前界面语言（简体中文）总结以下网页，要求：\n1. 先准确提炼主旨，不要偏离原文\n2. 重要数据、结论、时间、对象名称要保留\n3. 除非原文专有名词必须保留，否则不要切换到其他语言\n4. 严格遵循下面的输出结构要求，不要额外发挥：$4\n\n网页标题：$1\n网页地址：$2\n\n网页内容：\n$3"
   },
-  "sidepanelPageSummarySystemPrompt": {
+  "sidepanelSummaryStyleCompact": {
+    "message": "使用简洁风格，并严格采用固定结构：第 1 行只写 1 句主旨；然后只输出 3 个要点，每个要点 1 句话；不要写背景、过程、延伸分析或总结性结尾。"
+  },
+  "sidepanelSummaryStyleStandard": {
+    "message": "使用标准风格，并严格采用固定结构：先写 1 句主旨；再输出 4 个要点，每个要点 1-2 句话；如果存在关键数据或结论，在对应要点中直接标出；不要额外增加分段。"
+  },
+  "sidepanelSummaryStyleDetailed": {
+    "message": "使用详细风格，并严格采用固定结构：依次输出【主旨】【背景】【关键信息】【风险/限制】【结论】5 个分段；每段 1-3 句话；如果原文没有风险或限制，明确写“原文未提及明显风险/限制”。"
+  },
+  "sidepanelFollowupPageSystemPrompt": {
     "message": "你是一个专业的内容分析助手。用户正在浏览一个网页，你已经帮他总结了内容。现在用户会对这个页面内容提出进一步的问题，请基于以下网页内容回答，并始终使用当前界面语言（简体中文）。如果问题超出页面内容范围，你也可以结合自己的知识回答，但要说明哪些是页面内容中的信息，哪些是你的补充。\n\n网页标题：$1\n网页地址：$2\n\n网页内容：\n$3"
   },
-  "sidepanelSelectionSummarySystemPrompt": {
+  "sidepanelFollowupSelectionSystemPrompt": {
     "message": "你是一个专业的内容分析助手。用户选中了网页的一段文字，你已经帮他总结了内容。现在用户会对这段内容提出进一步的问题，请基于以下内容回答，并始终使用当前界面语言（简体中文）。如果问题超出内容范围，你也可以结合自己的知识回答，但要说明哪些是内容中的信息，哪些是你的补充。\n\n网页标题：$1\n网页地址：$2\n\n选中内容：\n$3"
   },
   "commonUnavailable": {
@@ -191,6 +218,33 @@
   "optionsPageDescription": {
     "message": "使用选项卡、分组卡片和折叠面板，更高效地管理本地模型、在线模型与诊断信息。"
   },
+  "optionsSummaryStyleTitle": {
+    "message": "总结风格"
+  },
+  "optionsSummaryStyleLabel": {
+    "message": "总结档位"
+  },
+  "optionsSummaryStyleHint": {
+    "message": "三档现在是固定模板：简洁 = 1 句主旨 + 3 点；标准 = 1 句主旨 + 4 点；详细 = 主旨/背景/关键信息/风险或限制/结论 五段。"
+  },
+  "optionsSummaryStyleCompact": {
+    "message": "简洁"
+  },
+  "optionsSummaryStyleCompactHint": {
+    "message": "1 句主旨 + 3 个要点，适合快速扫读。"
+  },
+  "optionsSummaryStyleStandard": {
+    "message": "标准"
+  },
+  "optionsSummaryStyleStandardHint": {
+    "message": "1 句主旨 + 4 个要点，信息完整、节奏均衡。"
+  },
+  "optionsSummaryStyleDetailed": {
+    "message": "详细"
+  },
+  "optionsSummaryStyleDetailedHint": {
+    "message": "主旨 / 背景 / 关键信息 / 风险或限制 / 结论 五段结构。"
+  },
   "optionsTabAll": {
     "message": "全部"
   },
@@ -199,6 +253,9 @@
   },
   "optionsTabOnline": {
     "message": "在线模型"
+  },
+  "optionsTabSummaryStyle": {
+    "message": "总结风格"
   },
   "optionsTabAbout": {
     "message": "关于"
@@ -235,6 +292,15 @@
   },
   "optionsBadgeOnline": {
     "message": "API"
+  },
+  "optionsBadgeNet": {
+    "message": "NET"
+  },
+  "optionsBadgeStyle": {
+    "message": "风格"
+  },
+  "optionsBadgeInfo": {
+    "message": "信息"
   },
   "optionsStateUntested": {
     "message": "未测试"
@@ -309,7 +375,7 @@
     "message": "关于这个项目"
   },
   "optionsAboutSubtitle": {
-    "message": "查看项目仓库、当前版本、项目介绍、使用帮助以及最近的界面改动说明。"
+    "message": "查看 1.1.0 版本的仓库地址、当前版本、项目说明、使用帮助和最新变更摘要。"
   },
   "optionsAboutIntroTitle": {
     "message": "项目介绍"
@@ -372,19 +438,19 @@
     "message": "项目说明"
   },
   "optionsAboutDescriptionBody": {
-    "message": "一键总结网页内容，支持多轮对话，兼容 DeepSeek、豆包、Gitee AI 等在线模型，以及 Ollama、Docker Desktop AI、KoboldCpp 等本地模型。"
+    "message": "AI 页面总结器支持网页全文总结、选中文本总结和侧边栏多轮追问，兼容 DeepSeek、OpenAI、Gemini、Anthropic、GitHub Copilot、豆包、Gitee AI 等在线模型，以及 Ollama、Docker Desktop AI、Foundry Local、KoboldCpp 等本地模型。1.1.0 版本重点补齐了统一设置页、网络诊断、侧边栏快捷配置和状态提示。"
   },
   "optionsAboutChangelogTitle": {
     "message": "变更记录"
   },
   "optionsAboutChangelogItem1": {
-    "message": "设置页调整为本地模型、在线模型、网络诊断和关于四个主标签页。"
+    "message": "1.1.0：设置页统一为本地模型、在线模型、网络诊断、总结风格和关于五类内容，并统一标题区、按钮区和卡片容器风格。"
   },
   "optionsAboutChangelogItem2": {
-    "message": "网络诊断支持逐项展示待诊断、诊断中和诊断结果，并优先检查本地 provider。"
+    "message": "1.1.0：网络诊断补齐逐项状态展示和失败兜底处理，避免未捕获请求异常直接打断设置页。"
   },
   "optionsAboutChangelogItem3": {
-    "message": "设置页卡片布局统一，尽量保持同一行卡片高度一致。"
+    "message": "1.1.0：侧边栏增加折叠式快捷配置、模型状态胶囊和可用性配色；1.0.0 为首个公开版本。"
   },
   "optionsTestHintLocal": {
     "message": "测试本地服务是否可访问，以及模型列表是否能正常获取。"
@@ -594,7 +660,7 @@
     "message": "暂无模型"
   },
   "optionsSaveButton": {
-    "message": "💾 保存设置"
+    "message": "保存设置"
   },
   "optionsStatusSaved": {
     "message": "✅ 设置已保存！"

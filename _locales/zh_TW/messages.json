@@ -59,11 +59,26 @@
   "sidepanelHeading": {
     "message": "📄 AI 頁面摘要器"
   },
+  "sidepanelSubtitleStatus": {
+    "message": "目前配置"
+  },
+  "sidepanelProviderModeLocal": {
+    "message": "本機"
+  },
+  "sidepanelProviderModeOnline": {
+    "message": "線上"
+  },
   "sidepanelProviderLabel": {
     "message": "選擇 AI 模型："
   },
   "sidepanelSummarizeButton": {
     "message": "🔄 摘要目前頁面"
+  },
+  "sidepanelExpandControlsTitle": {
+    "message": "展開模型與風格選項"
+  },
+  "sidepanelCollapseControlsTitle": {
+    "message": "摺疊模型與風格選項"
   },
   "sidepanelLoadingText": {
     "message": "正在讀取頁面並摘要..."
@@ -85,6 +100,9 @@
   },
   "sidepanelOpenOptionsLink": {
     "message": "⚙️ 設定"
+  },
+  "sidepanelSummaryStyleLabel": {
+    "message": "摘要風格："
   },
   "sidepanelChatHint": {
     "message": "Enter 傳送 · Shift+Enter 換行"
@@ -119,16 +137,25 @@
   "sidepanelOllamaConnectLong": {
     "message": "無法連線到 Ollama 服務。請檢查：\n1. Ollama 是否已啟動（ollama serve）\n2. 啟動前是否已設定環境變數 OLLAMA_ORIGINS=*\n   Windows: set OLLAMA_ORIGINS=* 然後執行 ollama serve\n   Mac/Linux: OLLAMA_ORIGINS=* ollama serve"
   },
-  "sidepanelAssistantSummaryRole": {
+  "sidepanelSummaryModeSystemPrompt": {
     "message": "你是一位專業的內容分析助手，擅長快速摘要網頁內容的核心重點。請始終使用目前介面語言（繁體中文）輸出。"
   },
-  "sidepanelSummaryPrompt": {
-    "message": "請始終使用目前介面語言（繁體中文）摘要以下網頁，要求：\n1. 先用一句話概括主旨\n2. 然後列出 3-5 個關鍵重點\n3. 如果有重要資料或結論，請特別標註\n4. 除非原文專有名詞必須保留，否則不要切換到其他語言\n\n網頁標題：$1\n網頁網址：$2\n\n網頁內容：\n$3"
+  "sidepanelSummaryModeUserPrompt": {
+    "message": "請始終使用目前介面語言（繁體中文）摘要以下網頁，要求：\n1. 先準確提煉主旨，不要偏離原文\n2. 重要資料、結論、時間、對象名稱要保留\n3. 除非原文專有名詞必須保留，否則不要切換到其他語言\n4. 嚴格遵循以下輸出結構要求，不要額外發揮：$4\n\n網頁標題：$1\n網頁網址：$2\n\n網頁內容：\n$3"
   },
-  "sidepanelPageSummarySystemPrompt": {
+  "sidepanelSummaryStyleCompact": {
+    "message": "使用簡潔風格，並嚴格採用固定結構：第 1 行只寫 1 句主旨；然後只輸出 3 個重點，每個重點 1 句話；不要寫背景、過程、延伸分析或結尾。"
+  },
+  "sidepanelSummaryStyleStandard": {
+    "message": "使用標準風格，並嚴格採用固定結構：先寫 1 句主旨；再輸出 4 個重點，每個重點 1-2 句話；若有關鍵資料或結論，直接寫在對應重點中；不要額外增加分段。"
+  },
+  "sidepanelSummaryStyleDetailed": {
+    "message": "使用詳細風格，並嚴格採用固定結構：依序輸出【主旨】【背景】【關鍵資訊】【風險/限制】【結論】5 個分段；每段 1-3 句話；若原文沒有提到風險或限制，請明確寫出「原文未提及明顯風險/限制」。"
+  },
+  "sidepanelFollowupPageSystemPrompt": {
     "message": "你是一位專業的內容分析助手。使用者正在瀏覽一個網頁，你已經幫他摘要了內容。現在使用者會針對這個頁面內容提出進一步的問題，請根據以下網頁內容回答，並始終使用目前介面語言（繁體中文）。如果問題超出頁面內容範圍，你也可以結合自己的知識回答，但要說明哪些是頁面內容中的資訊，哪些是你的補充。\n\n網頁標題：$1\n網頁網址：$2\n\n網頁內容：\n$3"
   },
-  "sidepanelSelectionSummarySystemPrompt": {
+  "sidepanelFollowupSelectionSystemPrompt": {
     "message": "你是一位專業的內容分析助手。使用者在網頁中選取了一段文字，你已經幫他摘要了內容。現在使用者會針對這段內容提出進一步的問題，請根據以下內容回答，並始終使用目前介面語言（繁體中文）。如果問題超出內容範圍，你也可以結合自己的知識回答，但要說明哪些是內容中的資訊，哪些是你的補充。\n\n網頁標題：$1\n網頁網址：$2\n\n選取內容：\n$3"
   },
   "commonUnavailable": {
@@ -176,6 +203,33 @@
   "optionsPageDescription": {
     "message": "使用分頁、分組卡片與可折疊面板，更有效率地管理本地模型與線上 API 設定。"
   },
+  "optionsSummaryStyleTitle": {
+    "message": "摘要風格"
+  },
+  "optionsSummaryStyleLabel": {
+    "message": "摘要檔位"
+  },
+  "optionsSummaryStyleHint": {
+    "message": "三檔現在是固定模板：簡潔 = 1 句主旨 + 3 點；標準 = 1 句主旨 + 4 點；詳細 = 主旨/背景/關鍵資訊/風險或限制/結論 五段。"
+  },
+  "optionsSummaryStyleCompact": {
+    "message": "簡潔"
+  },
+  "optionsSummaryStyleCompactHint": {
+    "message": "1 句主旨 + 3 個重點，適合快速瀏覽。"
+  },
+  "optionsSummaryStyleStandard": {
+    "message": "標準"
+  },
+  "optionsSummaryStyleStandardHint": {
+    "message": "1 句主旨 + 4 個重點，資訊完整、節奏平衡。"
+  },
+  "optionsSummaryStyleDetailed": {
+    "message": "詳細"
+  },
+  "optionsSummaryStyleDetailedHint": {
+    "message": "主旨 / 背景 / 關鍵資訊 / 風險或限制 / 結論 五段結構。"
+  },
   "optionsTabAll": {
     "message": "全部"
   },
@@ -184,6 +238,9 @@
   },
   "optionsTabOnline": {
     "message": "線上 AI 模型 API"
+  },
+  "optionsTabSummaryStyle": {
+    "message": "摘要風格"
   },
   "optionsGroupLocal": {
     "message": "🖥️ 本地模型"
@@ -217,6 +274,15 @@
   },
   "optionsBadgeOnline": {
     "message": "API"
+  },
+  "optionsBadgeNet": {
+    "message": "NET"
+  },
+  "optionsBadgeStyle": {
+    "message": "風格"
+  },
+  "optionsBadgeInfo": {
+    "message": "資訊"
   },
   "optionsStateUntested": {
     "message": "未測試"
@@ -286,6 +352,87 @@
   },
   "optionsNetworkDiagnosticsInvalidUrl": {
     "message": "網址格式無效，請先檢查目前設定。"
+  },
+  "optionsAboutTitle": {
+    "message": "關於這個專案"
+  },
+  "optionsAboutSubtitle": {
+    "message": "查看 1.1.0 版本的倉庫連結、目前版本、專案說明、使用幫助與最新變更摘要。"
+  },
+  "optionsAboutIntroTitle": {
+    "message": "專案介紹"
+  },
+  "optionsAboutIntroItem1": {
+    "message": "支援網頁全文摘要、選取文字摘要，以及側邊欄多輪追問。"
+  },
+  "optionsAboutIntroItem2": {
+    "message": "兼容線上模型與本地模型，可依不同使用情境靈活切換。"
+  },
+  "optionsAboutIntroItem3": {
+    "message": "設定頁內建連線測試、模型重新整理與網路診斷功能。"
+  },
+  "optionsAboutHelpTitle": {
+    "message": "回饋入口 / 使用幫助"
+  },
+  "optionsAboutQuickStartTitle": {
+    "message": "快速上手"
+  },
+  "optionsAboutQuickStartItem1": {
+    "message": "先在本地模型或線上模型頁完成設定並儲存。"
+  },
+  "optionsAboutQuickStartItem2": {
+    "message": "打開側邊欄後，點擊「摘要目前頁面」開始產生第一份摘要。"
+  },
+  "optionsAboutQuickStartItem3": {
+    "message": "若遇到連線問題，請先到網路診斷查看 provider 狀態。"
+  },
+  "optionsAboutHelpGithubIssues": {
+    "message": "GitHub Issues：問題回報與功能建議"
+  },
+  "optionsAboutHelpGiteeIssues": {
+    "message": "Gitee Issues：中國大陸使用者回饋入口"
+  },
+  "optionsAboutHelpItem1": {
+    "message": "第一次使用時，建議先在設定頁完成模型設定，再打開側邊欄執行摘要。"
+  },
+  "optionsAboutHelpItem2": {
+    "message": "若連線失敗，可先使用網路診斷檢查本地與線上 provider 的可達性。"
+  },
+  "optionsAboutLinksTitle": {
+    "message": "倉庫連結"
+  },
+  "optionsAboutMetaTitle": {
+    "message": "版本資訊"
+  },
+  "optionsAboutVersionLabel": {
+    "message": "目前版本"
+  },
+  "optionsAboutPlatformsLabel": {
+    "message": "支援平台"
+  },
+  "optionsAboutPlatformsValue": {
+    "message": "Edge / Chrome 擴充功能"
+  },
+  "optionsAboutLicenseLabel": {
+    "message": "授權條款"
+  },
+  "optionsAboutDescriptionTitle": {
+    "message": "專案說明"
+  },
+  "optionsAboutDescriptionBody": {
+    "message": "AI 頁面摘要器支援網頁全文摘要、選取文字摘要與側邊欄多輪對話，兼容 DeepSeek、OpenAI、Gemini、Anthropic、GitHub Copilot、豆包、Gitee AI 等線上 provider，以及 Ollama、Docker Desktop AI、Foundry Local、KoboldCpp 等本地 provider。1.1.0 版本重點補齊了統一設定頁、網路診斷與側邊欄快捷設定。"
+  },
+  "optionsAboutChangelogTitle": {
+    "message": "變更記錄"
+  },
+  "optionsAboutChangelogItem1": {
+    "message": "1.1.0：設定頁整合為本地模型、線上模型、網路診斷、摘要風格與關於五類內容，並統一標題區與卡片版型。"
+  },
+  "optionsAboutChangelogItem2": {
+    "message": "1.1.0：網路診斷補齊 provider 級狀態顯示與失敗兜底，避免未捕獲請求錯誤直接打斷頁面。"
+  },
+  "optionsAboutChangelogItem3": {
+    "message": "1.1.0：側邊欄加入折疊式快捷設定、模型狀態膠囊與可用性配色；1.0.0 為首次公開版本。"
   },
   "optionsTestHintLocal": {
     "message": "測試本地服務是否可連線，以及模型清單能否正常取得。"
@@ -411,7 +558,7 @@
     "message": "沒有模型"
   },
   "optionsSaveButton": {
-    "message": "💾 儲存設定"
+    "message": "儲存設定"
   },
   "optionsStatusSaved": {
     "message": "✅ 設定已儲存！"

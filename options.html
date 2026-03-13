@@ -33,7 +33,7 @@
       align-items: flex-start;
       justify-content: space-between;
       gap: 16px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .header-copy h1 {
@@ -49,19 +49,69 @@
 
     .header-actions {
       display: flex;
+      align-items: center;
       gap: 8px;
       flex-wrap: wrap;
       justify-content: flex-end;
     }
 
-    .tab-bar {
+    .page-save-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .page-save-actions .status {
       display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #047857;
+      font-size: 13px;
+      transform-origin: center;
+    }
+
+    .page-save-actions .status::before {
+      content: "✓";
+      font-weight: 700;
+    }
+
+    .page-save-actions .status.is-celebrating {
+      animation: saveStatusPop 0.45s ease;
+    }
+
+    @keyframes saveStatusPop {
+      0% {
+        opacity: 0;
+        transform: scale(0.86) translateY(-4px);
+      }
+
+      70% {
+        opacity: 1;
+        transform: scale(1.05) translateY(0);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .tab-bar {
+      display: flex;
+      width: 100%;
       flex-wrap: wrap;
       gap: 8px;
       padding: 6px;
       background: #eef2ff;
       border-radius: 14px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .tab-btn {
@@ -69,9 +119,11 @@
       background: transparent;
       color: #4338ca;
       padding: 10px 16px;
+      flex: 1 1 0;
       border-radius: 10px;
       font-size: 14px;
       font-weight: 600;
+      text-align: center;
       cursor: pointer;
       transition: all 0.2s ease;
     }
@@ -86,7 +138,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       flex-wrap: wrap;
     }
 
@@ -100,6 +152,173 @@
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
+    }
+
+    .summary-style-panel {
+      margin-bottom: 20px;
+      padding: 0;
+      border-radius: 20px;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .summary-style-panel .panel-head {
+      margin-bottom: 0;
+      padding: 18px 20px;
+      background: linear-gradient(135deg, #f8fafc, #eef2ff);
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .summary-style-panel .panel-content {
+      margin-top: 0;
+      padding: 18px 20px 20px;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .panel-head-main {
+      flex: 1;
+      min-width: 240px;
+    }
+
+    .panel-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .panel-title-icon {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+    }
+
+    .panel-title-icon svg {
+      width: 14px;
+      height: 14px;
+      display: block;
+    }
+
+    .diagnostics-title-icon {
+      background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 45%, #fca5a5 100%);
+      box-shadow: 0 8px 18px rgba(249, 115, 22, 0.18);
+    }
+
+    .summary-style-title-icon {
+      background: linear-gradient(135deg, #dbeafe 0%, #c4b5fd 50%, #fbcfe8 100%);
+      box-shadow: 0 8px 18px rgba(99, 102, 241, 0.18);
+    }
+
+    .about-title-icon {
+      background: linear-gradient(135deg, #bbf7d0 0%, #a7f3d0 45%, #bfdbfe 100%);
+      box-shadow: 0 8px 18px rgba(14, 165, 233, 0.16);
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .panel-subtitle {
+      margin: 6px 0 0;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #6b7280;
+    }
+
+    .panel-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+      margin-top: 0;
+    }
+
+    .panel-actions[data-save-actions-slot] {
+      min-width: 176px;
+    }
+
+    .panel-content {
+      margin-top: 2px;
+    }
+
+    .summary-style-control label {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .summary-style-control > label:first-child {
+      margin-top: 0;
+    }
+
+    .summary-style-select {
+      display: none;
+    }
+
+    .summary-style-options {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .summary-style-option {
+      width: 100%;
+      margin-top: 0;
+      padding: 16px 14px;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      color: #334155;
+      box-shadow: none;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .summary-style-option:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+      border-color: #c7d2fe;
+    }
+
+    .summary-style-option.is-selected {
+      background: linear-gradient(180deg, #eef2ff 0%, #e0e7ff 100%);
+      border-color: #818cf8;
+      color: #312e81;
+      box-shadow: 0 14px 26px rgba(99, 102, 241, 0.12);
+    }
+
+    .summary-style-option.is-selected .summary-style-option-desc {
+      color: #4338ca;
+    }
+
+    .summary-style-option-title {
+      display: block;
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .summary-style-option-desc {
+      display: block;
+      font-size: 12px;
+      line-height: 1.55;
+      color: #64748b;
     }
 
     .search-wrap {
@@ -150,7 +369,7 @@
     }
 
     .provider-group {
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       border: 1px solid #e5e7eb;
       border-radius: 20px;
       background: #ffffff;
@@ -158,28 +377,15 @@
     }
 
     .group-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
       padding: 18px 20px;
       background: linear-gradient(135deg, #f8fafc, #eef2ff);
       border-bottom: 1px solid #e5e7eb;
     }
 
     .group-title {
-      font-size: 18px;
-      font-weight: 700;
       display: flex;
       align-items: center;
       gap: 10px;
-    }
-
-    .title-with-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
     }
 
     .group-badge,
@@ -213,26 +419,22 @@
       color: #6d28d9;
     }
 
-    .group-subtitle {
-      font-size: 13px;
-      color: #6b7280;
-      margin-top: 4px;
+    .group-badge.style {
+      background: #e0e7ff;
+      color: #4338ca;
     }
 
-    .group-toggle {
-      margin: 0;
-      padding: 8px 14px;
-      border-radius: 999px;
-      background: #ffffff;
-      color: #4338ca;
-      border: 1px solid #c7d2fe;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
+    .group-badge.info {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .group-subtitle {
+      margin-top: 0;
     }
 
     .group-content {
-      padding: 20px;
+      padding: 18px 20px 20px;
     }
 
     .provider-grid {
@@ -253,10 +455,10 @@
     }
 
     .provider-card > summary {
-      min-height: 88px;
+      min-height: 96px;
       box-sizing: border-box;
       list-style: none;
-      padding: 16px 18px;
+      padding: 18px;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -299,10 +501,12 @@
       gap: 10px;
       flex-wrap: wrap;
       min-width: 0;
+      min-height: 28px;
     }
 
     .provider-summary-label {
       min-width: 0;
+      line-height: 1.35;
     }
 
     .provider-state {
@@ -348,7 +552,7 @@
       display: flex;
       flex: 1;
       flex-direction: column;
-      padding: 0 18px 18px;
+      padding: 16px 18px 18px;
       border-top: 1px solid #e5e7eb;
     }
 
@@ -358,7 +562,7 @@
       justify-content: space-between;
       gap: 12px;
       flex-wrap: wrap;
-      margin-top: 14px;
+      margin-top: 0;
       margin-bottom: 8px;
     }
 
@@ -411,12 +615,41 @@
       cursor: pointer;
     }
     button:hover { opacity: 0.9; }
+
+    .page-save-actions button {
+      margin-top: 0;
+    }
+
     .btn-sm {
       margin-top: 0;
-      padding: 6px 12px;
+      min-height: 34px;
+      padding: 0 14px;
       font-size: 13px;
-      border-radius: 6px;
+      font-weight: 600;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.2;
     }
+
+    .action-btn-icon {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 6px;
+    }
+
+    .action-btn-icon svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      fill: currentColor;
+    }
+
     .btn-secondary {
       background: #6b7280;
     }
@@ -490,16 +723,6 @@
       margin-left: 8px;
     }
 
-    .save-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-top: 28px;
-      padding-top: 20px;
-      border-top: 1px solid #e5e7eb;
-    }
-
     .status {
       margin-top: 0;
     }
@@ -520,32 +743,30 @@
     }
 
     .diagnostics-panel {
-      margin-bottom: 24px;
-      padding: 16px 18px;
-      border-radius: 16px;
-      border: 1px solid #dbeafe;
-      background: linear-gradient(180deg, #f8fbff 0%, #eff6ff 100%);
+      margin-bottom: 20px;
+      padding: 0;
+      border-radius: 20px;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      overflow: hidden;
     }
 
-    .diagnostics-head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 10px;
+    .diagnostics-panel .panel-head {
+      margin-bottom: 0;
+      padding: 18px 20px;
+      background: linear-gradient(135deg, #f8fafc, #eef2ff);
+      border-bottom: 1px solid #e5e7eb;
     }
 
-    .diagnostics-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: #1e3a8a;
-      margin: 0;
+    .diagnostics-panel .panel-content {
+      margin-top: 0;
+      padding: 18px 20px 20px;
     }
 
     .diagnostics-hint,
     .diagnostics-summary {
-      font-size: 12px;
-      color: #4b5563;
+      font-size: 13px;
+      color: #6b7280;
       margin: 4px 0 0;
       line-height: 1.6;
     }
@@ -554,7 +775,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 10px;
-      margin-top: 12px;
+      margin-top: 14px;
       align-items: stretch;
     }
 
@@ -661,33 +882,24 @@
     }
 
     .about-panel {
-      margin-bottom: 24px;
-      padding: 16px 18px;
-      border-radius: 16px;
+      margin-bottom: 20px;
+      padding: 0;
+      border-radius: 20px;
       border: 1px solid #e5e7eb;
-      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      background: #ffffff;
+      overflow: hidden;
     }
 
-    .about-head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 14px;
+    .about-panel .panel-head {
+      margin-bottom: 0;
+      padding: 18px 20px;
+      background: linear-gradient(135deg, #f8fafc, #eef2ff);
+      border-bottom: 1px solid #e5e7eb;
     }
 
-    .about-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: #111827;
-      margin: 0;
-    }
-
-    .about-subtitle {
-      font-size: 13px;
-      color: #6b7280;
-      margin: 6px 0 0;
-      line-height: 1.6;
+    .about-panel .panel-content {
+      margin-top: 0;
+      padding: 18px 20px 20px;
     }
 
     .about-grid {
@@ -701,7 +913,7 @@
       display: flex;
       flex-direction: column;
       min-height: 180px;
-      padding: 16px;
+      padding: 18px;
       border-radius: 14px;
       border: 1px solid #e5e7eb;
       background: rgba(255, 255, 255, 0.96);
@@ -758,6 +970,13 @@
       color: #111827;
     }
 
+    .toolbar-actions .btn-sm,
+    .model-row .btn-sm,
+    .meta-refresh-btn,
+    .page-save-actions .btn-sm {
+      min-width: 96px;
+    }
+
     @media (max-width: 900px) {
       body {
         padding: 16px;
@@ -769,7 +988,7 @@
       }
 
       .page-header,
-      .save-bar,
+      .panel-head,
       .group-header {
         flex-direction: column;
         align-items: stretch;
@@ -784,8 +1003,20 @@
         align-items: stretch;
       }
 
+      .summary-style-control {
+        width: 100%;
+      }
+
+      .summary-style-options {
+        grid-template-columns: 1fr;
+      }
+
       .header-actions {
         justify-content: stretch;
+      }
+
+      .panel-actions[data-save-actions-slot] {
+        min-width: 0;
       }
 
       .tab-btn {
@@ -846,12 +1077,26 @@
         <h1 data-i18n="optionsHeading">鈿欙笍 AI Page Summarizer - Settings</h1>
         <p data-i18n="optionsPageDescription">Use tabs, grouped cards, and collapsible rows to manage local and online model settings more efficiently.</p>
       </div>
+      <div class="header-actions hidden" id="page-save-actions-park">
+        <div class="page-save-actions hidden" id="page-save-actions">
+          <button id="save-btn" class="btn-sm">
+            <span class="action-btn-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 3h11.59L21 7.41V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm0 2v14h14V8.24L15.76 5H15v4a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5H5Zm3 0v4h5V5H8Zm1 8h6v2H9v-2Z"/>
+              </svg>
+            </span>
+            <span data-i18n="optionsSaveButton">Save settings</span>
+          </button>
+          <p class="status hidden" id="status" data-i18n="optionsStatusSaved">鉁?Settings saved!</p>
+        </div>
+      </div>
     </div>
 
     <div class="tab-bar" role="tablist" aria-label="Settings tabs">
       <button type="button" class="tab-btn active" role="tab" aria-selected="true" data-tab="local" data-i18n="optionsTabLocal">Local models</button>
       <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="online" data-i18n="optionsTabOnline">Online models</button>
       <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="diagnostics" data-i18n="optionsNetworkDiagnosticsTitle">网络诊断</button>
+      <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="summary-style" data-i18n="optionsTabSummaryStyle">总结风格</button>
       <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="about" data-i18n="optionsTabAbout">关于</button>
     </div>
 
@@ -867,26 +1112,93 @@
       </div>
     </div>
 
-    <section class="diagnostics-panel hidden" id="network-diagnostics-panel">
-      <div class="diagnostics-head">
-        <div>
-          <p class="diagnostics-title" data-i18n="optionsNetworkDiagnosticsTitle">网络诊断</p>
-          <p class="diagnostics-hint" data-i18n="optionsNetworkDiagnosticsHint">诊断会沿用浏览器当前的网络路径与代理设置，对各 provider 做可达性检查。</p>
+    <section class="summary-style-panel hidden" id="summary-style-panel">
+      <div class="panel-head">
+        <div class="panel-head-main">
+          <div class="panel-title-row">
+            <span class="panel-title-icon summary-style-title-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path fill="#4338ca" d="M6 5h12v2H6V5Zm0 6h12v2H6v-2Zm0 6h8v2H6v-2Zm10-1 3 2-3 2v-4Zm-1-8 3 2-3 2V8Z"/>
+              </svg>
+            </span>
+            <p class="panel-title" data-i18n="optionsSummaryStyleTitle">总结风格</p>
+            <span class="group-badge style" data-i18n="optionsBadgeStyle">STYLE</span>
+          </div>
+          <p class="panel-subtitle" data-i18n="optionsSummaryStyleHint">统一控制不同模型的摘要长度与细节密度。推荐使用“标准”，需要更短或更完整时再切换。</p>
         </div>
-        <button type="button" class="btn-sm btn-outline" id="network-diagnostics-btn" data-i18n="optionsNetworkDiagnosticsButton">网络诊断</button>
+        <div class="panel-actions" data-save-actions-slot="summary-style"></div>
       </div>
-      <p class="diagnostics-summary" id="network-diagnostics-summary" data-i18n="optionsNetworkDiagnosticsIdle">点击“网络诊断”开始检查。</p>
-      <div class="diagnostics-list" id="network-diagnostics-results"></div>
+      <div class="summary-style-control panel-content">
+        <label for="summary-style" data-i18n="optionsSummaryStyleLabel">总结档位</label>
+        <select id="summary-style" class="summary-style-select" aria-hidden="true" tabindex="-1">
+          <option value="compact" data-i18n="optionsSummaryStyleCompact">简洁</option>
+          <option value="standard" data-i18n="optionsSummaryStyleStandard">标准</option>
+          <option value="detailed" data-i18n="optionsSummaryStyleDetailed">详细</option>
+        </select>
+        <div class="summary-style-options" role="listbox" aria-label="Summary style options">
+          <button type="button" class="summary-style-option" data-summary-style-option="compact">
+            <span class="summary-style-option-title" data-i18n="optionsSummaryStyleCompact">简洁</span>
+            <span class="summary-style-option-desc" data-i18n="optionsSummaryStyleCompactHint">1 句主旨 + 3 个要点，适合快速扫读。</span>
+          </button>
+          <button type="button" class="summary-style-option" data-summary-style-option="standard">
+            <span class="summary-style-option-title" data-i18n="optionsSummaryStyleStandard">标准</span>
+            <span class="summary-style-option-desc" data-i18n="optionsSummaryStyleStandardHint">1 句主旨 + 4 个要点，信息完整、节奏均衡。</span>
+          </button>
+          <button type="button" class="summary-style-option" data-summary-style-option="detailed">
+            <span class="summary-style-option-title" data-i18n="optionsSummaryStyleDetailed">详细</span>
+            <span class="summary-style-option-desc" data-i18n="optionsSummaryStyleDetailedHint">主旨 / 背景 / 关键信息 / 风险或限制 / 结论 五段结构。</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="diagnostics-panel hidden" id="network-diagnostics-panel">
+      <div class="panel-head">
+        <div class="panel-head-main">
+          <div class="panel-title-row">
+            <span class="panel-title-icon diagnostics-title-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path fill="#7c2d12" d="M12 4a8 8 0 0 1 8 8h-2a6 6 0 1 0-12 0H4a8 8 0 0 1 8-8Zm0 4a4 4 0 0 1 4 4h-2a2 2 0 1 0-4 0H8a4 4 0 0 1 4-4Zm0 5.25A1.75 1.75 0 1 1 10.25 15 1.75 1.75 0 0 1 12 13.25ZM6 15h2a4 4 0 0 0 8 0h2a6 6 0 0 1-12 0Z"/>
+              </svg>
+            </span>
+            <p class="panel-title" data-i18n="optionsNetworkDiagnosticsTitle">网络诊断</p>
+            <span class="group-badge online" data-i18n="optionsBadgeNet">NET</span>
+          </div>
+          <p class="panel-subtitle diagnostics-hint" data-i18n="optionsNetworkDiagnosticsHint">诊断会沿用浏览器当前的网络路径与代理设置，对各 provider 做可达性检查。</p>
+        </div>
+        <div class="panel-actions">
+          <button type="button" class="btn-sm" id="network-diagnostics-btn">
+            <span class="action-btn-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 4a8 8 0 0 1 8 8h-2a6 6 0 1 0-12 0H4a8 8 0 0 1 8-8Zm0 4a4 4 0 0 1 4 4h-2a2 2 0 1 0-4 0H8a4 4 0 0 1 4-4Zm0 5.25A1.75 1.75 0 1 1 10.25 15 1.75 1.75 0 0 1 12 13.25ZM6 15h2a4 4 0 0 0 8 0h2a6 6 0 0 1-12 0Z"/>
+              </svg>
+            </span>
+            <span data-i18n="optionsNetworkDiagnosticsButton">网络诊断</span>
+          </button>
+        </div>
+      </div>
+      <div class="panel-content">
+        <p class="diagnostics-summary" id="network-diagnostics-summary" data-i18n="optionsNetworkDiagnosticsIdle">点击“网络诊断”开始检查。</p>
+        <div class="diagnostics-list" id="network-diagnostics-results"></div>
+      </div>
     </section>
 
     <section class="about-panel hidden" id="about-panel">
-      <div class="about-head">
-        <div>
-          <p class="about-title" data-i18n="optionsAboutTitle">关于这个项目</p>
-          <p class="about-subtitle" data-i18n="optionsAboutSubtitle">查看项目仓库、当前版本、项目介绍、使用帮助以及最近的界面改动说明。</p>
+      <div class="panel-head">
+        <div class="panel-head-main">
+          <div class="panel-title-row">
+            <span class="panel-title-icon about-title-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path fill="#0f766e" d="M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18Zm0 4a1.25 1.25 0 1 0 0 2.5A1.25 1.25 0 0 0 12 7Zm-1 4v6h2v-6h-2Z"/>
+              </svg>
+            </span>
+            <p class="panel-title" data-i18n="optionsAboutTitle">关于这个项目</p>
+            <span class="group-badge info" data-i18n="optionsBadgeInfo">INFO</span>
+          </div>
+          <p class="panel-subtitle" data-i18n="optionsAboutSubtitle">查看项目仓库、当前版本、项目介绍、使用帮助以及最近的界面改动说明。</p>
         </div>
       </div>
-      <div class="about-grid">
+      <div class="about-grid panel-content">
         <article class="about-card">
           <h3 data-i18n="optionsAboutIntroTitle">项目介绍</h3>
           <p data-i18n="optionsAboutDescriptionBody">一键总结网页内容，支持多轮对话，兼容 DeepSeek、豆包、Gitee AI 等在线模型，以及 Ollama、Docker Desktop AI、KoboldCpp 等本地模型。</p>
@@ -950,17 +1262,15 @@
     </section>
 
     <section class="provider-group" data-group="local">
-      <div class="group-header">
-        <div>
-          <div class="group-title">
-            <span class="title-with-badge">
-              <span data-i18n="optionsGroupLocal">馃枼锔?Local models</span>
-              <span class="group-badge local" data-i18n="optionsBadgeLocal">Local</span>
-            </span>
+      <div class="group-header panel-head">
+        <div class="panel-head-main">
+          <div class="group-title panel-title-row">
+            <span class="panel-title" data-i18n="optionsGroupLocal">馃枼锔?Local models</span>
+            <span class="group-badge local" data-i18n="optionsBadgeLocal">Local</span>
           </div>
-          <div class="group-subtitle" data-i18n="optionsGroupLocalHint">Run models on your local machine or LAN service.</div>
+          <div class="group-subtitle panel-subtitle" data-i18n="optionsGroupLocalHint">Run models on your local machine or LAN service.</div>
         </div>
-        <button type="button" class="group-toggle" data-group-toggle="local" data-i18n="optionsCollapse">Collapse</button>
+        <div class="panel-actions" data-save-actions-slot="local"></div>
       </div>
       <div class="group-content" data-group-content="local">
         <div class="provider-grid">
@@ -1092,17 +1402,15 @@
     </section>
 
     <section class="provider-group" data-group="online">
-      <div class="group-header">
-        <div>
-          <div class="group-title">
-            <span class="title-with-badge">
-              <span data-i18n="optionsGroupOnline">鈽侊笍 Online model APIs</span>
-              <span class="group-badge online" data-i18n="optionsBadgeOnline">API</span>
-            </span>
+      <div class="group-header panel-head">
+        <div class="panel-head-main">
+          <div class="group-title panel-title-row">
+            <span class="panel-title" data-i18n="optionsGroupOnline">鈽侊笍 Online model APIs</span>
+            <span class="group-badge online" data-i18n="optionsBadgeOnline">API</span>
           </div>
-          <div class="group-subtitle" data-i18n="optionsGroupOnlineHint">Manage cloud API keys and model names in one place.</div>
+          <div class="group-subtitle panel-subtitle" data-i18n="optionsGroupOnlineHint">Manage cloud API keys and model names in one place.</div>
         </div>
-        <button type="button" class="group-toggle" data-group-toggle="online" data-i18n="optionsCollapse">Collapse</button>
+        <div class="panel-actions" data-save-actions-slot="online"></div>
       </div>
       <div class="group-content" data-group-content="online">
         <div class="provider-grid">
@@ -1319,11 +1627,6 @@
     </section>
 
     <p class="empty-state hidden" id="empty-state" data-i18n="optionsEmptyState">No matching providers or settings were found.</p>
-
-    <div class="save-bar" id="save-bar">
-      <button id="save-btn" data-i18n="optionsSaveButton">馃捑 Save settings</button>
-      <p class="status hidden" id="status" data-i18n="optionsStatusSaved">鉁?Settings saved!</p>
-    </div>
   </div>
 
   <script src="i18n.js"></script>

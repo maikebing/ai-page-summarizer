@@ -57,11 +57,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const doubaoTestBtn = document.getElementById("doubao-test-btn");
   const saveBtn = document.getElementById("save-btn");
   const status = document.getElementById("status");
+  const pageSaveActions = document.getElementById("page-save-actions");
+  const pageSaveActionsPark = document.getElementById("page-save-actions-park");
+  const saveActionSlots = {
+    local: document.querySelector('[data-save-actions-slot="local"]'),
+    online: document.querySelector('[data-save-actions-slot="online"]'),
+    "summary-style": document.querySelector('[data-save-actions-slot="summary-style"]'),
+  };
   const providerSearchInput = document.getElementById("provider-search");
   const clearSearchBtn = document.getElementById("clear-search-btn");
   const emptyState = document.getElementById("empty-state");
   const toolbar = document.querySelector(".toolbar");
-  const saveBar = document.getElementById("save-bar");
+  const summaryStylePanel = document.getElementById("summary-style-panel");
+  const summaryStyleSelect = document.getElementById("summary-style");
+  const summaryStyleOptions = Array.from(document.querySelectorAll("[data-summary-style-option]"));
   const networkDiagnosticsBtn = document.getElementById("network-diagnostics-btn");
   const networkDiagnosticsPanel = document.getElementById("network-diagnostics-panel");
   const networkDiagnosticsSummary = document.getElementById("network-diagnostics-summary");
@@ -70,7 +79,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const aboutVersion = document.getElementById("about-version");
   const tabButtons = Array.from(document.querySelectorAll("[data-tab]"));
   const groupSections = Array.from(document.querySelectorAll("[data-group]"));
-  const groupToggleButtons = Array.from(document.querySelectorAll("[data-group-toggle]"));
   const providerCards = Array.from(document.querySelectorAll("[data-provider-id]"));
   const providerStateEls = {
     deepseek: document.getElementById("provider-state-deepseek"),
@@ -162,19 +170,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const defaultUiState = {
     activeTab: "local",
     search: "",
-    groupCollapsed: {
-      local: false,
-      online: false,
-    },
     providerOpen: {},
   };
   let uiState = cloneUiState(defaultUiState);
   const diagnosticCardMap = new Map();
 
   initializeTabs();
-  initializeGroupToggles();
   initializeProviderCards();
   initializeSearch();
+  initializeSummaryStyleCards();
   initializeModelPresets();
   initializeModelRefreshButtons();
   initializeProviderIndicators();
@@ -196,7 +200,8 @@ document.addEventListener("DOMContentLoaded", () => {
       "foundrylocal_url", "foundrylocal_model",
       "koboldcpp_url",
       "giteeai_api_key", "giteeai_model",
-      "githubcopilot_api_key", "githubcopilot_model"
+      "githubcopilot_api_key", "githubcopilot_model",
+      "summary_style"
     ],
     (data) => {
       const savedOpenAIModel = data.openai_model || "gpt-4.1-mini";
@@ -221,6 +226,8 @@ document.addEventListener("DOMContentLoaded", () => {
       koboldcppUrl.value = data.koboldcpp_url || "http://localhost:5001";
       giteeaiKey.value = data.giteeai_api_key || "";
       githubcopilotKey.value = data.githubcopilot_api_key || "";
+      summaryStyleSelect.value = data.summary_style || "standard";
+      renderSummaryStyleSelection();
 
       setModelSelectOptions(openaiModel, REMOTE_MODEL_PRESETS.openai, savedOpenAIModel);
       setModelSelectOptions(geminiModel, REMOTE_MODEL_PRESETS.gemini, savedGeminiModel);
@@ -287,14 +294,43 @@ document.addEventListener("DOMContentLoaded", () => {
         giteeai_model: giteeaiModel.value.trim(),
         githubcopilot_api_key: githubcopilotKey.value.trim(),
         githubcopilot_model: githubcopilotModel.value.trim(),
+        summary_style: summaryStyleSelect.value || "standard",
       },
       () => {
         status.classList.remove("hidden");
+        status.classList.remove("is-celebrating");
+        void status.offsetWidth;
+        status.classList.add("is-celebrating");
         setTimeout(() => status.classList.add("hidden"), 3000);
+        setTimeout(() => status.classList.remove("is-celebrating"), 500);
         refreshProviderIndicators();
         callback?.();
       }
     );
+  }
+
+  function initializeSummaryStyleCards() {
+    summaryStyleOptions.forEach((option) => {
+      option.addEventListener("click", () => {
+        const value = option.dataset.summaryStyleOption;
+        if (!value) {
+          return;
+        }
+
+        summaryStyleSelect.value = value;
+        renderSummaryStyleSelection();
+      });
+    });
+  }
+
+  function renderSummaryStyleSelection() {
+    const currentValue = summaryStyleSelect.value || "standard";
+
+    summaryStyleOptions.forEach((option) => {
+      const isSelected = option.dataset.summaryStyleOption === currentValue;
+      option.classList.toggle("is-selected", isSelected);
+      option.setAttribute("aria-selected", String(isSelected));
+    });
   }
 
   function initializeTabs() {
@@ -346,48 +382,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function initializeGroupToggles() {
-    groupToggleButtons.forEach((button) => {
-      const groupName = button.dataset.groupToggle;
-      setGroupExpanded(groupName, true, false);
-
-      button.addEventListener("click", () => {
-        const content = document.querySelector(`[data-group-content="${groupName}"]`);
-        if (!content) {
-          return;
-        }
-
-        setGroupExpanded(groupName, content.hidden);
-      });
-    });
-  }
-
-  function setGroupExpanded(groupName, isExpanded, persist = true) {
-    uiState.groupCollapsed[groupName] = !isExpanded;
-
-    const content = document.querySelector(`[data-group-content="${groupName}"]`);
-    if (content) {
-      content.hidden = !isExpanded;
-    }
-
-    updateGroupToggleLabel(groupName, isExpanded);
-    applyFilters();
-
-    if (persist) {
-      persistUiState();
-    }
-  }
-
-  function updateGroupToggleLabel(groupName, isExpanded) {
-    const button = document.querySelector(`[data-group-toggle="${groupName}"]`);
-    if (!button) {
-      return;
-    }
-
-    button.textContent = isExpanded ? t("optionsCollapse") : t("optionsExpand");
-    button.setAttribute("aria-expanded", String(isExpanded));
-  }
-
   function initializeProviderCards() {
     providerCards.forEach((card) => {
       card.addEventListener("toggle", () => {
@@ -409,10 +403,6 @@ document.addEventListener("DOMContentLoaded", () => {
       uiState = {
         activeTab: storedState.activeTab || defaultUiState.activeTab,
         search: typeof storedState.search === "string" ? storedState.search : defaultUiState.search,
-        groupCollapsed: {
-          ...defaultUiState.groupCollapsed,
-          ...(storedState.groupCollapsed || {}),
-        },
         providerOpen: {
           ...(storedState.providerOpen || {}),
         },
@@ -429,10 +419,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
-      Object.entries(uiState.groupCollapsed).forEach(([groupName, isCollapsed]) => {
-        setGroupExpanded(groupName, !isCollapsed, false);
-      });
-
       setSearchQuery(uiState.search, false);
       setActiveTab(uiState.activeTab, false);
     });
@@ -447,19 +433,22 @@ document.addEventListener("DOMContentLoaded", () => {
   function applyFilters() {
     const activeTab = uiState.activeTab || "local";
     const query = normalizeText(uiState.search || "");
+    const isSummaryStyleTab = activeTab === "summary-style";
     const isDiagnosticsTab = activeTab === "diagnostics";
     const isAboutTab = activeTab === "about";
-    const isSpecialTab = isDiagnosticsTab || isAboutTab;
+    const isSpecialTab = isSummaryStyleTab || isDiagnosticsTab || isAboutTab;
     let visibleCards = 0;
 
     if (toolbar) {
       toolbar.classList.remove("hidden");
-      toolbar.classList.toggle("is-placeholder", isAboutTab);
+      toolbar.classList.toggle("is-placeholder", isAboutTab || isSummaryStyleTab);
     }
 
-    if (saveBar) {
-      saveBar.classList.toggle("hidden", isSpecialTab);
+    if (summaryStylePanel) {
+      summaryStylePanel.classList.toggle("hidden", !isSummaryStyleTab);
     }
+
+    relocateSaveActions(activeTab);
 
     if (networkDiagnosticsPanel) {
       networkDiagnosticsPanel.classList.toggle("hidden", !isDiagnosticsTab);
@@ -494,7 +483,7 @@ document.addEventListener("DOMContentLoaded", () => {
       section.hidden = !isTabMatch || visibleInGroup === 0;
     });
 
-    emptyState.classList.toggle("hidden", isAboutTab || visibleCards > 0);
+    emptyState.classList.toggle("hidden", isAboutTab || isSummaryStyleTab || visibleCards > 0);
   }
 
   function initializeAboutPanel() {
@@ -514,9 +503,25 @@ document.addEventListener("DOMContentLoaded", () => {
     return {
       activeTab: source.activeTab,
       search: source.search,
-      groupCollapsed: { ...source.groupCollapsed },
       providerOpen: { ...source.providerOpen },
     };
+  }
+
+  function relocateSaveActions(activeTab) {
+    if (!pageSaveActions) {
+      return;
+    }
+
+    const targetSlot = saveActionSlots[activeTab] || null;
+
+    if (targetSlot) {
+      targetSlot.appendChild(pageSaveActions);
+      pageSaveActions.classList.remove("hidden");
+      return;
+    }
+
+    pageSaveActions.classList.add("hidden");
+    pageSaveActionsPark?.appendChild(pageSaveActions);
   }
 
   function initializeModelPresets() {
@@ -874,7 +879,14 @@ document.addEventListener("DOMContentLoaded", () => {
       return result;
     }
 
-    const response = await backgroundFetchJson(target.url, {});
+    let response;
+
+    try {
+      response = await backgroundFetchJson(target.url, {});
+    } catch (error) {
+      result.message = error?.message || t("commonNetworkRequestFailed");
+      return result;
+    }
 
     if (response.ok) {
       result.type = "success";
@@ -1019,7 +1031,7 @@ document.addEventListener("DOMContentLoaded", () => {
           result = await testFoundryLocalConnection();
           break;
         case "koboldcpp":
-          result = await fetchKoboldcppInfo();
+          result = await fetchKoboldcppInfo({ throwOnError: true });
           break;
         case "deepseek":
         case "openai":
@@ -1129,33 +1141,48 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  async function fetchKoboldcppInfo() {
+  async function fetchKoboldcppInfo(options = {}) {
+    const { throwOnError = false } = options;
     const url = (koboldcppUrl.value.trim() || "http://localhost:5001").replace(/\/+$/, "");
     koboldcppCurrentModel.textContent = "--";
     koboldcppVersion.textContent = "--";
     setProviderState("koboldcpp", "info", t("optionsStateTesting"));
     setProviderStatus("koboldcpp", "info", t("optionsFetchingCurrentModelVersion"));
 
-    const modelResponse = await backgroundFetchJson(`${url}/api/v1/model`, {});
-    const modelData = modelResponse.data || {};
-    if (!modelResponse.ok || !modelData?.result) {
-      throw new Error(modelResponse.error || t("optionsCannotGetModelName"));
-    }
-
-    koboldcppCurrentModel.textContent = modelData.result;
-
     try {
-      const versionResponse = await backgroundFetchJson(`${url}/api/v1/info/version`, {});
-      const versionData = versionResponse.data || {};
-      koboldcppVersion.textContent = versionResponse.ok && versionData?.result ? versionData.result : "--";
-    } catch {
-      koboldcppVersion.textContent = "--";
-    }
+      const modelResponse = await backgroundFetchJson(`${url}/api/v1/model`, {});
+      const modelData = modelResponse.data || {};
+      if (!modelResponse.ok || !modelData?.result) {
+        throw new Error(modelResponse.error || t("optionsCannotGetModelName"));
+      }
 
-    const message = t("optionsTestSuccessModel", modelData.result);
-    setProviderState("koboldcpp", "success", t("optionsStateConnected"));
-    setProviderStatus("koboldcpp", "success", message);
-    return { message };
+      koboldcppCurrentModel.textContent = modelData.result;
+
+      try {
+        const versionResponse = await backgroundFetchJson(`${url}/api/v1/info/version`, {});
+        const versionData = versionResponse.data || {};
+        koboldcppVersion.textContent = versionResponse.ok && versionData?.result ? versionData.result : "--";
+      } catch {
+        koboldcppVersion.textContent = "--";
+      }
+
+      const message = t("optionsTestSuccessModel", modelData.result);
+      setProviderState("koboldcpp", "success", t("optionsStateConnected"));
+      setProviderStatus("koboldcpp", "success", message);
+      return { message };
+    } catch (error) {
+      const message = error?.message || t("commonUnknownError");
+      koboldcppCurrentModel.textContent = "--";
+      koboldcppVersion.textContent = "--";
+      setProviderState("koboldcpp", "error", t("optionsStateFailed"));
+      setProviderStatus("koboldcpp", "error", message);
+
+      if (throwOnError) {
+        throw error;
+      }
+
+      return { message };
+    }
   }
 
   async function testRemoteProviderConnection(provider) {

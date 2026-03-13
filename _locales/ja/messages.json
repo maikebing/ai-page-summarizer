@@ -59,11 +59,26 @@
   "sidepanelHeading": {
     "message": "📄 AIページ要約ツール"
   },
+  "sidepanelSubtitleStatus": {
+    "message": "現在の構成"
+  },
+  "sidepanelProviderModeLocal": {
+    "message": "ローカル"
+  },
+  "sidepanelProviderModeOnline": {
+    "message": "オンライン"
+  },
   "sidepanelProviderLabel": {
     "message": "AIモデル："
   },
   "sidepanelSummarizeButton": {
     "message": "🔄 現在のページを要約"
+  },
+  "sidepanelExpandControlsTitle": {
+    "message": "モデルとスタイルのオプションを展開"
+  },
+  "sidepanelCollapseControlsTitle": {
+    "message": "モデルとスタイルのオプションを折りたたむ"
   },
   "sidepanelLoadingText": {
     "message": "ページを読み取り、要約しています..."
@@ -85,6 +100,9 @@
   },
   "sidepanelOpenOptionsLink": {
     "message": "⚙️ 設定"
+  },
+  "sidepanelSummaryStyleLabel": {
+    "message": "要約スタイル:"
   },
   "sidepanelChatHint": {
     "message": "Enterで送信 · Shift+Enterで改行"
@@ -119,16 +137,25 @@
   "sidepanelOllamaConnectLong": {
     "message": "Ollamaサービスに接続できません。次を確認してください：\n1. Ollama が起動しているか（ollama serve）\n2. 起動前に環境変数 OLLAMA_ORIGINS=* が設定されているか\n   Windows: set OLLAMA_ORIGINS=* の後に ollama serve\n   Mac/Linux: OLLAMA_ORIGINS=* ollama serve"
   },
-  "sidepanelAssistantSummaryRole": {
+  "sidepanelSummaryModeSystemPrompt": {
     "message": "あなたはWebページの要点を素早く整理して要約するのが得意な、プロのコンテンツ分析アシスタントです。現在のUI言語である日本語で必ず回答してください。"
   },
-  "sidepanelSummaryPrompt": {
-    "message": "次のWebページを、現在のUI言語である日本語で必ず要約してください。要件：\n1. 最初に一文で主旨を説明する\n2. 次に重要なポイントを3〜5個挙げる\n3. 重要なデータや結論があれば強調する\n4. 固有名詞を除き、他の言語へ切り替えない\n\nページタイトル：$1\nページURL：$2\n\nページ内容：\n$3"
+  "sidepanelSummaryModeUserPrompt": {
+    "message": "次のWebページを、現在のUI言語である日本語で必ず要約してください。要件：\n1. 主旨を正確に抽出し、原文から逸脱しないこと\n2. 重要なデータ、結論、日付、固有名詞を保持すること\n3. 固有名詞を除き、他の言語へ切り替えないこと\n4. 次の出力構造を厳密に守り、余計な節を追加しないこと：$4\n\nページタイトル：$1\nページURL：$2\n\nページ内容：\n$3"
   },
-  "sidepanelPageSummarySystemPrompt": {
+  "sidepanelSummaryStyleCompact": {
+    "message": "簡潔スタイルでは固定構造を厳守してください。最初に主旨を1文だけ書き、その後に要点をちょうど3項目、各1文で示してください。背景、過程、発展的な分析、締めの段落は不要です。"
+  },
+  "sidepanelSummaryStyleStandard": {
+    "message": "標準スタイルでは固定構造を厳守してください。最初に主旨を1文で書き、その後に要点をちょうど4項目、各1〜2文で示してください。重要なデータや結論は該当する要点に直接含め、追加の節は作らないでください。"
+  },
+  "sidepanelSummaryStyleDetailed": {
+    "message": "詳細スタイルでは固定構造を厳守してください。【主旨】【背景】【重要情報】【リスク/制約】【結論】の5節をこの順番で出力し、各節は1〜3文にしてください。原文にリスクや制約の記載がない場合は、その旨を明記してください。"
+  },
+  "sidepanelFollowupPageSystemPrompt": {
     "message": "あなたはプロのコンテンツ分析アシスタントです。ユーザーはWebページを閲覧しており、あなたはすでにその内容を要約しています。これからユーザーはこのページについて追加の質問をします。以下のページ内容に基づいて回答し、現在のUI言語である日本語を必ず使用してください。質問がページ内容の範囲を超える場合は、あなた自身の知識を使っても構いませんが、ページ由来の情報と追加説明を明確に区別してください。\n\nページタイトル：$1\nページURL：$2\n\nページ内容：\n$3"
   },
-  "sidepanelSelectionSummarySystemPrompt": {
+  "sidepanelFollowupSelectionSystemPrompt": {
     "message": "あなたはプロのコンテンツ分析アシスタントです。ユーザーはWebページ上の一節を選択しており、あなたはすでにその内容を要約しています。これからユーザーはその内容について追加の質問をします。以下の内容に基づいて回答し、現在のUI言語である日本語を必ず使用してください。質問が選択内容の範囲を超える場合は、あなた自身の知識を使っても構いませんが、選択内容由来の情報と追加説明を明確に区別してください。\n\nページタイトル：$1\nページURL：$2\n\n選択内容：\n$3"
   },
   "commonUnavailable": {
@@ -176,6 +203,33 @@
   "optionsPageDescription": {
     "message": "タブ、グループカード、折りたたみパネルで、ローカルモデルとオンライン API の設定をより整理して管理できます。"
   },
+  "optionsSummaryStyleTitle": {
+    "message": "要約スタイル"
+  },
+  "optionsSummaryStyleLabel": {
+    "message": "要約プリセット"
+  },
+  "optionsSummaryStyleHint": {
+    "message": "各プリセットは固定テンプレートです。簡潔 = 主旨1文 + 3項目、標準 = 主旨1文 + 4項目、詳細 = 主旨 / 背景 / 重要情報 / リスクまたは制約 / 結論 の5節です。"
+  },
+  "optionsSummaryStyleCompact": {
+    "message": "簡潔"
+  },
+  "optionsSummaryStyleCompactHint": {
+    "message": "主旨1文 + 3項目で素早く把握できます。"
+  },
+  "optionsSummaryStyleStandard": {
+    "message": "標準"
+  },
+  "optionsSummaryStyleStandardHint": {
+    "message": "主旨1文 + 4項目で情報量と読みやすさのバランスを取ります。"
+  },
+  "optionsSummaryStyleDetailed": {
+    "message": "詳細"
+  },
+  "optionsSummaryStyleDetailedHint": {
+    "message": "主旨 / 背景 / 重要情報 / リスクまたは制約 / 結論 の5節構成です。"
+  },
   "optionsTabAll": {
     "message": "すべて"
   },
@@ -184,6 +238,9 @@
   },
   "optionsTabOnline": {
     "message": "オンライン AI モデル API"
+  },
+  "optionsTabSummaryStyle": {
+    "message": "要約スタイル"
   },
   "optionsGroupLocal": {
     "message": "🖥️ ローカルモデル"
@@ -217,6 +274,15 @@
   },
   "optionsBadgeOnline": {
     "message": "API"
+  },
+  "optionsBadgeNet": {
+    "message": "NET"
+  },
+  "optionsBadgeStyle": {
+    "message": "スタイル"
+  },
+  "optionsBadgeInfo": {
+    "message": "情報"
   },
   "optionsStateUntested": {
     "message": "未確認"
@@ -286,6 +352,87 @@
   },
   "optionsNetworkDiagnosticsInvalidUrl": {
     "message": "URL の形式が無効です。現在の設定を確認してください。"
+  },
+  "optionsAboutTitle": {
+    "message": "このプロジェクトについて"
+  },
+  "optionsAboutSubtitle": {
+    "message": "1.1.0 バージョンのリポジトリ情報、現在のバージョン、プロジェクト概要、利用ガイド、最新変更点の要約を確認できます。"
+  },
+  "optionsAboutIntroTitle": {
+    "message": "プロジェクト概要"
+  },
+  "optionsAboutIntroItem1": {
+    "message": "Web ページ全文の要約、選択テキストの要約、サイドパネルでの多段フォローアップに対応しています。"
+  },
+  "optionsAboutIntroItem2": {
+    "message": "オンラインモデルとローカルモデルの両方に対応し、利用シーンに応じて柔軟に切り替えられます。"
+  },
+  "optionsAboutIntroItem3": {
+    "message": "設定ページには接続テスト、モデル更新、ネットワーク診断が組み込まれています。"
+  },
+  "optionsAboutHelpTitle": {
+    "message": "フィードバック / 利用ガイド"
+  },
+  "optionsAboutQuickStartTitle": {
+    "message": "クイックスタート"
+  },
+  "optionsAboutQuickStartItem1": {
+    "message": "まず「ローカルモデル」または「オンラインモデル」タブで設定を完了し、保存してください。"
+  },
+  "optionsAboutQuickStartItem2": {
+    "message": "サイドパネルを開き、「現在のページを要約」をクリックして最初の要約を生成します。"
+  },
+  "optionsAboutQuickStartItem3": {
+    "message": "接続に問題がある場合は、まず「ネットワーク診断」で provider の状態を確認してください。"
+  },
+  "optionsAboutHelpGithubIssues": {
+    "message": "GitHub Issues：不具合報告と機能提案"
+  },
+  "optionsAboutHelpGiteeIssues": {
+    "message": "Gitee Issues：中国本土向けのフィードバック窓口"
+  },
+  "optionsAboutHelpItem1": {
+    "message": "初回利用時は、まず設定ページでモデル構成を完了してからサイドパネルで要約を実行してください。"
+  },
+  "optionsAboutHelpItem2": {
+    "message": "接続に失敗した場合は、まずネットワーク診断でローカル provider とオンライン provider の到達性を確認してください。"
+  },
+  "optionsAboutLinksTitle": {
+    "message": "リポジトリリンク"
+  },
+  "optionsAboutMetaTitle": {
+    "message": "バージョン情報"
+  },
+  "optionsAboutVersionLabel": {
+    "message": "現在のバージョン"
+  },
+  "optionsAboutPlatformsLabel": {
+    "message": "対応プラットフォーム"
+  },
+  "optionsAboutPlatformsValue": {
+    "message": "Edge / Chrome 拡張機能"
+  },
+  "optionsAboutLicenseLabel": {
+    "message": "ライセンス"
+  },
+  "optionsAboutDescriptionTitle": {
+    "message": "説明"
+  },
+  "optionsAboutDescriptionBody": {
+    "message": "AI ページ要約ツールは、Web ページ全文要約、選択テキスト要約、サイドパネルでの多段チャットに対応しています。DeepSeek、OpenAI、Gemini、Anthropic、GitHub Copilot、Doubao、Gitee AI などのオンライン provider に加え、Ollama、Docker Desktop AI、Foundry Local、KoboldCpp などのローカル provider も利用できます。1.1.0 では統一設定 UI、ネットワーク診断、サイドパネルのクイック設定を重点的に改善しました。"
+  },
+  "optionsAboutChangelogTitle": {
+    "message": "変更履歴"
+  },
+  "optionsAboutChangelogItem1": {
+    "message": "1.1.0：設定ページをローカルモデル、オンラインモデル、ネットワーク診断、要約スタイル、About の構成に整理し、ヘッダーとカードレイアウトを統一しました。"
+  },
+  "optionsAboutChangelogItem2": {
+    "message": "1.1.0：ネットワーク診断は provider ごとの状態表示を強化し、リクエスト失敗時の処理を改善して未捕捉エラーを防ぐようになりました。"
+  },
+  "optionsAboutChangelogItem3": {
+    "message": "1.1.0：サイドパネルに折りたたみ式のクイック設定、モデル状態ピル、可用性色分けを追加しました。1.0.0 は初回公開版です。"
   },
   "optionsTestHintLocal": {
     "message": "ローカルサービスに接続できるか、モデル一覧を取得できるかを確認します。"
@@ -411,7 +558,7 @@
     "message": "モデルがありません"
   },
   "optionsSaveButton": {
-    "message": "💾 設定を保存"
+    "message": "設定を保存"
   },
   "optionsStatusSaved": {
     "message": "✅ 設定を保存しました！"
