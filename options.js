@@ -57,7 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const doubaoTestBtn = document.getElementById("doubao-test-btn");
   const saveBtn = document.getElementById("save-btn");
   const status = document.getElementById("status");
-  const pageHeader = document.querySelector(".page-header");
   const providerSearchInput = document.getElementById("provider-search");
   const clearSearchBtn = document.getElementById("clear-search-btn");
   const emptyState = document.getElementById("empty-state");
@@ -119,7 +118,6 @@ document.addEventListener("DOMContentLoaded", () => {
       listId: "openai-model-list",
       button: openaiRefreshModelsBtn,
       getApiKey: () => openaiKey.value.trim(),
-      getProxyConfig: () => getProxyFormConfig("openai"),
       fetcher: fetchOpenAIModelList,
     },
     gemini: {
@@ -127,7 +125,6 @@ document.addEventListener("DOMContentLoaded", () => {
       listId: "gemini-model-list",
       button: geminiRefreshModelsBtn,
       getApiKey: () => geminiKey.value.trim(),
-      getProxyConfig: () => getProxyFormConfig("gemini"),
       fetcher: fetchGeminiModelList,
     },
     anthropic: {
@@ -135,7 +132,6 @@ document.addEventListener("DOMContentLoaded", () => {
       listId: "anthropic-model-list",
       button: anthropicRefreshModelsBtn,
       getApiKey: () => anthropicKey.value.trim(),
-      getProxyConfig: () => getProxyFormConfig("anthropic"),
       fetcher: fetchAnthropicModelList,
     },
     giteeai: {
@@ -143,7 +139,6 @@ document.addEventListener("DOMContentLoaded", () => {
       listId: "giteeai-model-list",
       button: giteeaiRefreshModelsBtn,
       getApiKey: () => giteeaiKey.value.trim(),
-      getProxyConfig: () => getProxyFormConfig("giteeai"),
       fetcher: fetchGiteeAIModelList,
     },
     githubcopilot: {
@@ -151,7 +146,6 @@ document.addEventListener("DOMContentLoaded", () => {
       listId: "githubcopilot-model-list",
       button: githubcopilotRefreshModelsBtn,
       getApiKey: () => githubcopilotKey.value.trim(),
-      getProxyConfig: () => getProxyFormConfig("githubcopilot"),
       fetcher: null,
     },
     doubao: {
@@ -159,37 +153,9 @@ document.addEventListener("DOMContentLoaded", () => {
       listId: "doubao-model-list",
       button: doubaoRefreshModelsBtn,
       getApiKey: () => doubaoKey.value.trim(),
-      getProxyConfig: () => getProxyFormConfig("doubao"),
       fetcher: null,
     },
   };
-  const PROVIDERS = ["deepseek", "openai", "gemini", "anthropic", "doubao", "ollama", "dockerai", "foundrylocal", "koboldcpp", "giteeai", "githubcopilot"];
-  const LOCAL_PROVIDERS = ["ollama", "dockerai", "foundrylocal", "koboldcpp"];
-  const ONLINE_PROVIDERS = ["deepseek", "openai", "gemini", "anthropic", "doubao", "giteeai", "githubcopilot"];
-  const PROXY_FIELDS = ["mode", "scheme", "host", "port", "username", "password"];
-  const PROXY_SCOPES = {
-    local: LOCAL_PROVIDERS,
-    online: ONLINE_PROVIDERS,
-  };
-  const proxyScopeEls = Object.fromEntries(
-    Object.entries(PROXY_SCOPES).map(([scope, providers]) => [
-      scope,
-      {
-        mode: document.getElementById(`proxy-${scope}-mode`),
-        customFields: document.getElementById(`proxy-${scope}-custom-fields`),
-        scheme: document.getElementById(`proxy-${scope}-scheme`),
-        host: document.getElementById(`proxy-${scope}-host`),
-        port: document.getElementById(`proxy-${scope}-port`),
-        username: document.getElementById(`proxy-${scope}-username`),
-        password: document.getElementById(`proxy-${scope}-password`),
-        testButton: document.getElementById(`proxy-${scope}-test-btn`),
-        status: document.getElementById(`proxy-${scope}-status`),
-        providerChecks: Object.fromEntries(
-          providers.map((provider) => [provider, document.getElementById(`proxy-${scope}-enable-${provider}`)])
-        ),
-      },
-    ])
-  );
   const UI_STATE_KEY = "options_ui_state";
   const defaultUiState = {
     activeTab: "all",
@@ -208,7 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeSearch();
   initializeModelPresets();
   initializeModelRefreshButtons();
-  initializeProxyEnhancements();
   initializeProviderIndicators();
   initializeTestButtons();
   restoreUiState();
@@ -227,7 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "koboldcpp_url",
       "giteeai_api_key", "giteeai_model",
       "githubcopilot_api_key", "githubcopilot_model"
-    ].concat(getAllProxyStorageKeys()),
+    ],
     (data) => {
       deepseekKey.value = data.deepseek_api_key || "";
       deepseekModel.value = data.deepseek_model || "deepseek-chat";
@@ -250,7 +215,6 @@ document.addEventListener("DOMContentLoaded", () => {
       giteeaiModel.value = data.giteeai_model || "Qwen3-8B";
       githubcopilotKey.value = data.githubcopilot_api_key || "";
       githubcopilotModel.value = data.githubcopilot_model || "openai/gpt-4.1-mini";
-      loadProxySettings(data);
 
       refreshProviderIndicators();
 
@@ -310,7 +274,6 @@ document.addEventListener("DOMContentLoaded", () => {
         giteeai_model: giteeaiModel.value.trim(),
         githubcopilot_api_key: githubcopilotKey.value.trim(),
         githubcopilot_model: githubcopilotModel.value.trim(),
-        ...collectProxySettings(),
       },
       () => {
         status.classList.remove("hidden");
@@ -520,401 +483,12 @@ document.addEventListener("DOMContentLoaded", () => {
     attachModelDatalist(doubaoModel, "doubao-model-list", REMOTE_MODEL_PRESETS.doubao);
   }
 
-  function initializeProxyEnhancements() {
-    initializeSharedProxyControls();
-    initializeProxyTransferActions();
-  }
-
-  function initializeSharedProxyControls() {
-    Object.keys(PROXY_SCOPES).forEach((scope) => {
-      const controls = proxyScopeEls[scope];
-      if (!controls?.mode) {
-        return;
-      }
-
-      const syncVisibility = () => {
-        updateProxyFieldsVisibility(scope);
-        clearProxyStatus(scope);
-      };
-
-      controls.mode.addEventListener("change", syncVisibility);
-      controls.testButton?.addEventListener("click", () => runProxyConnectionTest(scope));
-
-      [controls.scheme, controls.host, controls.port, controls.username, controls.password].forEach((element) => {
-        element?.addEventListener("input", () => clearProxyStatus(scope));
-        element?.addEventListener("change", () => clearProxyStatus(scope));
-      });
-
-      Object.values(controls.providerChecks || {}).forEach((checkbox) => {
-        checkbox?.addEventListener("change", () => clearProxyStatus(scope));
-      });
-
-      updateProxyFieldsVisibility(scope);
-    });
-  }
-
-  function initializeProxyTransferActions() {
-    if (!pageHeader || pageHeader.querySelector(".header-actions")) {
-      return;
-    }
-
-    const actions = document.createElement("div");
-    actions.className = "header-actions";
-
-    const exportBtn = document.createElement("button");
-    exportBtn.type = "button";
-    exportBtn.className = "btn-sm btn-outline";
-    exportBtn.dataset.i18n = "optionsProxyExportButton";
-    exportBtn.textContent = t("optionsProxyExportButton");
-
-    const importBtn = document.createElement("button");
-    importBtn.type = "button";
-    importBtn.className = "btn-sm btn-outline";
-    importBtn.dataset.i18n = "optionsProxyImportButton";
-    importBtn.textContent = t("optionsProxyImportButton");
-
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "application/json";
-    input.className = "hidden";
-
-    exportBtn.addEventListener("click", exportProxySettings);
-    importBtn.addEventListener("click", () => input.click());
-    input.addEventListener("change", async () => {
-      const file = input.files?.[0];
-      if (!file) {
-        return;
-      }
-      await importProxySettings(file);
-      input.value = "";
-    });
-
-    actions.appendChild(exportBtn);
-    actions.appendChild(importBtn);
-    actions.appendChild(input);
-    pageHeader.appendChild(actions);
-    window.AppI18n.applyI18n(actions);
-  }
-
   function initializeModelRefreshButtons() {
     Object.entries(MODEL_LIST_CONFIG).forEach(([provider, config]) => {
       config.button?.addEventListener("click", () => {
         refreshRemoteModelChoicesForProvider(provider);
       });
     });
-  }
-
-  function updateProxyFieldsVisibility(scope) {
-    const controls = proxyScopeEls[scope];
-    if (!controls?.mode || !controls.customFields) {
-      return;
-    }
-
-    controls.customFields.classList.toggle("hidden", controls.mode.value !== "custom");
-  }
-
-  function getAllProxyStorageKeys() {
-    const sharedKeys = Object.keys(PROXY_SCOPES).flatMap((scope) => {
-      const prefix = `proxy_${scope}_`;
-      return [
-        ...PROXY_FIELDS.map((field) => `${prefix}${field}`),
-        `${prefix}enabled_providers`,
-      ];
-    });
-
-    const legacyKeys = PROVIDERS.flatMap((provider) =>
-      PROXY_FIELDS.map((field) => `${provider}_proxy_${field}`)
-    );
-
-    return [...new Set([...sharedKeys, ...legacyKeys])];
-  }
-
-  function loadProxySettings(data) {
-    Object.entries(PROXY_SCOPES).forEach(([scope, providers]) => {
-      const controls = proxyScopeEls[scope];
-      if (!controls?.mode) {
-        return;
-      }
-
-      const prefix = `proxy_${scope}_`;
-      const hasSharedMode = typeof data[`${prefix}mode`] === "string";
-
-      if (hasSharedMode) {
-        controls.mode.value = data[`${prefix}mode`] || "browser";
-        controls.scheme.value = data[`${prefix}scheme`] || "http";
-        controls.host.value = data[`${prefix}host`] || "";
-        controls.port.value = data[`${prefix}port`] || "";
-        controls.username.value = data[`${prefix}username`] || "";
-        controls.password.value = data[`${prefix}password`] || "";
-      } else {
-        const legacyConfigs = providers.map((provider) => ({
-          provider,
-          mode: data[`${provider}_proxy_mode`] || "browser",
-          scheme: data[`${provider}_proxy_scheme`] || "http",
-          host: data[`${provider}_proxy_host`] || "",
-          port: data[`${provider}_proxy_port`] || "",
-          username: data[`${provider}_proxy_username`] || "",
-          password: data[`${provider}_proxy_password`] || "",
-        }));
-        const firstCustom = legacyConfigs.find((config) => config.mode === "custom" && config.host && config.port);
-        const hasEnabled = legacyConfigs.some((config) => config.mode !== "none");
-
-        controls.mode.value = firstCustom ? "custom" : (hasEnabled ? "browser" : "none");
-        controls.scheme.value = firstCustom?.scheme || "http";
-        controls.host.value = firstCustom?.host || "";
-        controls.port.value = firstCustom?.port || "";
-        controls.username.value = firstCustom?.username || "";
-        controls.password.value = firstCustom?.password || "";
-      }
-
-      const sharedEnabled = data[`${prefix}enabled_providers`];
-      const enabledSet = new Set(
-        Array.isArray(sharedEnabled)
-          ? sharedEnabled
-          : providers.filter((provider) => (data[`${provider}_proxy_mode`] || "browser") !== "none")
-      );
-
-      providers.forEach((provider) => {
-        const checkbox = controls.providerChecks?.[provider];
-        if (checkbox) {
-          checkbox.checked = enabledSet.has(provider);
-        }
-      });
-
-      updateProxyFieldsVisibility(scope);
-      clearProxyStatus(scope);
-    });
-  }
-
-  function collectProxySettings() {
-    const result = {};
-
-    Object.keys(PROXY_SCOPES).forEach((scope) => {
-      const config = getScopeProxyFormConfig(scope);
-      const prefix = `proxy_${scope}_`;
-      result[`${prefix}mode`] = config.mode;
-      result[`${prefix}scheme`] = config.scheme;
-      result[`${prefix}host`] = config.host;
-      result[`${prefix}port`] = config.port;
-      result[`${prefix}username`] = config.username;
-      result[`${prefix}password`] = config.password;
-      result[`${prefix}enabled_providers`] = getEnabledProviders(scope);
-    });
-
-    // 兼容旧版本读取逻辑：保存展开后的 provider 级配置
-    PROVIDERS.forEach((provider) => {
-      const config = getProxyFormConfig(provider);
-      result[`${provider}_proxy_mode`] = config.mode;
-      result[`${provider}_proxy_scheme`] = config.scheme;
-      result[`${provider}_proxy_host`] = config.host;
-      result[`${provider}_proxy_port`] = config.port;
-      result[`${provider}_proxy_username`] = config.username;
-      result[`${provider}_proxy_password`] = config.password;
-    });
-
-    return result;
-  }
-
-  function getProxyScopeForProvider(provider) {
-    if (LOCAL_PROVIDERS.includes(provider)) {
-      return "local";
-    }
-    return "online";
-  }
-
-  function getEnabledProviders(scope) {
-    const controls = proxyScopeEls[scope];
-    const providers = PROXY_SCOPES[scope] || [];
-    return providers.filter((provider) => controls?.providerChecks?.[provider]?.checked);
-  }
-
-  function getScopeProxyFormConfig(scope) {
-    const controls = proxyScopeEls[scope];
-    return {
-      mode: controls?.mode?.value || "browser",
-      scheme: controls?.scheme?.value || "http",
-      host: controls?.host?.value.trim() || "",
-      port: controls?.port?.value.trim() || "",
-      username: controls?.username?.value.trim() || "",
-      password: controls?.password?.value || "",
-    };
-  }
-
-  function getProxyFormConfig(provider) {
-    const scope = getProxyScopeForProvider(provider);
-    const config = getScopeProxyFormConfig(scope);
-    const isEnabled = getEnabledProviders(scope).includes(provider);
-    return isEnabled ? config : { ...config, mode: "none" };
-  }
-
-  function setProxyStatus(scope, type, text) {
-    const statusEl = proxyScopeEls[scope]?.status;
-    if (!statusEl) {
-      return;
-    }
-
-    statusEl.className = `proxy-status ${type}`;
-    statusEl.textContent = text;
-  }
-
-  function clearProxyStatus(scope) {
-    const statusEl = proxyScopeEls[scope]?.status;
-    if (!statusEl) {
-      return;
-    }
-
-    statusEl.className = "proxy-status";
-    statusEl.textContent = "";
-  }
-
-  async function runProxyConnectionTest(scope) {
-    const controls = proxyScopeEls[scope];
-    const config = getScopeProxyFormConfig(scope);
-    if (!controls?.testButton) {
-      return;
-    }
-
-    if (config.mode === "custom" && (!config.host || !config.port)) {
-      setProxyStatus(scope, "error", t("optionsProxyMissingHostPort"));
-      return;
-    }
-
-    controls.testButton.disabled = true;
-    setProxyStatus(scope, "info", t("optionsProxyTesting"));
-
-    try {
-      const response = await backgroundFetchJson(
-        "https://api.github.com/meta",
-        {
-          headers: {
-            Accept: "application/vnd.github+json",
-          },
-        },
-        config
-      );
-
-      if (!response.ok) {
-        throw new Error(response.error || `HTTP ${response.status}`);
-      }
-
-      setProxyStatus(scope, "success", t("optionsProxyTestSuccess"));
-    } catch (error) {
-      setProxyStatus(scope, "error", error.message || t("commonUnknownError"));
-    } finally {
-      controls.testButton.disabled = false;
-    }
-  }
-
-  function exportProxySettings() {
-    const payload = {
-      version: 2,
-      exportedAt: new Date().toISOString(),
-      scopes: Object.fromEntries(
-        Object.keys(PROXY_SCOPES).map((scope) => [
-          scope,
-          {
-            ...getScopeProxyFormConfig(scope),
-            enabledProviders: getEnabledProviders(scope),
-          },
-        ])
-      ),
-    };
-
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    const stamp = new Date().toISOString().slice(0, 19).replace(/[T:]/g, "-");
-    link.href = url;
-    link.download = `ai-page-summarizer-proxy-${stamp}.json`;
-    link.click();
-    URL.revokeObjectURL(url);
-    setTransientStatus(t("optionsProxyExportSuccess"));
-  }
-
-  async function importProxySettings(file) {
-    try {
-      const text = await file.text();
-      const parsed = JSON.parse(text);
-
-      if (parsed?.scopes && typeof parsed.scopes === "object") {
-        Object.keys(PROXY_SCOPES).forEach((scope) => {
-          const controls = proxyScopeEls[scope];
-          const incoming = parsed.scopes?.[scope] || {};
-          if (!controls?.mode) {
-            return;
-          }
-
-          controls.mode.value = incoming.mode || "browser";
-          controls.scheme.value = incoming.scheme || "http";
-          controls.host.value = incoming.host || "";
-          controls.port.value = incoming.port || "";
-          controls.username.value = incoming.username || "";
-          controls.password.value = incoming.password || "";
-
-          const enabledSet = new Set(Array.isArray(incoming.enabledProviders) ? incoming.enabledProviders : PROXY_SCOPES[scope]);
-          (PROXY_SCOPES[scope] || []).forEach((provider) => {
-            const checkbox = controls.providerChecks?.[provider];
-            if (checkbox) {
-              checkbox.checked = enabledSet.has(provider);
-            }
-          });
-
-          updateProxyFieldsVisibility(scope);
-          clearProxyStatus(scope);
-        });
-      } else {
-        const providers = parsed?.providers && typeof parsed.providers === "object" ? parsed.providers : parsed;
-
-        Object.entries(PROXY_SCOPES).forEach(([scope, scopeProviders]) => {
-          const controls = proxyScopeEls[scope];
-          if (!controls?.mode) {
-            return;
-          }
-
-          const legacyConfigs = scopeProviders.map((provider) => ({
-            provider,
-            ...(providers?.[provider] || {}),
-          }));
-          const firstCustom = legacyConfigs.find((config) => config.mode === "custom" && config.host && config.port);
-          const hasEnabled = legacyConfigs.some((config) => (config.mode || "browser") !== "none");
-
-          controls.mode.value = firstCustom ? "custom" : (hasEnabled ? "browser" : "none");
-          controls.scheme.value = firstCustom?.scheme || "http";
-          controls.host.value = firstCustom?.host || "";
-          controls.port.value = firstCustom?.port || "";
-          controls.username.value = firstCustom?.username || "";
-          controls.password.value = firstCustom?.password || "";
-
-          scopeProviders.forEach((provider) => {
-            const checkbox = controls.providerChecks?.[provider];
-            if (checkbox) {
-              const mode = providers?.[provider]?.mode || "browser";
-              checkbox.checked = mode !== "none";
-            }
-          });
-
-          updateProxyFieldsVisibility(scope);
-          clearProxyStatus(scope);
-        });
-      }
-
-      saveSettings(() => {
-        setTransientStatus(t("optionsProxyImportSuccess"));
-      });
-    } catch (error) {
-      setTransientStatus(`${t("optionsProxyImportFailed")}: ${error.message || t("commonUnknownError")}`, true);
-    }
-  }
-
-  function setTransientStatus(message, isError = false) {
-    status.textContent = message;
-    status.style.color = isError ? "#dc2626" : "#059669";
-    status.classList.remove("hidden");
-    setTimeout(() => {
-      status.classList.add("hidden");
-      status.style.color = "";
-      status.textContent = t("optionsStatusSaved");
-    }, 3000);
   }
 
   function attachModelDatalist(input, listId, models) {
@@ -937,14 +511,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function backgroundFetchJson(url, options = {}, proxyConfig) {
+  function backgroundFetchJson(url, options = {}) {
     return new Promise((resolve, reject) => {
       chrome.runtime.sendMessage(
         {
-          type: "fetch-with-proxy",
+          type: "background-fetch",
           url,
           options,
-          proxyConfig,
         },
         (response) => {
           if (chrome.runtime.lastError) {
@@ -980,7 +553,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       let models = [...presetModels];
       if (typeof config.fetcher === "function" && config.getApiKey()) {
-        const remoteModels = await config.fetcher(config.getApiKey(), config.getProxyConfig?.());
+        const remoteModels = await config.fetcher(config.getApiKey());
         models = mergeModelLists(remoteModels, presetModels);
         setProviderStatus(provider, "success", t("optionsLoadedRemoteModels", models.length));
       } else if (!silent) {
@@ -1023,12 +596,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  async function fetchOpenAIModelList(apiKey, proxyConfig) {
+  async function fetchOpenAIModelList(apiKey) {
     const response = await backgroundFetchJson("https://api.openai.com/v1/models", {
       headers: {
         Authorization: `Bearer ${apiKey}`,
       },
-    }, proxyConfig);
+    });
     if (!response.ok) {
       throw new Error(response.error || `HTTP ${response.status}`);
     }
@@ -1037,8 +610,8 @@ document.addEventListener("DOMContentLoaded", () => {
       .filter((id) => /^gpt|^o[13]|^chatgpt/i.test(id || ""));
   }
 
-  async function fetchGeminiModelList(apiKey, proxyConfig) {
-    const response = await backgroundFetchJson(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`, {}, proxyConfig);
+  async function fetchGeminiModelList(apiKey) {
+    const response = await backgroundFetchJson(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`, {});
     if (!response.ok) {
       throw new Error(response.error || `HTTP ${response.status}`);
     }
@@ -1048,13 +621,13 @@ document.addEventListener("DOMContentLoaded", () => {
       .filter(Boolean);
   }
 
-  async function fetchAnthropicModelList(apiKey, proxyConfig) {
+  async function fetchAnthropicModelList(apiKey) {
     const response = await backgroundFetchJson("https://api.anthropic.com/v1/models", {
       headers: {
         "x-api-key": apiKey,
         "anthropic-version": "2023-06-01",
       },
-    }, proxyConfig);
+    });
     if (!response.ok) {
       throw new Error(response.error || `HTTP ${response.status}`);
     }
@@ -1063,12 +636,12 @@ document.addEventListener("DOMContentLoaded", () => {
       .filter(Boolean);
   }
 
-  async function fetchGiteeAIModelList(apiKey, proxyConfig) {
+  async function fetchGiteeAIModelList(apiKey) {
     const response = await backgroundFetchJson("https://ai.gitee.com/v1/models", {
       headers: {
         Authorization: `Bearer ${apiKey}`,
       },
-    }, proxyConfig);
+    });
     if (!response.ok) {
       throw new Error(response.error || `HTTP ${response.status}`);
     }
@@ -1234,7 +807,10 @@ document.addEventListener("DOMContentLoaded", () => {
   async function testOllamaConnection() {
     const response = await new Promise((resolve) => {
       chrome.runtime.sendMessage(
-        { type: "ollama-list-models", url: ollamaUrl.value.trim(), proxyConfig: getProxyFormConfig("ollama") },
+        {
+          type: "ollama-list-models",
+          url: ollamaUrl.value.trim(),
+        },
         (message) => resolve({
           message,
           runtimeError: chrome.runtime.lastError,
@@ -1258,7 +834,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function testDockeraiConnection() {
     const url = (dockeraiUrl.value.trim() || "http://localhost:12434").replace(/\/+$/, "");
-    const response = await backgroundFetchJson(`${url}/v1/models`, {}, getProxyFormConfig("dockerai"));
+    const response = await backgroundFetchJson(`${url}/v1/models`, {});
     if (!response.ok) {
       throw new Error(response.error || `HTTP ${response.status}`);
     }
@@ -1274,7 +850,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function testFoundryLocalConnection() {
     const url = (foundrylocalUrl.value.trim() || "http://localhost:5273").replace(/\/+$/, "");
-    const response = await backgroundFetchJson(`${url}/v1/models`, {}, getProxyFormConfig("foundrylocal"));
+    const response = await backgroundFetchJson(`${url}/v1/models`, {});
     if (!response.ok) {
       throw new Error(response.error || `HTTP ${response.status}`);
     }
@@ -1295,7 +871,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setProviderState("koboldcpp", "info", t("optionsStateTesting"));
     setProviderStatus("koboldcpp", "info", t("optionsFetchingCurrentModelVersion"));
 
-    const modelResponse = await backgroundFetchJson(`${url}/api/v1/model`, {}, getProxyFormConfig("koboldcpp"));
+    const modelResponse = await backgroundFetchJson(`${url}/api/v1/model`, {});
     const modelData = modelResponse.data || {};
     if (!modelResponse.ok || !modelData?.result) {
       throw new Error(modelResponse.error || t("optionsCannotGetModelName"));
@@ -1304,7 +880,7 @@ document.addEventListener("DOMContentLoaded", () => {
     koboldcppCurrentModel.textContent = modelData.result;
 
     try {
-      const versionResponse = await backgroundFetchJson(`${url}/api/v1/info/version`, {}, getProxyFormConfig("koboldcpp"));
+      const versionResponse = await backgroundFetchJson(`${url}/api/v1/info/version`, {});
       const versionData = versionResponse.data || {};
       koboldcppVersion.textContent = versionResponse.ok && versionData?.result ? versionData.result : "--";
     } catch {
@@ -1329,8 +905,7 @@ document.addEventListener("DOMContentLoaded", () => {
         method: "POST",
         headers: config.headers,
         body: JSON.stringify(config.body),
-      },
-      getProxyFormConfig(provider)
+      }
     );
     if (!response.ok) {
       throw new Error(response.error || `HTTP ${response.status}`);
@@ -1367,8 +942,7 @@ document.addEventListener("DOMContentLoaded", () => {
             maxOutputTokens: 8,
           },
         }),
-      },
-      getProxyFormConfig("gemini")
+      }
     );
     if (!response.ok) {
       throw new Error(response.error || `HTTP ${response.status}`);
@@ -1498,7 +1072,10 @@ document.addEventListener("DOMContentLoaded", () => {
     ollamaRefreshBtn.disabled = true;
 
     chrome.runtime.sendMessage(
-      { type: "ollama-list-models", url: ollamaUrl.value.trim(), proxyConfig: getProxyFormConfig("ollama") },
+      {
+        type: "ollama-list-models",
+        url: ollamaUrl.value.trim(),
+      },
       (response) => {
         ollamaRefreshBtn.disabled = false;
 
@@ -1569,7 +1146,6 @@ document.addEventListener("DOMContentLoaded", () => {
         type: "ollama-pull-model",
         url: ollamaUrl.value.trim(),
         model: modelToPull,
-        proxyConfig: getProxyFormConfig("ollama"),
       },
       (response) => {
         ollamaRefreshBtn.disabled = false;
@@ -1611,7 +1187,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setDockeraiStatus("info", t("optionsFetchingDockerModels"));
     dockeraiRefreshBtn.disabled = true;
     const url = dockeraiUrl.value.trim() || "http://localhost:12434";
-    backgroundFetchJson(`${url.replace(/\/+$/, "")}/v1/models`, {}, getProxyFormConfig("dockerai"))
+    backgroundFetchJson(`${url.replace(/\/+$/, "")}/v1/models`, {})
       .then((response) => {
         dockeraiRefreshBtn.disabled = false;
         const data = response.data || {};
@@ -1632,7 +1208,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setFoundryLocalStatus("info", t("optionsFetchingFoundryLocalModels"));
     foundrylocalRefreshBtn.disabled = true;
     const url = foundrylocalUrl.value.trim() || "http://localhost:5273";
-    backgroundFetchJson(`${url.replace(/\/+$/, "")}/v1/models`, {}, getProxyFormConfig("foundrylocal"))
+    backgroundFetchJson(`${url.replace(/\/+$/, "")}/v1/models`, {})
       .then((response) => {
         foundrylocalRefreshBtn.disabled = false;
         const data = response.data || {};

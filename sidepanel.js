@@ -451,11 +451,11 @@ async function executeProviderRequest(provider, config, messages, temperature, e
   const { t } = window.AppI18n;
   const request = buildProviderRequest(provider, config, messages, temperature);
 
-  const response = await proxyFetch(request.apiUrl, {
+  const response = await backgroundFetch(request.apiUrl, {
     method: "POST",
     headers: request.headers,
     body: request.body,
-  }, config.proxy);
+  });
 
   if (!response.ok) {
     throw new Error(t("sidepanelApiRequestFailed", [response.status || "?", getProviderErrorMessage(provider, response.data || { error: { message: response.error } }, response.error)]));
@@ -762,146 +762,77 @@ function getProviderLabel(provider) {
 function getAPIConfig(provider) {
   return new Promise((resolve) => {
     if (provider === "ollama") {
-      chrome.storage.sync.get(["ollama_url", "ollama_model", ...getProviderProxyStorageKeys("ollama")], (data) => {
+      chrome.storage.sync.get(["ollama_url", "ollama_model"], (data) => {
         resolve({
           url: data.ollama_url || "http://localhost:11434",
           model: data.ollama_model || "qwen2.5:7b",
-          proxy: getStoredProxyConfig(data, "ollama"),
         });
       });
     } else if (provider === "dockerai") {
-      chrome.storage.sync.get(["dockerai_url", "dockerai_model", ...getProviderProxyStorageKeys("dockerai")], (data) => {
+      chrome.storage.sync.get(["dockerai_url", "dockerai_model"], (data) => {
         resolve({
           url: data.dockerai_url || "http://localhost:8080",
           model: data.dockerai_model || "qwen2.5-7b",
-          proxy: getStoredProxyConfig(data, "dockerai"),
         });
       });
     } else if (provider === "foundrylocal") {
-      chrome.storage.sync.get(["foundrylocal_url", "foundrylocal_model", ...getProviderProxyStorageKeys("foundrylocal")], (data) => {
+      chrome.storage.sync.get(["foundrylocal_url", "foundrylocal_model"], (data) => {
         resolve({
           url: data.foundrylocal_url || "http://localhost:5273",
           model: data.foundrylocal_model || "",
-          proxy: getStoredProxyConfig(data, "foundrylocal"),
         });
       });
     } else if (provider === "openai") {
-      chrome.storage.sync.get(["openai_api_key", "openai_model", ...getProviderProxyStorageKeys("openai")], (data) => {
+      chrome.storage.sync.get(["openai_api_key", "openai_model"], (data) => {
         resolve({
           apiKey: data.openai_api_key || "",
           model: data.openai_model || "gpt-4.1-mini",
-          proxy: getStoredProxyConfig(data, "openai"),
         });
       });
     } else if (provider === "gemini") {
-      chrome.storage.sync.get(["gemini_api_key", "gemini_model", ...getProviderProxyStorageKeys("gemini")], (data) => {
+      chrome.storage.sync.get(["gemini_api_key", "gemini_model"], (data) => {
         resolve({
           apiKey: data.gemini_api_key || "",
           model: data.gemini_model || "gemini-2.0-flash",
-          proxy: getStoredProxyConfig(data, "gemini"),
         });
       });
     } else if (provider === "anthropic") {
-      chrome.storage.sync.get(["anthropic_api_key", "anthropic_model", ...getProviderProxyStorageKeys("anthropic")], (data) => {
+      chrome.storage.sync.get(["anthropic_api_key", "anthropic_model"], (data) => {
         resolve({
           apiKey: data.anthropic_api_key || "",
           model: data.anthropic_model || "claude-3-5-sonnet-latest",
-          proxy: getStoredProxyConfig(data, "anthropic"),
         });
       });
     } else if (provider === "giteeai") {
-      chrome.storage.sync.get(["giteeai_api_key", "giteeai_model", ...getProviderProxyStorageKeys("giteeai")], (data) => {
+      chrome.storage.sync.get(["giteeai_api_key", "giteeai_model"], (data) => {
         resolve({
           apiKey: data["giteeai_api_key"] || "",
           model: data["giteeai_model"] || "Qwen3-8B",
-          proxy: getStoredProxyConfig(data, "giteeai"),
         });
       });
     } else if (provider === "githubcopilot") {
-      chrome.storage.sync.get(["githubcopilot_api_key", "githubcopilot_model", ...getProviderProxyStorageKeys("githubcopilot")], (data) => {
+      chrome.storage.sync.get(["githubcopilot_api_key", "githubcopilot_model"], (data) => {
         resolve({
           apiKey: data.githubcopilot_api_key || "",
           model: data.githubcopilot_model || "openai/gpt-4.1-mini",
-          proxy: getStoredProxyConfig(data, "githubcopilot"),
         });
       });
     } else {
-      chrome.storage.sync.get([`${provider}_api_key`, `${provider}_model`, ...getProviderProxyStorageKeys(provider)], (data) => {
+      chrome.storage.sync.get([`${provider}_api_key`, `${provider}_model`], (data) => {
         resolve({
           apiKey: data[`${provider}_api_key`] || "",
           model: data[`${provider}_model`] || "",
-          proxy: getStoredProxyConfig(data, provider),
         });
       });
     }
   });
 }
 
-function getProxyScopeForProvider(provider) {
-  return isLocalProvider(provider) ? "local" : "online";
-}
-
-function getProviderProxyStorageKeys(provider) {
-  const scope = getProxyScopeForProvider(provider);
-  const sharedPrefix = `proxy_${scope}_`;
-
-  return [
-    `${sharedPrefix}mode`,
-    `${sharedPrefix}scheme`,
-    `${sharedPrefix}host`,
-    `${sharedPrefix}port`,
-    `${sharedPrefix}username`,
-    `${sharedPrefix}password`,
-    `${sharedPrefix}enabled_providers`,
-    `${provider}_proxy_mode`,
-    `${provider}_proxy_scheme`,
-    `${provider}_proxy_host`,
-    `${provider}_proxy_port`,
-    `${provider}_proxy_username`,
-    `${provider}_proxy_password`,
-  ];
-}
-
-function getStoredProxyConfig(data, provider) {
-  const scope = getProxyScopeForProvider(provider);
-  const sharedPrefix = `proxy_${scope}_`;
-  const sharedEnabled = data?.[`${sharedPrefix}enabled_providers`];
-
-  const sharedConfig = {
-    mode: data?.[`${sharedPrefix}mode`] || "",
-    scheme: data?.[`${sharedPrefix}scheme`] || "http",
-    host: data?.[`${sharedPrefix}host`] || "",
-    port: data?.[`${sharedPrefix}port`] || "",
-    username: data?.[`${sharedPrefix}username`] || "",
-    password: data?.[`${sharedPrefix}password`] || "",
-  };
-
-  const legacyConfig = {
-    mode: data?.[`${provider}_proxy_mode`] || "browser",
-    scheme: data?.[`${provider}_proxy_scheme`] || "http",
-    host: data?.[`${provider}_proxy_host`] || "",
-    port: data?.[`${provider}_proxy_port`] || "",
-    username: data?.[`${provider}_proxy_username`] || "",
-    password: data?.[`${provider}_proxy_password`] || "",
-  };
-
-  if (sharedConfig.mode) {
-    const enabled = Array.isArray(sharedEnabled)
-      ? sharedEnabled.includes(provider)
-      : true;
-    return enabled ? sharedConfig : { ...sharedConfig, mode: "none" };
-  }
-
-  return {
-    ...legacyConfig,
-  };
-}
-
 /**
  * 通过 background service worker 代理 fetch 请求
  * 先 ping 唤醒 worker，再建立长连接，解决 Ollama 长时间推理 + CORS 问题
  */
-async function proxyFetch(url, options, proxyConfig) {
+async function backgroundFetch(url, options) {
   // 先 ping 唤醒 service worker
   await new Promise((resolve) => {
     chrome.runtime.sendMessage({ type: "ping" }, () => {
@@ -915,7 +846,7 @@ async function proxyFetch(url, options, proxyConfig) {
   const maxRetries = 2;
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
-      return await _doPortFetch(url, options, proxyConfig);
+      return await _doPortFetch(url, options);
     } catch (err) {
       if (attempt < maxRetries - 1) {
         // 等待一下再重试
@@ -927,10 +858,10 @@ async function proxyFetch(url, options, proxyConfig) {
   }
 }
 
-function _doPortFetch(url, options, proxyConfig) {
+function _doPortFetch(url, options) {
   return new Promise((resolve, reject) => {
     try {
-      const port = chrome.runtime.connect({ name: "fetch-proxy" });
+      const port = chrome.runtime.connect({ name: "background-fetch" });
       const requestId = Date.now() + "_" + Math.random();
       let settled = false;
 
@@ -950,7 +881,7 @@ function _doPortFetch(url, options, proxyConfig) {
         reject(new Error(err?.message || window.AppI18n.t("sidepanelBackgroundDisconnected")));
       });
 
-      port.postMessage({ url, options, proxyConfig, requestId });
+      port.postMessage({ url, options, requestId });
     } catch (err) {
       reject(new Error(err.message || window.AppI18n.t("sidepanelCannotConnectBackground")));
     }
