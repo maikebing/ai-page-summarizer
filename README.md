@@ -35,17 +35,18 @@
 
 ## 🚀 安装指南
 
-1. 克隆本仓库：
+1.  打开微软Edge在线商店 的[AI 页面总结器 ]([https://platform.deepseek.com/api_keys](https://microsoftedge.microsoft.com/addons/detail/kebnpdbgakknaffddedhkpkgalggodpi)) 页面，点击右边获取， 后续使用请参考快速上手章节。 
+2.  如果要使用开发版本， 请克隆本仓库：
    ```bash
    git clone https://github.com/maikebing/ai-page-summarizer.git
    # 或
    git clone https://gitee.com/maikebing/ai-page-summarizer.git
    ```
-2. 打开 Edge 或 Chrome，访问：
+3. 打开 Edge 或 Chrome，访问：
    - `edge://extensions/` 或 `chrome://extensions/`
-3. 开启右上角「开发者模式」
-4. 点击「加载已解压的扩展程序」，选择本项目根目录
-5. 安装成功后，图标会出现在工具栏，可自定义固定侧边栏
+4. 开启右上角「开发者模式」
+5. 点击「加载已解压的扩展程序」，选择本项目根目录
+6. 安装成功后，图标会出现在工具栏，可自定义固定侧边栏
 
 ## 🏁 快速上手
 
