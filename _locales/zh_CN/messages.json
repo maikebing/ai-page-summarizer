@@ -26,6 +26,9 @@
   "providerAnthropic": {
     "message": "Anthropic Claude"
   },
+  "providerAiTdEe": {
+    "message": "ai.td.ee"
+  },
   "providerGitHubCopilot": {
     "message": "GitHub Copilot"
   },
@@ -438,7 +441,7 @@
     "message": "项目说明"
   },
   "optionsAboutDescriptionBody": {
-    "message": "AI 页面总结器支持网页全文总结、选中文本总结和侧边栏多轮追问，兼容 DeepSeek、OpenAI、Gemini、Anthropic、GitHub Copilot、豆包、Gitee AI 等在线模型，以及 Ollama、Docker Desktop AI、Foundry Local、KoboldCpp 等本地模型。1.1.0 版本重点补齐了统一设置页、网络诊断、侧边栏快捷配置和状态提示。"
+    "message": "AI 页面总结器支持网页全文总结、选中文本总结和侧边栏多轮追问，兼容 DeepSeek、OpenAI、Gemini、Anthropic、ai.td.ee、GitHub Copilot、豆包、Gitee AI 等在线模型，以及 Ollama、Docker Desktop AI、Foundry Local、KoboldCpp 等本地模型。1.1.0 版本重点补齐了统一设置页、网络诊断、侧边栏快捷配置和状态提示。"
   },
   "optionsAboutChangelogTitle": {
     "message": "变更记录"
@@ -481,6 +484,9 @@
   },
   "optionsSectionAnthropic": {
     "message": "🟠 Anthropic Claude"
+  },
+  "optionsSectionAiTdEe": {
+    "message": "🧩 ai.td.ee"
   },
   "optionsSectionGiteeAI": {
     "message": "🐱 Gitee AI"
@@ -559,6 +565,15 @@
   },
   "optionsHintAnthropicModel": {
     "message": "从下拉框选择 Claude 模型，例如 claude-3-5-sonnet-latest"
+  },
+  "optionsPlaceholderAiTdEeKey": {
+    "message": "sk-xxxxxxxxxxxxxxxx"
+  },
+  "optionsHintAiTdEeHtml": {
+    "message": "在 <a href=\"https://ai.td.ee/\" target=\"_blank\">ai.td.ee 控制台</a> 获取"
+  },
+  "optionsHintAiTdEeModel": {
+    "message": "输入 API Key 后点击“刷新”，即可从 ai.td.ee 拉取可用模型 ID。"
   },
   "optionsHintDeepSeekHtml": {
     "message": "在 <a href=\"https://platform.deepseek.com/api_keys\" target=\"_blank\">DeepSeek 开放平台</a> 获取"

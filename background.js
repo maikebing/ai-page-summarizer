@@ -1,7 +1,7 @@
 // Service Worker - 后台处理
 
 const t = (key, substitutions) => chrome.i18n.getMessage(key, substitutions) || "";
-const LEGACY_PROVIDER_IDS = ["deepseek", "openai", "gemini", "anthropic", "doubao", "ollama", "dockerai", "foundrylocal", "koboldcpp", "giteeai", "githubcopilot"];
+const LEGACY_PROVIDER_IDS = ["deepseek", "openai", "gemini", "anthropic", "aitdee", "doubao", "ollama", "dockerai", "foundrylocal", "koboldcpp", "giteeai", "githubcopilot"];
 const LEGACY_NETWORK_SETTING_KEYS = [
   "relay_endpoint",
   "relay_token",

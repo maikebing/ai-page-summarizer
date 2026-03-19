@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     openai: "openai_model",
     gemini: "gemini_model",
     anthropic: "anthropic_model",
+    aitdee: "aitdee_model",
     githubcopilot: "githubcopilot_model",
     doubao: "doubao_model",
     ollama: "ollama_model",
@@ -685,6 +686,22 @@ function buildProviderRequest(provider, config, messages, temperature) {
     };
   }
 
+  if (provider === "aitdee") {
+    return {
+      apiUrl: "https://ai.td.ee/v1/chat/completions",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${config.apiKey}`,
+      },
+      body: JSON.stringify({
+        model: config.model || "gpt-4.1-mini",
+        messages,
+        max_tokens: 2000,
+        temperature,
+      }),
+    };
+  }
+
   if (provider === "ollama") {
     const baseUrl = (config.url || "http://localhost:11434").replace(/\/+$/, "");
     return {
@@ -891,6 +908,8 @@ function getProviderLabel(provider) {
       return t("providerGemini");
     case "anthropic":
       return t("providerAnthropic");
+    case "aitdee":
+      return t("providerAiTdEe");
     case "githubcopilot":
       return t("providerGitHubCopilot");
     case "doubao":
@@ -952,6 +971,13 @@ function getAPIConfig(provider) {
         resolve({
           apiKey: data.anthropic_api_key || "",
           model: data.anthropic_model || "claude-3-5-sonnet-latest",
+        });
+      });
+    } else if (provider === "aitdee") {
+      chrome.storage.sync.get(["aitdee_api_key", "aitdee_model"], (data) => {
+        resolve({
+          apiKey: data.aitdee_api_key || "",
+          model: data.aitdee_model || "gpt-4.1-mini",
         });
       });
     } else if (provider === "giteeai") {

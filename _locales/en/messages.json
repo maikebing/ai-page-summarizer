@@ -26,6 +26,9 @@
   "providerAnthropic": {
     "message": "Anthropic Claude"
   },
+  "providerAiTdEe": {
+    "message": "ai.td.ee"
+  },
   "providerGitHubCopilot": {
     "message": "GitHub Copilot"
   },
@@ -438,7 +441,7 @@
     "message": "Description"
   },
   "optionsAboutDescriptionBody": {
-    "message": "AI Page Summarizer supports full-page summaries, selected-text summaries, and multi-turn side panel chat. It works with hosted providers such as DeepSeek, OpenAI, Gemini, Anthropic, GitHub Copilot, Doubao, and Gitee AI, plus local providers such as Ollama, Docker Desktop AI, Foundry Local, and KoboldCpp. Version 1.1.0 focuses on the unified settings UI, network diagnostics, and quicker side panel controls."
+    "message": "AI Page Summarizer supports full-page summaries, selected-text summaries, and multi-turn side panel chat. It works with hosted providers such as DeepSeek, OpenAI, Gemini, Anthropic, ai.td.ee, GitHub Copilot, Doubao, and Gitee AI, plus local providers such as Ollama, Docker Desktop AI, Foundry Local, and KoboldCpp. Version 1.1.0 focuses on the unified settings UI, network diagnostics, and quicker side panel controls."
   },
   "optionsAboutChangelogTitle": {
     "message": "Changelog"
@@ -481,6 +484,9 @@
   },
   "optionsSectionAnthropic": {
     "message": "🟠 Anthropic Claude"
+  },
+  "optionsSectionAiTdEe": {
+    "message": "🧩 ai.td.ee"
   },
   "optionsSectionGiteeAI": {
     "message": "🐱 Gitee AI"
@@ -559,6 +565,15 @@
   },
   "optionsHintAnthropicModel": {
     "message": "Choose a Claude model from the dropdown, such as claude-3-5-sonnet-latest."
+  },
+  "optionsPlaceholderAiTdEeKey": {
+    "message": "sk-xxxxxxxxxxxxxxxx"
+  },
+  "optionsHintAiTdEeHtml": {
+    "message": "Get it from the <a href=\"https://ai.td.ee/\" target=\"_blank\">ai.td.ee dashboard</a>."
+  },
+  "optionsHintAiTdEeModel": {
+    "message": "After entering your API key, click Refresh to load the available model IDs from ai.td.ee."
   },
   "optionsHintDeepSeekHtml": {
     "message": "Get it from the <a href=\"https://platform.deepseek.com/api_keys\" target=\"_blank\">DeepSeek Open Platform</a>."

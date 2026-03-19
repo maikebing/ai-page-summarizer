@@ -1563,6 +1563,36 @@
             </div>
           </details>
 
+          <details class="provider-card" data-provider-id="aitdee" open>
+            <summary>
+              <span class="provider-summary-main">
+                <span class="provider-summary-top">
+                  <span class="provider-summary-label" data-i18n="optionsSectionAiTdEe">🧩 ai.td.ee</span>
+                  <span class="provider-badge online" data-i18n="optionsBadgeOnline">API</span>
+                </span>
+              </span>
+              <span class="provider-state warning" id="provider-state-aitdee" data-i18n="optionsStateNeedsConfig">Needs setup</span>
+            </summary>
+            <div class="provider-card-body section">
+              <div class="card-toolbar">
+                <span class="toolbar-note" data-i18n="optionsTestHintOnline">Verify whether the API key and model can reach the remote service.</span>
+                <div class="toolbar-actions">
+                  <button type="button" class="btn-sm btn-outline" id="aitdee-test-btn" data-i18n="optionsTestConnection">Test connection</button>
+                </div>
+              </div>
+              <label for="aitdee-key" data-i18n="optionsLabelApiKey">API Key</label>
+              <input type="password" id="aitdee-key" data-i18n-placeholder="optionsPlaceholderAiTdEeKey" placeholder="sk-xxxxxxxxxxxxxxxx">
+              <p class="hint" data-i18n-html="optionsHintAiTdEeHtml">Get it from the ai.td.ee dashboard.</p>
+              <label for="aitdee-model" data-i18n="optionsLabelModel">Model</label>
+              <div class="model-row">
+                <select id="aitdee-model"></select>
+                <button type="button" class="btn-sm" id="aitdee-refresh-models-btn" data-i18n="optionsRefreshButton">馃攧 Refresh</button>
+              </div>
+              <p class="hint" data-i18n="optionsHintAiTdEeModel">After entering your API key, click Refresh to load the available model IDs from ai.td.ee.</p>
+              <div id="aitdee-status" class="ollama-status"></div>
+            </div>
+          </details>
+
           <details class="provider-card" data-provider-id="githubcopilot" open>
             <summary>
               <span class="provider-summary-main">

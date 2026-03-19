@@ -11,6 +11,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const anthropicKey = document.getElementById("anthropic-key");
   const anthropicModel = document.getElementById("anthropic-model");
   const anthropicRefreshModelsBtn = document.getElementById("anthropic-refresh-models-btn");
+  const aitdeeKey = document.getElementById("aitdee-key");
+  const aitdeeModel = document.getElementById("aitdee-model");
+  const aitdeeRefreshModelsBtn = document.getElementById("aitdee-refresh-models-btn");
   const doubaoKey = document.getElementById("doubao-key");
   const doubaoModel = document.getElementById("doubao-model");
   const doubaoRefreshModelsBtn = document.getElementById("doubao-refresh-models-btn");
@@ -45,6 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const openaiStatusEl = document.getElementById("openai-status");
   const geminiStatusEl = document.getElementById("gemini-status");
   const anthropicStatusEl = document.getElementById("anthropic-status");
+  const aitdeeStatusEl = document.getElementById("aitdee-status");
   const giteeaiStatusEl = document.getElementById("giteeai-status");
   const githubcopilotStatusEl = document.getElementById("githubcopilot-status");
   const doubaoStatusEl = document.getElementById("doubao-status");
@@ -52,6 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const openaiTestBtn = document.getElementById("openai-test-btn");
   const geminiTestBtn = document.getElementById("gemini-test-btn");
   const anthropicTestBtn = document.getElementById("anthropic-test-btn");
+  const aitdeeTestBtn = document.getElementById("aitdee-test-btn");
   const giteeaiTestBtn = document.getElementById("giteeai-test-btn");
   const githubcopilotTestBtn = document.getElementById("githubcopilot-test-btn");
   const doubaoTestBtn = document.getElementById("doubao-test-btn");
@@ -85,6 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
     openai: document.getElementById("provider-state-openai"),
     gemini: document.getElementById("provider-state-gemini"),
     anthropic: document.getElementById("provider-state-anthropic"),
+    aitdee: document.getElementById("provider-state-aitdee"),
     doubao: document.getElementById("provider-state-doubao"),
     ollama: document.getElementById("provider-state-ollama"),
     dockerai: document.getElementById("provider-state-dockerai"),
@@ -98,6 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
     openai: openaiStatusEl,
     gemini: geminiStatusEl,
     anthropic: anthropicStatusEl,
+    aitdee: aitdeeStatusEl,
     doubao: doubaoStatusEl,
     ollama: ollamaStatusEl,
     dockerai: dockeraiStatusEl,
@@ -111,6 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
     openai: openaiTestBtn,
     gemini: geminiTestBtn,
     anthropic: anthropicTestBtn,
+    aitdee: aitdeeTestBtn,
     doubao: doubaoTestBtn,
     ollama: ollamaTestBtn,
     dockerai: dockeraiTestBtn,
@@ -123,6 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
     openai: ["gpt-4.1-mini", "gpt-4.1", "gpt-4o-mini", "gpt-4o", "gpt-5-mini"],
     gemini: ["gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-1.5-pro", "gemini-1.5-flash"],
     anthropic: ["claude-3-5-sonnet-latest", "claude-3-7-sonnet-latest", "claude-3-5-haiku-latest", "claude-3-opus-latest"],
+    aitdee: ["gpt-4.1-mini", "gpt-4o-mini", "gemini-2.0-flash", "deepseek-chat", "claude-3-5-sonnet-latest"],
     deepseek: ["deepseek-chat", "deepseek-reasoner"],
     giteeai: ["Qwen3-8B", "Qwen2.5-72B-Instruct", "DeepSeek-R1-Distill-Qwen-7B", "glm-4-9b-chat"],
     githubcopilot: ["openai/gpt-4.1-mini", "openai/gpt-4.1", "openai/gpt-4o", "openai/gpt-5-mini", "deepseek/deepseek-r1"],
@@ -146,6 +155,12 @@ document.addEventListener("DOMContentLoaded", () => {
       button: anthropicRefreshModelsBtn,
       getApiKey: () => anthropicKey.value.trim(),
       fetcher: fetchAnthropicModelList,
+    },
+    aitdee: {
+      input: aitdeeModel,
+      button: aitdeeRefreshModelsBtn,
+      getApiKey: () => aitdeeKey.value.trim(),
+      fetcher: fetchAiTdEeModelList,
     },
     giteeai: {
       input: giteeaiModel,
@@ -194,6 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "openai_api_key", "openai_model",
       "gemini_api_key", "gemini_model",
       "anthropic_api_key", "anthropic_model",
+      "aitdee_api_key", "aitdee_model",
       "doubao_api_key", "doubao_model",
       "ollama_url", "ollama_model",
       "dockerai_url", "dockerai_model",
@@ -207,6 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const savedOpenAIModel = data.openai_model || "gpt-4.1-mini";
       const savedGeminiModel = data.gemini_model || "gemini-2.0-flash";
       const savedAnthropicModel = data.anthropic_model || "claude-3-5-sonnet-latest";
+      const savedAiTdEeModel = data.aitdee_model || "gpt-4.1-mini";
       const savedDoubaoModel = data.doubao_model || "doubao-pro-256k";
       const savedGiteeAIModel = data.giteeai_model || "Qwen3-8B";
       const savedGitHubCopilotModel = data.githubcopilot_model || "openai/gpt-4.1-mini";
@@ -216,6 +233,7 @@ document.addEventListener("DOMContentLoaded", () => {
       openaiKey.value = data.openai_api_key || "";
       geminiKey.value = data.gemini_api_key || "";
       anthropicKey.value = data.anthropic_api_key || "";
+      aitdeeKey.value = data.aitdee_api_key || "";
       doubaoKey.value = data.doubao_api_key || "";
       ollamaUrl.value = data.ollama_url || "http://localhost:11434";
       ollamaModel.value = data.ollama_model || "qwen2.5:7b";
@@ -232,6 +250,7 @@ document.addEventListener("DOMContentLoaded", () => {
       setModelSelectOptions(openaiModel, REMOTE_MODEL_PRESETS.openai, savedOpenAIModel);
       setModelSelectOptions(geminiModel, REMOTE_MODEL_PRESETS.gemini, savedGeminiModel);
       setModelSelectOptions(anthropicModel, REMOTE_MODEL_PRESETS.anthropic, savedAnthropicModel);
+      setModelSelectOptions(aitdeeModel, REMOTE_MODEL_PRESETS.aitdee, savedAiTdEeModel);
       setModelSelectOptions(giteeaiModel, REMOTE_MODEL_PRESETS.giteeai, savedGiteeAIModel);
       setModelSelectOptions(githubcopilotModel, REMOTE_MODEL_PRESETS.githubcopilot, savedGitHubCopilotModel);
       setModelSelectOptions(doubaoModel, REMOTE_MODEL_PRESETS.doubao, savedDoubaoModel);
@@ -281,6 +300,8 @@ document.addEventListener("DOMContentLoaded", () => {
         gemini_model: geminiModel.value.trim(),
         anthropic_api_key: anthropicKey.value.trim(),
         anthropic_model: anthropicModel.value.trim(),
+        aitdee_api_key: aitdeeKey.value.trim(),
+        aitdee_model: aitdeeModel.value.trim(),
         doubao_api_key: doubaoKey.value.trim(),
         doubao_model: doubaoModel.value.trim(),
         ollama_url: ollamaUrl.value.trim(),
@@ -528,6 +549,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setModelSelectOptions(openaiModel, REMOTE_MODEL_PRESETS.openai);
     setModelSelectOptions(geminiModel, REMOTE_MODEL_PRESETS.gemini);
     setModelSelectOptions(anthropicModel, REMOTE_MODEL_PRESETS.anthropic);
+    setModelSelectOptions(aitdeeModel, REMOTE_MODEL_PRESETS.aitdee);
     setModelSelectOptions(giteeaiModel, REMOTE_MODEL_PRESETS.giteeai);
     setModelSelectOptions(githubcopilotModel, REMOTE_MODEL_PRESETS.githubcopilot);
     setModelSelectOptions(doubaoModel, REMOTE_MODEL_PRESETS.doubao);
@@ -706,6 +728,20 @@ document.addEventListener("DOMContentLoaded", () => {
       .filter(Boolean);
   }
 
+  async function fetchAiTdEeModelList(apiKey) {
+    const response = await backgroundFetchJson("https://ai.td.ee/v1/models", {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(response.error || `HTTP ${response.status}`);
+    }
+    return (response.data?.data || response.data?.models || [])
+      .map((item) => item?.id || item?.name)
+      .filter(Boolean);
+  }
+
   async function fetchGiteeAIModelList(apiKey) {
     const response = await backgroundFetchJson("https://ai.gitee.com/v1/models", {
       headers: {
@@ -730,6 +766,8 @@ document.addEventListener("DOMContentLoaded", () => {
       geminiModel,
       anthropicKey,
       anthropicModel,
+      aitdeeKey,
+      aitdeeModel,
       doubaoKey,
       doubaoModel,
       ollamaUrl,
@@ -771,6 +809,11 @@ document.addEventListener("DOMContentLoaded", () => {
       "anthropic",
       anthropicKey.value.trim() && anthropicModel.value.trim() ? "info" : "warning",
       anthropicKey.value.trim() && anthropicModel.value.trim() ? t("optionsStateConfigured") : t("optionsStateNeedsConfig")
+    );
+    setProviderState(
+      "aitdee",
+      aitdeeKey.value.trim() && aitdeeModel.value.trim() ? "info" : "warning",
+      aitdeeKey.value.trim() && aitdeeModel.value.trim() ? t("optionsStateConfigured") : t("optionsStateNeedsConfig")
     );
     setProviderState(
       "giteeai",
@@ -851,6 +894,7 @@ document.addEventListener("DOMContentLoaded", () => {
       { provider: "openai", url: "https://api.openai.com/v1/models" },
       { provider: "gemini", url: "https://generativelanguage.googleapis.com/v1beta/models" },
       { provider: "anthropic", url: "https://api.anthropic.com/v1/models" },
+      { provider: "aitdee", url: "https://ai.td.ee/v1/models" },
       { provider: "giteeai", url: "https://ai.gitee.com/v1/models" },
       { provider: "githubcopilot", url: "https://models.github.ai/" },
       { provider: "doubao", url: "https://ark.cn-beijing.volces.com/api/v3/chat/completions" },
@@ -996,6 +1040,7 @@ document.addEventListener("DOMContentLoaded", () => {
       openai: t("optionsSectionOpenAI"),
       gemini: t("optionsSectionGemini"),
       anthropic: t("optionsSectionAnthropic"),
+      aitdee: t("optionsSectionAiTdEe"),
       giteeai: t("optionsSectionGiteeAI"),
       githubcopilot: t("optionsSectionGitHubCopilot"),
       doubao: t("optionsSectionDoubao"),
@@ -1036,6 +1081,7 @@ document.addEventListener("DOMContentLoaded", () => {
         case "deepseek":
         case "openai":
         case "anthropic":
+        case "aitdee":
         case "giteeai":
         case "githubcopilot":
         case "doubao":
@@ -1300,6 +1346,24 @@ document.addEventListener("DOMContentLoaded", () => {
           model: anthropicModel.value.trim() || "claude-3-5-sonnet-latest",
           max_tokens: 8,
           messages: [{ role: "user", content: "ping" }],
+        },
+      };
+    }
+
+    if (provider === "aitdee") {
+      return {
+        apiKey: aitdeeKey.value.trim(),
+        model: aitdeeModel.value.trim(),
+        apiUrl: "https://ai.td.ee/v1/chat/completions",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${aitdeeKey.value.trim()}`,
+        },
+        body: {
+          model: aitdeeModel.value.trim() || "gpt-4.1-mini",
+          messages: [{ role: "user", content: "ping" }],
+          max_tokens: 8,
+          temperature: 0,
         },
       };
     }

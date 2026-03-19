@@ -32,6 +32,9 @@
   "providerGiteeAI": {
     "message": "Gitee AI"
   },
+  "providerAiTdEe": {
+    "message": "ai.td.ee"
+  },
   "popupOpenSidePanelButton": {
     "message": "在側邊欄摘要目前頁面"
   },
@@ -420,7 +423,7 @@
     "message": "專案說明"
   },
   "optionsAboutDescriptionBody": {
-    "message": "AI 頁面摘要器支援網頁全文摘要、選取文字摘要與側邊欄多輪對話，兼容 DeepSeek、OpenAI、Gemini、Anthropic、GitHub Copilot、豆包、Gitee AI 等線上 provider，以及 Ollama、Docker Desktop AI、Foundry Local、KoboldCpp 等本地 provider。1.1.0 版本重點補齊了統一設定頁、網路診斷與側邊欄快捷設定。"
+    "message": "AI 頁面摘要器支援網頁全文摘要、選取文字摘要與側邊欄多輪對話，兼容 DeepSeek、OpenAI、Gemini、Anthropic、ai.td.ee、GitHub Copilot、豆包、Gitee AI 等線上 provider，以及 Ollama、Docker Desktop AI、Foundry Local、KoboldCpp 等本地 provider。1.1.0 版本重點補齊了統一設定頁、網路診斷與側邊欄快捷設定。"
   },
   "optionsAboutChangelogTitle": {
     "message": "變更記錄"
@@ -454,6 +457,9 @@
   },
   "optionsSectionDeepSeek": {
     "message": "🤖 DeepSeek"
+  },
+  "optionsSectionAiTdEe": {
+    "message": "🧩 ai.td.ee"
   },
   "optionsSectionGiteeAI": {
     "message": "🐱 Gitee AI"
@@ -490,6 +496,15 @@
   },
   "optionsPlaceholderDeepSeekKey": {
     "message": "sk-xxxxxxxxxxxxxxxx"
+  },
+  "optionsPlaceholderAiTdEeKey": {
+    "message": "sk-xxxxxxxxxxxxxxxx"
+  },
+  "optionsHintAiTdEeHtml": {
+    "message": "可於 <a href=\"https://ai.td.ee/\" target=\"_blank\">ai.td.ee 控制台</a> 取得。"
+  },
+  "optionsHintAiTdEeModel": {
+    "message": "輸入 API Key 後點擊「重新整理」，即可從 ai.td.ee 載入可用模型 ID。"
   },
   "optionsHintDeepSeekHtml": {
     "message": "可於 <a href=\"https://platform.deepseek.com/api_keys\" target=\"_blank\">DeepSeek 開放平台</a> 取得。"
