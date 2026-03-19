@@ -33,7 +33,7 @@
     "message": "Gitee AI"
   },
   "providerAiTdEe": {
-    "message": "ai.td.ee"
+    "message": "Sub2API AI Gateway"
   },
   "popupOpenSidePanelButton": {
     "message": "Суммировать текущую страницу в боковой панели"
@@ -423,7 +423,7 @@
     "message": "Описание"
   },
   "optionsAboutDescriptionBody": {
-    "message": "AI Page Summarizer поддерживает суммаризацию всей страницы, суммаризацию выделенного текста и многошаговый чат в боковой панели. Он работает с онлайн provider, такими как DeepSeek, OpenAI, Gemini, Anthropic, ai.td.ee, GitHub Copilot, Doubao и Gitee AI, а также с локальными provider, такими как Ollama, Docker Desktop AI, Foundry Local и KoboldCpp. Версия 1.1.0 сосредоточена на едином интерфейсе настроек, сетевой диагностике и более быстрых настройках боковой панели."
+    "message": "AI Page Summarizer поддерживает суммаризацию всей страницы, суммаризацию выделенного текста и многошаговый чат в боковой панели. Он работает с онлайн provider, такими как DeepSeek, OpenAI, Gemini, Anthropic, Sub2API AI Gateway, GitHub Copilot, Doubao и Gitee AI, а также с локальными provider, такими как Ollama, Docker Desktop AI, Foundry Local и KoboldCpp. Версия 1.1.0 сосредоточена на едином интерфейсе настроек, сетевой диагностике и более быстрых настройках боковой панели."
   },
   "optionsAboutChangelogTitle": {
     "message": "Журнал изменений"
@@ -459,7 +459,7 @@
     "message": "🤖 DeepSeek"
   },
   "optionsSectionAiTdEe": {
-    "message": "🧩 ai.td.ee"
+    "message": "🧩 Sub2API AI Gateway"
   },
   "optionsSectionGiteeAI": {
     "message": "🐱 Gitee AI"
@@ -501,10 +501,19 @@
     "message": "sk-xxxxxxxxxxxxxxxx"
   },
   "optionsHintAiTdEeHtml": {
-    "message": "Получите его в <a href=\"https://ai.td.ee/\" target=\"_blank\">панели ai.td.ee</a>."
+    "message": "Получите его в <a href=\"https://github.com/Wei-Shaw/sub2api/\" target=\"_blank\">документации Sub2API</a> или в панели совместимого шлюза."
+  },
+  "optionsPlaceholderAiTdEeUrl": {
+    "message": "https://ai.td.ee"
+  },
+  "optionsHintAiTdEeUrl": {
+    "message": "Поддерживается OpenAI-совместимый API. Выберите https://ai.td.ee / https://shop.pincc.ai из списка или укажите собственный URL шлюза."
+  },
+  "optionsCustomApiUrl": {
+    "message": "Свой URL"
   },
   "optionsHintAiTdEeModel": {
-    "message": "После ввода API-ключа нажмите «Обновить», чтобы загрузить доступные ID моделей из ai.td.ee."
+    "message": "После ввода API-ключа нажмите «Обновить», чтобы загрузить доступные ID моделей из текущего шлюза Sub2API."
   },
   "optionsHintDeepSeekHtml": {
     "message": "Получите его на <a href=\"https://platform.deepseek.com/api_keys\" target=\"_blank\">DeepSeek Open Platform</a>."

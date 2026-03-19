@@ -33,7 +33,7 @@
     "message": "Gitee AI"
   },
   "providerAiTdEe": {
-    "message": "ai.td.ee"
+    "message": "Sub2API AI 網關平台"
   },
   "popupOpenSidePanelButton": {
     "message": "在側邊欄摘要目前頁面"
@@ -423,7 +423,7 @@
     "message": "專案說明"
   },
   "optionsAboutDescriptionBody": {
-    "message": "AI 頁面摘要器支援網頁全文摘要、選取文字摘要與側邊欄多輪對話，兼容 DeepSeek、OpenAI、Gemini、Anthropic、ai.td.ee、GitHub Copilot、豆包、Gitee AI 等線上 provider，以及 Ollama、Docker Desktop AI、Foundry Local、KoboldCpp 等本地 provider。1.1.0 版本重點補齊了統一設定頁、網路診斷與側邊欄快捷設定。"
+    "message": "AI 頁面摘要器支援網頁全文摘要、選取文字摘要與側邊欄多輪對話，兼容 DeepSeek、OpenAI、Gemini、Anthropic、Sub2API AI 網關平台、GitHub Copilot、豆包、Gitee AI 等線上 provider，以及 Ollama、Docker Desktop AI、Foundry Local、KoboldCpp 等本地 provider。1.1.0 版本重點補齊了統一設定頁、網路診斷與側邊欄快捷設定。"
   },
   "optionsAboutChangelogTitle": {
     "message": "變更記錄"
@@ -459,7 +459,7 @@
     "message": "🤖 DeepSeek"
   },
   "optionsSectionAiTdEe": {
-    "message": "🧩 ai.td.ee"
+    "message": "🧩 Sub2API AI 網關平台"
   },
   "optionsSectionGiteeAI": {
     "message": "🐱 Gitee AI"
@@ -501,10 +501,19 @@
     "message": "sk-xxxxxxxxxxxxxxxx"
   },
   "optionsHintAiTdEeHtml": {
-    "message": "可於 <a href=\"https://ai.td.ee/\" target=\"_blank\">ai.td.ee 控制台</a> 取得。"
+    "message": "可於 <a href=\"https://github.com/Wei-Shaw/sub2api/\" target=\"_blank\">Sub2API 專案文件</a> 或相容網關控制台取得。"
+  },
+  "optionsPlaceholderAiTdEeUrl": {
+    "message": "https://ai.td.ee"
+  },
+  "optionsHintAiTdEeUrl": {
+    "message": "支援 OpenAI 相容 API，可從下拉中選擇 https://ai.td.ee / https://shop.pincc.ai，也可以填寫你自己的網關位址。"
+  },
+  "optionsCustomApiUrl": {
+    "message": "自訂位址"
   },
   "optionsHintAiTdEeModel": {
-    "message": "輸入 API Key 後點擊「重新整理」，即可從 ai.td.ee 載入可用模型 ID。"
+    "message": "輸入 API Key 後點擊「重新整理」，即可從目前的 Sub2API 網關載入可用模型 ID。"
   },
   "optionsHintDeepSeekHtml": {
     "message": "可於 <a href=\"https://platform.deepseek.com/api_keys\" target=\"_blank\">DeepSeek 開放平台</a> 取得。"

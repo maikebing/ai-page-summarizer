@@ -687,8 +687,9 @@ function buildProviderRequest(provider, config, messages, temperature) {
   }
 
   if (provider === "aitdee") {
+    const baseUrl = (config.url || "https://ai.td.ee").replace(/\/+$/, "");
     return {
-      apiUrl: "https://ai.td.ee/v1/chat/completions",
+      apiUrl: `${baseUrl}/v1/chat/completions`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${config.apiKey}`,
@@ -974,9 +975,10 @@ function getAPIConfig(provider) {
         });
       });
     } else if (provider === "aitdee") {
-      chrome.storage.sync.get(["aitdee_api_key", "aitdee_model"], (data) => {
+      chrome.storage.sync.get(["aitdee_api_key", "aitdee_url", "aitdee_model"], (data) => {
         resolve({
           apiKey: data.aitdee_api_key || "",
+          url: data.aitdee_url || "https://ai.td.ee",
           model: data.aitdee_model || "gpt-4.1-mini",
         });
       });

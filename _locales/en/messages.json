@@ -27,7 +27,7 @@
     "message": "Anthropic Claude"
   },
   "providerAiTdEe": {
-    "message": "ai.td.ee"
+    "message": "Sub2API AI Gateway"
   },
   "providerGitHubCopilot": {
     "message": "GitHub Copilot"
@@ -486,7 +486,7 @@
     "message": "🟠 Anthropic Claude"
   },
   "optionsSectionAiTdEe": {
-    "message": "🧩 ai.td.ee"
+    "message": "🧩 Sub2API AI Gateway"
   },
   "optionsSectionGiteeAI": {
     "message": "🐱 Gitee AI"
@@ -570,10 +570,19 @@
     "message": "sk-xxxxxxxxxxxxxxxx"
   },
   "optionsHintAiTdEeHtml": {
-    "message": "Get it from the <a href=\"https://ai.td.ee/\" target=\"_blank\">ai.td.ee dashboard</a>."
+    "message": "Get it from the <a href=\"https://github.com/Wei-Shaw/sub2api/\" target=\"_blank\">Sub2API project docs</a> or your compatible gateway dashboard."
+  },
+  "optionsPlaceholderAiTdEeUrl": {
+    "message": "https://ai.td.ee"
+  },
+  "optionsHintAiTdEeUrl": {
+    "message": "Uses an OpenAI-compatible API. Choose https://ai.td.ee or https://shop.pincc.ai from the list, or enter your own gateway URL."
+  },
+  "optionsCustomApiUrl": {
+    "message": "Custom URL"
   },
   "optionsHintAiTdEeModel": {
-    "message": "After entering your API key, click Refresh to load the available model IDs from ai.td.ee."
+    "message": "After entering your API key, click Refresh to load the available model IDs from the current Sub2API gateway."
   },
   "optionsHintDeepSeekHtml": {
     "message": "Get it from the <a href=\"https://platform.deepseek.com/api_keys\" target=\"_blank\">DeepSeek Open Platform</a>."

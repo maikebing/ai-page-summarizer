@@ -27,7 +27,7 @@
     "message": "Anthropic Claude"
   },
   "providerAiTdEe": {
-    "message": "ai.td.ee"
+    "message": "Sub2API AI 网关平台"
   },
   "providerGitHubCopilot": {
     "message": "GitHub Copilot"
@@ -486,7 +486,7 @@
     "message": "🟠 Anthropic Claude"
   },
   "optionsSectionAiTdEe": {
-    "message": "🧩 ai.td.ee"
+    "message": "🧩 Sub2API AI 网关平台"
   },
   "optionsSectionGiteeAI": {
     "message": "🐱 Gitee AI"
@@ -570,10 +570,19 @@
     "message": "sk-xxxxxxxxxxxxxxxx"
   },
   "optionsHintAiTdEeHtml": {
-    "message": "在 <a href=\"https://ai.td.ee/\" target=\"_blank\">ai.td.ee 控制台</a> 获取"
+    "message": "在 <a href=\"https://github.com/Wei-Shaw/sub2api/\" target=\"_blank\">Sub2API 项目文档</a> 或兼容网关控制台获取"
+  },
+  "optionsPlaceholderAiTdEeUrl": {
+    "message": "https://ai.td.ee"
+  },
+  "optionsHintAiTdEeUrl": {
+    "message": "支持 OpenAI 兼容接口，可从下拉中选择 https://ai.td.ee / https://shop.pincc.ai，也可以填写你自己的网关地址。"
+  },
+  "optionsCustomApiUrl": {
+    "message": "自定义地址"
   },
   "optionsHintAiTdEeModel": {
-    "message": "输入 API Key 后点击“刷新”，即可从 ai.td.ee 拉取可用模型 ID。"
+    "message": "输入 API Key 后点击“刷新”，即可从当前 Sub2API 网关拉取可用模型 ID。"
   },
   "optionsHintDeepSeekHtml": {
     "message": "在 <a href=\"https://platform.deepseek.com/api_keys\" target=\"_blank\">DeepSeek 开放平台</a> 获取"

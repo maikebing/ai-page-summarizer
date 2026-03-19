@@ -1567,7 +1567,7 @@
             <summary>
               <span class="provider-summary-main">
                 <span class="provider-summary-top">
-                  <span class="provider-summary-label" data-i18n="optionsSectionAiTdEe">🧩 ai.td.ee</span>
+                  <span class="provider-summary-label" data-i18n="optionsSectionAiTdEe">🧩 Sub2API AI 网关平台</span>
                   <span class="provider-badge online" data-i18n="optionsBadgeOnline">API</span>
                 </span>
               </span>
@@ -1582,7 +1582,17 @@
               </div>
               <label for="aitdee-key" data-i18n="optionsLabelApiKey">API Key</label>
               <input type="password" id="aitdee-key" data-i18n-placeholder="optionsPlaceholderAiTdEeKey" placeholder="sk-xxxxxxxxxxxxxxxx">
-              <p class="hint" data-i18n-html="optionsHintAiTdEeHtml">Get it from the ai.td.ee dashboard.</p>
+              <p class="hint" data-i18n-html="optionsHintAiTdEeHtml">Get it from the Sub2API dashboard.</p>
+              <label for="aitdee-url-select" data-i18n="optionsLabelApiUrl">API 地址</label>
+              <div class="model-row">
+                <select id="aitdee-url-select">
+                  <option value="https://ai.td.ee">https://ai.td.ee/</option>
+                  <option value="https://shop.pincc.ai">https://shop.pincc.ai/</option>
+                  <option value="__custom__" data-i18n="optionsCustomApiUrl">自定义地址</option>
+                </select>
+              </div>
+              <input type="text" id="aitdee-url" data-i18n-placeholder="optionsPlaceholderAiTdEeUrl" placeholder="https://ai.td.ee">
+              <p class="hint" data-i18n="optionsHintAiTdEeUrl">支持 OpenAI 兼容接口，可从下拉中选择，也可以填写你自己的网关地址。</p>
               <label for="aitdee-model" data-i18n="optionsLabelModel">Model</label>
               <div class="model-row">
                 <select id="aitdee-model"></select>

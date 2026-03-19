@@ -33,7 +33,7 @@
     "message": "Gitee AI"
   },
   "providerAiTdEe": {
-    "message": "ai.td.ee"
+    "message": "Sub2API AI 게이트웨이"
   },
   "popupOpenSidePanelButton": {
     "message": "사이드 패널에서 현재 페이지 요약"
@@ -423,7 +423,7 @@
     "message": "설명"
   },
   "optionsAboutDescriptionBody": {
-    "message": "AI 페이지 요약기는 웹페이지 전체 요약, 선택 텍스트 요약, 사이드 패널 다중 대화를 지원합니다. DeepSeek, OpenAI, Gemini, Anthropic, ai.td.ee, GitHub Copilot, Doubao, Gitee AI 같은 온라인 provider 와 Ollama, Docker Desktop AI, Foundry Local, KoboldCpp 같은 로컬 provider 를 함께 사용할 수 있습니다. 1.1.0 버전에서는 통합 설정 UI, 네트워크 진단, 사이드 패널 빠른 설정을 중점적으로 개선했습니다."
+    "message": "AI 페이지 요약기는 웹페이지 전체 요약, 선택 텍스트 요약, 사이드 패널 다중 대화를 지원합니다. DeepSeek, OpenAI, Gemini, Anthropic, Sub2API AI 게이트웨이, GitHub Copilot, Doubao, Gitee AI 같은 온라인 provider 와 Ollama, Docker Desktop AI, Foundry Local, KoboldCpp 같은 로컬 provider 를 함께 사용할 수 있습니다. 1.1.0 버전에서는 통합 설정 UI, 네트워크 진단, 사이드 패널 빠른 설정을 중점적으로 개선했습니다."
   },
   "optionsAboutChangelogTitle": {
     "message": "변경 기록"
@@ -459,7 +459,7 @@
     "message": "🤖 DeepSeek"
   },
   "optionsSectionAiTdEe": {
-    "message": "🧩 ai.td.ee"
+    "message": "🧩 Sub2API AI 게이트웨이"
   },
   "optionsSectionGiteeAI": {
     "message": "🐱 Gitee AI"
@@ -501,10 +501,19 @@
     "message": "sk-xxxxxxxxxxxxxxxx"
   },
   "optionsHintAiTdEeHtml": {
-    "message": "<a href=\"https://ai.td.ee/\" target=\"_blank\">ai.td.ee 대시보드</a>에서 발급받으세요."
+    "message": "<a href=\"https://github.com/Wei-Shaw/sub2api/\" target=\"_blank\">Sub2API 문서</a> 또는 호환 게이트웨이 대시보드에서 발급받으세요."
+  },
+  "optionsPlaceholderAiTdEeUrl": {
+    "message": "https://ai.td.ee"
+  },
+  "optionsHintAiTdEeUrl": {
+    "message": "OpenAI 호환 API를 지원합니다. https://ai.td.ee / https://shop.pincc.ai 중에서 선택하거나 직접 게이트웨이 URL을 입력할 수 있습니다."
+  },
+  "optionsCustomApiUrl": {
+    "message": "사용자 지정 URL"
   },
   "optionsHintAiTdEeModel": {
-    "message": "API 키를 입력한 뒤 \"새로 고침\"을 누르면 ai.td.ee 에서 사용 가능한 모델 ID 를 불러올 수 있습니다."
+    "message": "API 키를 입력한 뒤 \"새로 고침\"을 누르면 현재 Sub2API 게이트웨이에서 사용 가능한 모델 ID를 불러올 수 있습니다."
   },
   "optionsHintDeepSeekHtml": {
     "message": "<a href=\"https://platform.deepseek.com/api_keys\" target=\"_blank\">DeepSeek Open Platform</a>에서 발급받으세요."

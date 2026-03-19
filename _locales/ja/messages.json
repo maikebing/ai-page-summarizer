@@ -33,7 +33,7 @@
     "message": "Gitee AI"
   },
   "providerAiTdEe": {
-    "message": "ai.td.ee"
+    "message": "Sub2API AI ゲートウェイ"
   },
   "popupOpenSidePanelButton": {
     "message": "サイドパネルで現在のページを要約"
@@ -423,7 +423,7 @@
     "message": "説明"
   },
   "optionsAboutDescriptionBody": {
-    "message": "AI ページ要約ツールは、Web ページ全文要約、選択テキスト要約、サイドパネルでの多段チャットに対応しています。DeepSeek、OpenAI、Gemini、Anthropic、ai.td.ee、GitHub Copilot、Doubao、Gitee AI などのオンライン provider に加え、Ollama、Docker Desktop AI、Foundry Local、KoboldCpp などのローカル provider も利用できます。1.1.0 では統一設定 UI、ネットワーク診断、サイドパネルのクイック設定を重点的に改善しました。"
+    "message": "AI ページ要約ツールは、Web ページ全文要約、選択テキスト要約、サイドパネルでの多段チャットに対応しています。DeepSeek、OpenAI、Gemini、Anthropic、Sub2API AI ゲートウェイ、GitHub Copilot、Doubao、Gitee AI などのオンライン provider に加え、Ollama、Docker Desktop AI、Foundry Local、KoboldCpp などのローカル provider も利用できます。1.1.0 では統一設定 UI、ネットワーク診断、サイドパネルのクイック設定を重点的に改善しました。"
   },
   "optionsAboutChangelogTitle": {
     "message": "変更履歴"
@@ -459,7 +459,7 @@
     "message": "🤖 DeepSeek"
   },
   "optionsSectionAiTdEe": {
-    "message": "🧩 ai.td.ee"
+    "message": "🧩 Sub2API AI ゲートウェイ"
   },
   "optionsSectionGiteeAI": {
     "message": "🐱 Gitee AI"
@@ -501,10 +501,19 @@
     "message": "sk-xxxxxxxxxxxxxxxx"
   },
   "optionsHintAiTdEeHtml": {
-    "message": "<a href=\"https://ai.td.ee/\" target=\"_blank\">ai.td.ee ダッシュボード</a> で取得できます。"
+    "message": "<a href=\"https://github.com/Wei-Shaw/sub2api/\" target=\"_blank\">Sub2API のドキュメント</a> または互換ゲートウェイの管理画面で取得できます。"
+  },
+  "optionsPlaceholderAiTdEeUrl": {
+    "message": "https://ai.td.ee"
+  },
+  "optionsHintAiTdEeUrl": {
+    "message": "OpenAI 互換 API に対応しています。https://ai.td.ee / https://shop.pincc.ai を選ぶか、独自のゲートウェイ URL を入力できます。"
+  },
+  "optionsCustomApiUrl": {
+    "message": "カスタム URL"
   },
   "optionsHintAiTdEeModel": {
-    "message": "API キーを入力した後、「更新」をクリックすると ai.td.ee から利用可能なモデル ID を読み込めます。"
+    "message": "API キーを入力した後、「更新」をクリックすると現在の Sub2API ゲートウェイから利用可能なモデル ID を読み込めます。"
   },
   "optionsHintDeepSeekHtml": {
     "message": "<a href=\"https://platform.deepseek.com/api_keys\" target=\"_blank\">DeepSeek Open Platform</a> で取得できます。"

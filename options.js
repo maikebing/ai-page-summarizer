@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const anthropicModel = document.getElementById("anthropic-model");
   const anthropicRefreshModelsBtn = document.getElementById("anthropic-refresh-models-btn");
   const aitdeeKey = document.getElementById("aitdee-key");
+  const aitdeeUrlSelect = document.getElementById("aitdee-url-select");
+  const aitdeeUrl = document.getElementById("aitdee-url");
   const aitdeeModel = document.getElementById("aitdee-model");
   const aitdeeRefreshModelsBtn = document.getElementById("aitdee-refresh-models-btn");
   const doubaoKey = document.getElementById("doubao-key");
@@ -160,7 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
       input: aitdeeModel,
       button: aitdeeRefreshModelsBtn,
       getApiKey: () => aitdeeKey.value.trim(),
-      fetcher: fetchAiTdEeModelList,
+      fetcher: () => fetchAiTdEeModelList(aitdeeKey.value.trim(), getAiTdEeBaseUrl()),
     },
     giteeai: {
       input: giteeaiModel,
@@ -209,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "openai_api_key", "openai_model",
       "gemini_api_key", "gemini_model",
       "anthropic_api_key", "anthropic_model",
-      "aitdee_api_key", "aitdee_model",
+      "aitdee_api_key", "aitdee_url", "aitdee_model",
       "doubao_api_key", "doubao_model",
       "ollama_url", "ollama_model",
       "dockerai_url", "dockerai_model",
@@ -224,6 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const savedGeminiModel = data.gemini_model || "gemini-2.0-flash";
       const savedAnthropicModel = data.anthropic_model || "claude-3-5-sonnet-latest";
       const savedAiTdEeModel = data.aitdee_model || "gpt-4.1-mini";
+      const savedAiTdEeUrl = data.aitdee_url || "https://ai.td.ee";
       const savedDoubaoModel = data.doubao_model || "doubao-pro-256k";
       const savedGiteeAIModel = data.giteeai_model || "Qwen3-8B";
       const savedGitHubCopilotModel = data.githubcopilot_model || "openai/gpt-4.1-mini";
@@ -234,6 +237,7 @@ document.addEventListener("DOMContentLoaded", () => {
       geminiKey.value = data.gemini_api_key || "";
       anthropicKey.value = data.anthropic_api_key || "";
       aitdeeKey.value = data.aitdee_api_key || "";
+      applyAiTdEeUrlSelection(savedAiTdEeUrl);
       doubaoKey.value = data.doubao_api_key || "";
       ollamaUrl.value = data.ollama_url || "http://localhost:11434";
       ollamaModel.value = data.ollama_model || "qwen2.5:7b";
@@ -281,6 +285,20 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchFoundryLocalModels(foundrylocalModel.value);
   });
 
+  aitdeeUrlSelect?.addEventListener("change", () => {
+    if (aitdeeUrlSelect.value !== "__custom__") {
+      aitdeeUrl.value = aitdeeUrlSelect.value;
+    }
+    refreshProviderIndicators();
+  });
+
+  aitdeeUrl?.addEventListener("input", () => {
+    const normalized = normalizeBaseUrl(aitdeeUrl.value, "https://ai.td.ee");
+    const presetValues = ["https://ai.td.ee", "https://shop.pincc.ai"];
+    aitdeeUrlSelect.value = presetValues.includes(normalized) ? normalized : "__custom__";
+    refreshProviderIndicators();
+  });
+
   koboldcppRefreshBtn.addEventListener("click", () => {
     fetchKoboldcppInfo();
   });
@@ -301,6 +319,7 @@ document.addEventListener("DOMContentLoaded", () => {
         anthropic_api_key: anthropicKey.value.trim(),
         anthropic_model: anthropicModel.value.trim(),
         aitdee_api_key: aitdeeKey.value.trim(),
+        aitdee_url: getAiTdEeBaseUrl(),
         aitdee_model: aitdeeModel.value.trim(),
         doubao_api_key: doubaoKey.value.trim(),
         doubao_model: doubaoModel.value.trim(),
@@ -728,8 +747,8 @@ document.addEventListener("DOMContentLoaded", () => {
       .filter(Boolean);
   }
 
-  async function fetchAiTdEeModelList(apiKey) {
-    const response = await backgroundFetchJson("https://ai.td.ee/v1/models", {
+  async function fetchAiTdEeModelList(apiKey, baseUrl) {
+    const response = await backgroundFetchJson(`${normalizeBaseUrl(baseUrl, "https://ai.td.ee")}/v1/models`, {
       headers: {
         Authorization: `Bearer ${apiKey}`,
       },
@@ -767,6 +786,8 @@ document.addEventListener("DOMContentLoaded", () => {
       anthropicKey,
       anthropicModel,
       aitdeeKey,
+      aitdeeUrlSelect,
+      aitdeeUrl,
       aitdeeModel,
       doubaoKey,
       doubaoModel,
@@ -812,8 +833,8 @@ document.addEventListener("DOMContentLoaded", () => {
     );
     setProviderState(
       "aitdee",
-      aitdeeKey.value.trim() && aitdeeModel.value.trim() ? "info" : "warning",
-      aitdeeKey.value.trim() && aitdeeModel.value.trim() ? t("optionsStateConfigured") : t("optionsStateNeedsConfig")
+      aitdeeKey.value.trim() && getAiTdEeBaseUrl() && aitdeeModel.value.trim() ? "info" : "warning",
+      aitdeeKey.value.trim() && getAiTdEeBaseUrl() && aitdeeModel.value.trim() ? t("optionsStateConfigured") : t("optionsStateNeedsConfig")
     );
     setProviderState(
       "giteeai",
@@ -894,7 +915,7 @@ document.addEventListener("DOMContentLoaded", () => {
       { provider: "openai", url: "https://api.openai.com/v1/models" },
       { provider: "gemini", url: "https://generativelanguage.googleapis.com/v1beta/models" },
       { provider: "anthropic", url: "https://api.anthropic.com/v1/models" },
-      { provider: "aitdee", url: "https://ai.td.ee/v1/models" },
+      { provider: "aitdee", url: `${normalizeBaseUrl(getAiTdEeBaseUrl(), "https://ai.td.ee")}/v1/models` },
       { provider: "giteeai", url: "https://ai.gitee.com/v1/models" },
       { provider: "githubcopilot", url: "https://models.github.ai/" },
       { provider: "doubao", url: "https://ark.cn-beijing.volces.com/api/v3/chat/completions" },
@@ -1354,7 +1375,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return {
         apiKey: aitdeeKey.value.trim(),
         model: aitdeeModel.value.trim(),
-        apiUrl: "https://ai.td.ee/v1/chat/completions",
+        apiUrl: `${normalizeBaseUrl(getAiTdEeBaseUrl(), "https://ai.td.ee")}/v1/chat/completions`,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${aitdeeKey.value.trim()}`,
@@ -1367,6 +1388,26 @@ document.addEventListener("DOMContentLoaded", () => {
         },
       };
     }
+
+  function getAiTdEeBaseUrl() {
+    const selected = aitdeeUrlSelect?.value;
+    if (selected && selected !== "__custom__") {
+      return selected;
+    }
+    return aitdeeUrl?.value.trim() || "https://ai.td.ee";
+  }
+
+  function applyAiTdEeUrlSelection(value) {
+    const normalized = normalizeBaseUrl(value, "https://ai.td.ee");
+    const presetValues = ["https://ai.td.ee", "https://shop.pincc.ai"];
+    if (presetValues.includes(normalized)) {
+      aitdeeUrlSelect.value = normalized;
+      aitdeeUrl.value = normalized;
+    } else {
+      aitdeeUrlSelect.value = "__custom__";
+      aitdeeUrl.value = normalized;
+    }
+  }
 
     if (provider === "giteeai") {
       return {

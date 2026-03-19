@@ -25,7 +25,7 @@
 
 ## ✨ 主要特性
 
-- 支持 DeepSeek、OpenAI、Gemini、Anthropic、GitHub Copilot、豆包、Gitee AI 等在线模型总结网页
+- 支持 DeepSeek、OpenAI、Gemini、Anthropic、Sub2API AI 网关平台、GitHub Copilot、豆包、Gitee AI 等在线模型总结网页
 - 支持 Ollama、Docker Desktop AI、Foundry Local、KoboldCpp 等本地模型，无需 API Key
 - 设置页内置连接测试、模型刷新、网络诊断、总结风格和关于说明
 - 侧边栏支持折叠式快捷配置、模型状态提示和多轮上下文追问
@@ -52,7 +52,7 @@
 
 1. 点击扩展图标，自动打开侧边栏
 2. 首次使用请点击底部「⚙️ 设置」，配置 API Key 或本地模型
-3. 选择 AI Provider（DeepSeek / OpenAI / Gemini / Anthropic / GitHub Copilot / 豆包 / Gitee AI / Ollama / Docker Desktop AI / Foundry Local / KoboldCpp）
+3. 选择 AI Provider（DeepSeek / OpenAI / Gemini / Anthropic / Sub2API AI 网关平台 / GitHub Copilot / 豆包 / Gitee AI / Ollama / Docker Desktop AI / Foundry Local / KoboldCpp）
 4. 点击「🔄 总结当前页面」或右键菜单总结选中内容
 5. 等待 AI 返回总结结果（支持 Markdown 格式）
 6. 可在底部对话框继续追问，AI 会基于页面内容和历史对话智能回复
@@ -66,11 +66,18 @@
 - 支持模型动态选择、状态检测
 - 无需 API Key，适合本地部署
 
-### OpenAI / DeepSeek / Gemini / Anthropic / GitHub Copilot / 豆包 / Gitee AI
+### OpenAI / DeepSeek / Gemini / Anthropic / Sub2API AI 网关平台 / GitHub Copilot / 豆包 / Gitee AI
 
 - 需在设置页面填写 API Key 或访问令牌
 - 支持多轮对话、总结与翻译场景
 - 可在设置页直接测试连接并切换模型
+
+### Sub2API AI 网关平台
+
+- 兼容 OpenAI 接口格式
+- 默认支持以下地址下拉选择：`https://ai.td.ee/`、`https://shop.pincc.ai/`
+- 也支持手动填写你自己的兼容网关地址
+- 可在设置页直接测试连接并拉取模型列表
 
 ### Docker Desktop AI
 
@@ -99,6 +106,10 @@
   2. 完成账号注册与实名认证
   3. 进入 API Key 管理页面创建并复制 Key
   4. 在扩展设置页面填入即可使用
+- **Sub2API AI 网关平台**：
+   1. 访问 [Sub2API 项目文档](https://github.com/Wei-Shaw/sub2api/)
+   2. 使用支持的网关地址，例如 `https://ai.td.ee/` 或 `https://shop.pincc.ai/`
+   3. 在扩展设置页面填写 API Key、地址和模型
 
 ## ❓ 常见问题
 
