@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+function initOptionsPage() {
   const { t } = window.AppI18n;
   const deepseekKey = document.getElementById("deepseek-key");
   const deepseekModel = document.getElementById("deepseek-model");
@@ -184,6 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   };
   const UI_STATE_KEY = "options_ui_state";
+  const SETTINGS_UPDATED_AT_KEY = "app_settings_updated_at";
   const defaultUiState = {
     activeTab: "local",
     search: "",
@@ -204,72 +205,10 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeAboutPanel();
   restoreUiState();
 
-  // 加载已保存的设置
-  chrome.storage.sync.get(
-    [
-      "deepseek_api_key", "deepseek_model",
-      "openai_api_key", "openai_model",
-      "gemini_api_key", "gemini_model",
-      "anthropic_api_key", "anthropic_model",
-      "aitdee_api_key", "aitdee_url", "aitdee_model",
-      "doubao_api_key", "doubao_model",
-      "ollama_url", "ollama_model",
-      "dockerai_url", "dockerai_model",
-      "foundrylocal_url", "foundrylocal_model",
-      "koboldcpp_url",
-      "giteeai_api_key", "giteeai_model",
-      "githubcopilot_api_key", "githubcopilot_model",
-      "summary_style"
-    ],
-    (data) => {
-      const savedOpenAIModel = data.openai_model || "gpt-4.1-mini";
-      const savedGeminiModel = data.gemini_model || "gemini-2.0-flash";
-      const savedAnthropicModel = data.anthropic_model || "claude-3-5-sonnet-latest";
-      const savedAiTdEeModel = data.aitdee_model || "gpt-4.1-mini";
-      const savedAiTdEeUrl = data.aitdee_url || "https://ai.td.ee";
-      const savedDoubaoModel = data.doubao_model || "doubao-pro-256k";
-      const savedGiteeAIModel = data.giteeai_model || "Qwen3-8B";
-      const savedGitHubCopilotModel = data.githubcopilot_model || "openai/gpt-4.1-mini";
-
-      deepseekKey.value = data.deepseek_api_key || "";
-      deepseekModel.value = data.deepseek_model || "deepseek-chat";
-      openaiKey.value = data.openai_api_key || "";
-      geminiKey.value = data.gemini_api_key || "";
-      anthropicKey.value = data.anthropic_api_key || "";
-      aitdeeKey.value = data.aitdee_api_key || "";
-      applyAiTdEeUrlSelection(savedAiTdEeUrl);
-      doubaoKey.value = data.doubao_api_key || "";
-      ollamaUrl.value = data.ollama_url || "http://localhost:11434";
-      ollamaModel.value = data.ollama_model || "qwen2.5:7b";
-      dockeraiUrl.value = data.dockerai_url || "http://localhost:12434";
-      dockeraiModel.value = data.dockerai_model || "docker.io/ai/qwen2.5:7B-Q4_0";
-      foundrylocalUrl.value = data.foundrylocal_url || "http://127.0.0.1:55928/";
-      foundrylocalModel.value = data.foundrylocal_model || "";
-      koboldcppUrl.value = data.koboldcpp_url || "http://localhost:5001";
-      giteeaiKey.value = data.giteeai_api_key || "";
-      githubcopilotKey.value = data.githubcopilot_api_key || "";
-      summaryStyleSelect.value = data.summary_style || "standard";
-      renderSummaryStyleSelection();
-
-      setModelSelectOptions(openaiModel, REMOTE_MODEL_PRESETS.openai, savedOpenAIModel);
-      setModelSelectOptions(geminiModel, REMOTE_MODEL_PRESETS.gemini, savedGeminiModel);
-      setModelSelectOptions(anthropicModel, REMOTE_MODEL_PRESETS.anthropic, savedAnthropicModel);
-      setModelSelectOptions(aitdeeModel, REMOTE_MODEL_PRESETS.aitdee, savedAiTdEeModel);
-      setModelSelectOptions(giteeaiModel, REMOTE_MODEL_PRESETS.giteeai, savedGiteeAIModel);
-      setModelSelectOptions(githubcopilotModel, REMOTE_MODEL_PRESETS.githubcopilot, savedGitHubCopilotModel);
-      setModelSelectOptions(doubaoModel, REMOTE_MODEL_PRESETS.doubao, savedDoubaoModel);
-
-      refreshProviderIndicators();
-
-      // 加载完设置后自动刷新模型列表
-      fetchOllamaModels(data.ollama_model || "qwen2.5:7b");
-      fetchDockeraiModels(data.dockerai_model || "docker.io/ai/qwen2.5:7B-Q4_0");
-      fetchFoundryLocalModels(data.foundrylocal_model || "");
-      refreshRemoteModelChoices(true);
-      // koboldcpp: 获取当前模型名称
-      fetchKoboldcppInfo();
-    }
-  );
+  void loadSavedSettings().catch((error) => {
+    console.error("Failed to load saved settings:", error);
+    showSaveStatus(false, error?.message || t("commonUnknownError"));
+  });
 
   // Ollama 刷新按钮
   ollamaRefreshBtn.addEventListener("click", () => {
@@ -303,13 +242,15 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchKoboldcppInfo();
   });
 
-  saveBtn.addEventListener("click", () => {
-    saveSettings();
+  saveBtn.addEventListener("click", async () => {
+    await saveSettings();
   });
 
-  function saveSettings(callback) {
-    chrome.storage.sync.set(
-      {
+  async function saveSettings(callback) {
+    saveBtn.disabled = true;
+
+    try {
+      const payload = {
         deepseek_api_key: deepseekKey.value.trim(),
         deepseek_model: deepseekModel.value.trim(),
         openai_api_key: openaiKey.value.trim(),
@@ -335,18 +276,166 @@ document.addEventListener("DOMContentLoaded", () => {
         githubcopilot_api_key: githubcopilotKey.value.trim(),
         githubcopilot_model: githubcopilotModel.value.trim(),
         summary_style: summaryStyleSelect.value || "standard",
-      },
-      () => {
-        status.classList.remove("hidden");
-        status.classList.remove("is-celebrating");
-        void status.offsetWidth;
-        status.classList.add("is-celebrating");
-        setTimeout(() => status.classList.add("hidden"), 3000);
-        setTimeout(() => status.classList.remove("is-celebrating"), 500);
-        refreshProviderIndicators();
-        callback?.();
-      }
+      };
+
+      await persistSettings(payload);
+      showSaveStatus(true);
+      refreshProviderIndicators();
+      callback?.();
+    } catch (error) {
+      console.error("Failed to save settings:", error);
+      showSaveStatus(false, error?.message || t("commonUnknownError"));
+    } finally {
+      saveBtn.disabled = false;
+    }
+  }
+
+  async function loadSavedSettings() {
+    const data = await readSettings(
+      [
+        "deepseek_api_key", "deepseek_model",
+        "openai_api_key", "openai_model",
+        "gemini_api_key", "gemini_model",
+        "anthropic_api_key", "anthropic_model",
+        "aitdee_api_key", "aitdee_url", "aitdee_model",
+        "doubao_api_key", "doubao_model",
+        "ollama_url", "ollama_model",
+        "dockerai_url", "dockerai_model",
+        "foundrylocal_url", "foundrylocal_model",
+        "koboldcpp_url",
+        "giteeai_api_key", "giteeai_model",
+        "githubcopilot_api_key", "githubcopilot_model",
+        "summary_style",
+      ]
     );
+
+    const savedOpenAIModel = data.openai_model || "gpt-4.1-mini";
+    const savedGeminiModel = data.gemini_model || "gemini-2.0-flash";
+    const savedAnthropicModel = data.anthropic_model || "claude-3-5-sonnet-latest";
+    const savedAiTdEeModel = data.aitdee_model || "gpt-4.1-mini";
+    const savedAiTdEeUrl = data.aitdee_url || "https://ai.td.ee";
+    const savedDoubaoModel = data.doubao_model || "doubao-pro-256k";
+    const savedGiteeAIModel = data.giteeai_model || "Qwen3-8B";
+    const savedGitHubCopilotModel = data.githubcopilot_model || "openai/gpt-4.1-mini";
+
+    deepseekKey.value = data.deepseek_api_key || "";
+    deepseekModel.value = data.deepseek_model || "deepseek-chat";
+    openaiKey.value = data.openai_api_key || "";
+    geminiKey.value = data.gemini_api_key || "";
+    anthropicKey.value = data.anthropic_api_key || "";
+    aitdeeKey.value = data.aitdee_api_key || "";
+    applyAiTdEeUrlSelection(savedAiTdEeUrl);
+    doubaoKey.value = data.doubao_api_key || "";
+    ollamaUrl.value = data.ollama_url || "http://localhost:11434";
+    ollamaModel.value = data.ollama_model || "qwen2.5:7b";
+    dockeraiUrl.value = data.dockerai_url || "http://localhost:12434";
+    dockeraiModel.value = data.dockerai_model || "docker.io/ai/qwen2.5:7B-Q4_0";
+    foundrylocalUrl.value = data.foundrylocal_url || "http://127.0.0.1:55928/";
+    foundrylocalModel.value = data.foundrylocal_model || "";
+    koboldcppUrl.value = data.koboldcpp_url || "http://localhost:5001";
+    giteeaiKey.value = data.giteeai_api_key || "";
+    githubcopilotKey.value = data.githubcopilot_api_key || "";
+    summaryStyleSelect.value = data.summary_style || "standard";
+    renderSummaryStyleSelection();
+
+    setModelSelectOptions(deepseekModel, REMOTE_MODEL_PRESETS.deepseek, deepseekModel.value);
+    setModelSelectOptions(openaiModel, REMOTE_MODEL_PRESETS.openai, savedOpenAIModel);
+    setModelSelectOptions(geminiModel, REMOTE_MODEL_PRESETS.gemini, savedGeminiModel);
+    setModelSelectOptions(anthropicModel, REMOTE_MODEL_PRESETS.anthropic, savedAnthropicModel);
+    setModelSelectOptions(aitdeeModel, REMOTE_MODEL_PRESETS.aitdee, savedAiTdEeModel);
+    setModelSelectOptions(giteeaiModel, REMOTE_MODEL_PRESETS.giteeai, savedGiteeAIModel);
+    setModelSelectOptions(githubcopilotModel, REMOTE_MODEL_PRESETS.githubcopilot, savedGitHubCopilotModel);
+    setModelSelectOptions(doubaoModel, REMOTE_MODEL_PRESETS.doubao, savedDoubaoModel);
+
+    refreshProviderIndicators();
+
+    fetchOllamaModels(data.ollama_model || "qwen2.5:7b");
+    fetchDockeraiModels(data.dockerai_model || "docker.io/ai/qwen2.5:7B-Q4_0");
+    fetchFoundryLocalModels(data.foundrylocal_model || "");
+    refreshRemoteModelChoices(true);
+    fetchKoboldcppInfo();
+  }
+
+  function showSaveStatus(success, message = "") {
+    status.classList.remove("hidden");
+    status.classList.remove("is-celebrating");
+
+    if (success) {
+      status.textContent = t("optionsStatusSaved");
+      void status.offsetWidth;
+      status.classList.add("is-celebrating");
+      setTimeout(() => status.classList.add("hidden"), 3000);
+      setTimeout(() => status.classList.remove("is-celebrating"), 500);
+      return;
+    }
+
+    status.textContent = message;
+    setTimeout(() => status.classList.add("hidden"), 5000);
+  }
+
+  async function persistSettings(values) {
+    const payload = {
+      ...values,
+      [SETTINGS_UPDATED_AT_KEY]: Date.now(),
+    };
+    const [localResult, syncResult] = await Promise.all([
+      setStorageArea(chrome.storage.local, payload),
+      setStorageArea(chrome.storage.sync, payload),
+    ]);
+
+    if (!localResult.ok && !syncResult.ok) {
+      throw new Error(localResult.error || syncResult.error || t("commonUnknownError"));
+    }
+
+    if (!syncResult.ok) {
+      console.warn("Failed to sync settings, fell back to local storage:", syncResult.error);
+    }
+  }
+
+  async function readSettings(keys) {
+    const requestKeys = Array.from(new Set([...keys, SETTINGS_UPDATED_AT_KEY]));
+    const [syncResult, localResult] = await Promise.all([
+      getStorageArea(chrome.storage.sync, requestKeys),
+      getStorageArea(chrome.storage.local, requestKeys),
+    ]);
+
+    const syncData = syncResult.data || {};
+    const localData = localResult.data || {};
+    const syncTimestamp = Number(syncData[SETTINGS_UPDATED_AT_KEY] || 0);
+    const localTimestamp = Number(localData[SETTINGS_UPDATED_AT_KEY] || 0);
+    const preferred = localTimestamp > syncTimestamp ? localData : syncData;
+    const fallback = localTimestamp > syncTimestamp ? syncData : localData;
+
+    return keys.reduce((result, key) => {
+      if (preferred[key] !== undefined) {
+        result[key] = preferred[key];
+      } else if (fallback[key] !== undefined) {
+        result[key] = fallback[key];
+      }
+      return result;
+    }, {});
+  }
+
+  function getStorageArea(area, keys) {
+    return new Promise((resolve) => {
+      area.get(keys, (data) => {
+        resolve({
+          data: data || {},
+          error: chrome.runtime.lastError?.message || "",
+        });
+      });
+    });
+  }
+
+  function setStorageArea(area, values) {
+    return new Promise((resolve) => {
+      area.set(values, () => {
+        resolve({
+          ok: !chrome.runtime.lastError,
+          error: chrome.runtime.lastError?.message || "",
+        });
+      });
+    });
   }
 
   function initializeSummaryStyleCards() {
@@ -1389,26 +1478,6 @@ document.addEventListener("DOMContentLoaded", () => {
       };
     }
 
-  function getAiTdEeBaseUrl() {
-    const selected = aitdeeUrlSelect?.value;
-    if (selected && selected !== "__custom__") {
-      return selected;
-    }
-    return aitdeeUrl?.value.trim() || "https://ai.td.ee";
-  }
-
-  function applyAiTdEeUrlSelection(value) {
-    const normalized = normalizeBaseUrl(value, "https://ai.td.ee");
-    const presetValues = ["https://ai.td.ee", "https://shop.pincc.ai"];
-    if (presetValues.includes(normalized)) {
-      aitdeeUrlSelect.value = normalized;
-      aitdeeUrl.value = normalized;
-    } else {
-      aitdeeUrlSelect.value = "__custom__";
-      aitdeeUrl.value = normalized;
-    }
-  }
-
     if (provider === "giteeai") {
       return {
         apiKey: giteeaiKey.value.trim(),
@@ -1462,6 +1531,26 @@ document.addEventListener("DOMContentLoaded", () => {
         temperature: 0,
       },
     };
+  }
+
+  function getAiTdEeBaseUrl() {
+    const selected = aitdeeUrlSelect?.value;
+    if (selected && selected !== "__custom__") {
+      return selected;
+    }
+    return aitdeeUrl?.value.trim() || "https://ai.td.ee";
+  }
+
+  function applyAiTdEeUrlSelection(value) {
+    const normalized = normalizeBaseUrl(value, "https://ai.td.ee");
+    const presetValues = ["https://ai.td.ee", "https://shop.pincc.ai"];
+    if (presetValues.includes(normalized)) {
+      aitdeeUrlSelect.value = normalized;
+      aitdeeUrl.value = normalized;
+    } else {
+      aitdeeUrlSelect.value = "__custom__";
+      aitdeeUrl.value = normalized;
+    }
   }
 
   /**
@@ -1694,4 +1783,10 @@ document.addEventListener("DOMContentLoaded", () => {
     foundrylocalStatusEl.textContent = text;
     foundrylocalStatusEl.className = "ollama-status " + type;
   }
-});
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initOptionsPage, { once: true });
+} else {
+  initOptionsPage();
+}

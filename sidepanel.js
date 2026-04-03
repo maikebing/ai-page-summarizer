@@ -1,4 +1,6 @@
-document.addEventListener("DOMContentLoaded", () => {
+const SETTINGS_UPDATED_AT_KEY = "app_settings_updated_at";
+
+function initSidepanelPage() {
   const { t } = window.AppI18n;
   const loadingEl = document.getElementById("loading");
   const resultEl = document.getElementById("result");
@@ -46,26 +48,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   restoreSidepanelUiState();
 
-  // 加载上次选择的 provider
-  chrome.storage.sync.get(["provider", "summary_style"], (data) => {
-    if (data.provider) {
-      providerSelect.value = data.provider;
-    }
+  loadSidepanelSettings(providerSelect, summaryStyleQuickSelect, updateHeaderStatus);
 
-    if (summaryStyleQuickSelect) {
-      summaryStyleQuickSelect.value = data.summary_style || "standard";
-    }
-
+  providerSelect.addEventListener("change", async () => {
+    await persistSettings({ provider: providerSelect.value });
     updateHeaderStatus();
   });
 
-  providerSelect.addEventListener("change", () => {
-    chrome.storage.sync.set({ provider: providerSelect.value });
-    updateHeaderStatus();
-  });
-
-  summaryStyleQuickSelect?.addEventListener("change", () => {
-    chrome.storage.sync.set({ summary_style: summaryStyleQuickSelect.value || "standard" });
+  summaryStyleQuickSelect?.addEventListener("change", async () => {
+    await persistSettings({ summary_style: summaryStyleQuickSelect.value || "standard" });
     updateHeaderStatus();
   });
 
@@ -145,11 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return { name: t("commonUnavailable"), available: false };
     }
 
-    const data = await new Promise((resolve) => {
-      chrome.storage.sync.get([storageKey], (result) => {
-        resolve(result || {});
-      });
-    });
+    const data = await readSettings([storageKey]);
     const name = String(data?.[storageKey] || "").trim();
     return {
       name: name || t("commonUnavailable"),
@@ -385,7 +372,13 @@ document.addEventListener("DOMContentLoaded", () => {
       doSummarize();
     }
   });
-});
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initSidepanelPage, { once: true });
+} else {
+  initSidepanelPage();
+}
 
 /**
  * 简易 Markdown → HTML 渲染器
@@ -570,11 +563,7 @@ async function callChatAI(provider, messages) {
 }
 
 function getSummaryStyle() {
-  return new Promise((resolve) => {
-    chrome.storage.sync.get(["summary_style"], (data) => {
-      resolve(data.summary_style || "standard");
-    });
-  });
+  return readSettings(["summary_style"]).then((data) => data.summary_style || "standard");
 }
 
 function getSummaryStyleInstruction(style) {
@@ -931,79 +920,149 @@ function getProviderLabel(provider) {
 }
 
 function getAPIConfig(provider) {
-  return new Promise((resolve) => {
-    if (provider === "ollama") {
-      chrome.storage.sync.get(["ollama_url", "ollama_model"], (data) => {
-        resolve({
-          url: data.ollama_url || "http://localhost:11434",
-          model: data.ollama_model || "qwen2.5:7b",
-        });
-      });
-    } else if (provider === "dockerai") {
-      chrome.storage.sync.get(["dockerai_url", "dockerai_model"], (data) => {
-        resolve({
-          url: data.dockerai_url || "http://localhost:8080",
-          model: data.dockerai_model || "qwen2.5-7b",
-        });
-      });
-    } else if (provider === "foundrylocal") {
-      chrome.storage.sync.get(["foundrylocal_url", "foundrylocal_model"], (data) => {
-        resolve({
-          url: data.foundrylocal_url || "http://127.0.0.1:55928/",
-          model: data.foundrylocal_model || "",
-        });
-      });
-    } else if (provider === "openai") {
-      chrome.storage.sync.get(["openai_api_key", "openai_model"], (data) => {
-        resolve({
-          apiKey: data.openai_api_key || "",
-          model: data.openai_model || "gpt-4.1-mini",
-        });
-      });
-    } else if (provider === "gemini") {
-      chrome.storage.sync.get(["gemini_api_key", "gemini_model"], (data) => {
-        resolve({
-          apiKey: data.gemini_api_key || "",
-          model: data.gemini_model || "gemini-2.0-flash",
-        });
-      });
-    } else if (provider === "anthropic") {
-      chrome.storage.sync.get(["anthropic_api_key", "anthropic_model"], (data) => {
-        resolve({
-          apiKey: data.anthropic_api_key || "",
-          model: data.anthropic_model || "claude-3-5-sonnet-latest",
-        });
-      });
-    } else if (provider === "aitdee") {
-      chrome.storage.sync.get(["aitdee_api_key", "aitdee_url", "aitdee_model"], (data) => {
-        resolve({
-          apiKey: data.aitdee_api_key || "",
-          url: data.aitdee_url || "https://ai.td.ee",
-          model: data.aitdee_model || "gpt-4.1-mini",
-        });
-      });
-    } else if (provider === "giteeai") {
-      chrome.storage.sync.get(["giteeai_api_key", "giteeai_model"], (data) => {
-        resolve({
-          apiKey: data["giteeai_api_key"] || "",
-          model: data["giteeai_model"] || "Qwen3-8B",
-        });
-      });
-    } else if (provider === "githubcopilot") {
-      chrome.storage.sync.get(["githubcopilot_api_key", "githubcopilot_model"], (data) => {
-        resolve({
-          apiKey: data.githubcopilot_api_key || "",
-          model: data.githubcopilot_model || "openai/gpt-4.1-mini",
-        });
-      });
-    } else {
-      chrome.storage.sync.get([`${provider}_api_key`, `${provider}_model`], (data) => {
-        resolve({
-          apiKey: data[`${provider}_api_key`] || "",
-          model: data[`${provider}_model`] || "",
-        });
-      });
+  if (provider === "ollama") {
+    return readSettings(["ollama_url", "ollama_model"]).then((data) => ({
+      url: data.ollama_url || "http://localhost:11434",
+      model: data.ollama_model || "qwen2.5:7b",
+    }));
+  }
+
+  if (provider === "dockerai") {
+    return readSettings(["dockerai_url", "dockerai_model"]).then((data) => ({
+      url: data.dockerai_url || "http://localhost:8080",
+      model: data.dockerai_model || "qwen2.5-7b",
+    }));
+  }
+
+  if (provider === "foundrylocal") {
+    return readSettings(["foundrylocal_url", "foundrylocal_model"]).then((data) => ({
+      url: data.foundrylocal_url || "http://127.0.0.1:55928/",
+      model: data.foundrylocal_model || "",
+    }));
+  }
+
+  if (provider === "openai") {
+    return readSettings(["openai_api_key", "openai_model"]).then((data) => ({
+      apiKey: data.openai_api_key || "",
+      model: data.openai_model || "gpt-4.1-mini",
+    }));
+  }
+
+  if (provider === "gemini") {
+    return readSettings(["gemini_api_key", "gemini_model"]).then((data) => ({
+      apiKey: data.gemini_api_key || "",
+      model: data.gemini_model || "gemini-2.0-flash",
+    }));
+  }
+
+  if (provider === "anthropic") {
+    return readSettings(["anthropic_api_key", "anthropic_model"]).then((data) => ({
+      apiKey: data.anthropic_api_key || "",
+      model: data.anthropic_model || "claude-3-5-sonnet-latest",
+    }));
+  }
+
+  if (provider === "aitdee") {
+    return readSettings(["aitdee_api_key", "aitdee_url", "aitdee_model"]).then((data) => ({
+      apiKey: data.aitdee_api_key || "",
+      url: data.aitdee_url || "https://ai.td.ee",
+      model: data.aitdee_model || "gpt-4.1-mini",
+    }));
+  }
+
+  if (provider === "giteeai") {
+    return readSettings(["giteeai_api_key", "giteeai_model"]).then((data) => ({
+      apiKey: data.giteeai_api_key || "",
+      model: data.giteeai_model || "Qwen3-8B",
+    }));
+  }
+
+  if (provider === "githubcopilot") {
+    return readSettings(["githubcopilot_api_key", "githubcopilot_model"]).then((data) => ({
+      apiKey: data.githubcopilot_api_key || "",
+      model: data.githubcopilot_model || "openai/gpt-4.1-mini",
+    }));
+  }
+
+  return readSettings([`${provider}_api_key`, `${provider}_model`]).then((data) => ({
+    apiKey: data[`${provider}_api_key`] || "",
+    model: data[`${provider}_model`] || "",
+  }));
+}
+
+async function loadSidepanelSettings(providerSelect, summaryStyleQuickSelect, updateHeaderStatus) {
+  const data = await readSettings(["provider", "summary_style"]);
+  if (data.provider) {
+    providerSelect.value = data.provider;
+  }
+
+  if (summaryStyleQuickSelect) {
+    summaryStyleQuickSelect.value = data.summary_style || "standard";
+  }
+
+  updateHeaderStatus();
+}
+
+async function persistSettings(values) {
+  const payload = {
+    ...values,
+    [SETTINGS_UPDATED_AT_KEY]: Date.now(),
+  };
+  const [localResult, syncResult] = await Promise.all([
+    setStorageArea(chrome.storage.local, payload),
+    setStorageArea(chrome.storage.sync, payload),
+  ]);
+
+  if (!localResult.ok && !syncResult.ok) {
+    console.warn("Failed to persist sidepanel settings:", localResult.error || syncResult.error);
+  } else if (!syncResult.ok) {
+    console.warn("Failed to sync sidepanel settings, fell back to local storage:", syncResult.error);
+  }
+}
+
+async function readSettings(keys) {
+  const requestKeys = Array.from(new Set([...keys, SETTINGS_UPDATED_AT_KEY]));
+  const [syncResult, localResult] = await Promise.all([
+    getStorageArea(chrome.storage.sync, requestKeys),
+    getStorageArea(chrome.storage.local, requestKeys),
+  ]);
+
+  const syncData = syncResult.data || {};
+  const localData = localResult.data || {};
+  const syncTimestamp = Number(syncData[SETTINGS_UPDATED_AT_KEY] || 0);
+  const localTimestamp = Number(localData[SETTINGS_UPDATED_AT_KEY] || 0);
+  const preferred = localTimestamp > syncTimestamp ? localData : syncData;
+  const fallback = localTimestamp > syncTimestamp ? syncData : localData;
+
+  return keys.reduce((result, key) => {
+    if (preferred[key] !== undefined) {
+      result[key] = preferred[key];
+    } else if (fallback[key] !== undefined) {
+      result[key] = fallback[key];
     }
+    return result;
+  }, {});
+}
+
+function getStorageArea(area, keys) {
+  return new Promise((resolve) => {
+    area.get(keys, (data) => {
+      resolve({
+        data: data || {},
+        error: chrome.runtime.lastError?.message || "",
+      });
+    });
+  });
+}
+
+function setStorageArea(area, values) {
+  return new Promise((resolve) => {
+    area.set(values, () => {
+      resolve({
+        ok: !chrome.runtime.lastError,
+        error: chrome.runtime.lastError?.message || "",
+      });
+    });
   });
 }
 

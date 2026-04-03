@@ -1,5 +1,6 @@
-document.addEventListener("DOMContentLoaded", () => {
+function initPopupPage() {
   const { t } = window.AppI18n;
+  const SETTINGS_UPDATED_AT_KEY = "app_settings_updated_at";
   const errorEl = document.getElementById("error");
   const errorMessage = document.getElementById("error-message");
   const providerSelect = document.getElementById("provider");
@@ -7,15 +8,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const edgeDiscoverBtn = document.getElementById("edge-discover-btn");
   const actionStatusEl = document.getElementById("action-status");
 
-  // 加载上次选择的 provider
-  chrome.storage.sync.get(["provider"], (data) => {
-    if (data.provider) {
-      providerSelect.value = data.provider;
-    }
-  });
+  loadPopupSettings();
 
-  providerSelect.addEventListener("change", () => {
-    chrome.storage.sync.set({ provider: providerSelect.value });
+  providerSelect.addEventListener("change", async () => {
+    await persistSettings({ provider: providerSelect.value });
   });
 
   openOptions.addEventListener("click", (e) => {
@@ -81,7 +77,83 @@ document.addEventListener("DOMContentLoaded", () => {
       edgeDiscoverBtn.disabled = false;
     }
   });
-});
+
+  async function loadPopupSettings() {
+    const data = await readSettings(["provider"]);
+    if (data.provider) {
+      providerSelect.value = data.provider;
+    }
+  }
+
+  async function persistSettings(values) {
+    const payload = {
+      ...values,
+      [SETTINGS_UPDATED_AT_KEY]: Date.now(),
+    };
+    const [localResult, syncResult] = await Promise.all([
+      setStorageArea(chrome.storage.local, payload),
+      setStorageArea(chrome.storage.sync, payload),
+    ]);
+
+    if (!localResult.ok && !syncResult.ok) {
+      console.warn("Failed to persist popup settings:", localResult.error || syncResult.error);
+    } else if (!syncResult.ok) {
+      console.warn("Failed to sync popup settings, fell back to local storage:", syncResult.error);
+    }
+  }
+
+  async function readSettings(keys) {
+    const requestKeys = Array.from(new Set([...keys, SETTINGS_UPDATED_AT_KEY]));
+    const [syncResult, localResult] = await Promise.all([
+      getStorageArea(chrome.storage.sync, requestKeys),
+      getStorageArea(chrome.storage.local, requestKeys),
+    ]);
+
+    const syncData = syncResult.data || {};
+    const localData = localResult.data || {};
+    const syncTimestamp = Number(syncData[SETTINGS_UPDATED_AT_KEY] || 0);
+    const localTimestamp = Number(localData[SETTINGS_UPDATED_AT_KEY] || 0);
+    const preferred = localTimestamp > syncTimestamp ? localData : syncData;
+    const fallback = localTimestamp > syncTimestamp ? syncData : localData;
+
+    return keys.reduce((result, key) => {
+      if (preferred[key] !== undefined) {
+        result[key] = preferred[key];
+      } else if (fallback[key] !== undefined) {
+        result[key] = fallback[key];
+      }
+      return result;
+    }, {});
+  }
+
+  function getStorageArea(area, keys) {
+    return new Promise((resolve) => {
+      area.get(keys, (data) => {
+        resolve({
+          data: data || {},
+          error: chrome.runtime.lastError?.message || "",
+        });
+      });
+    });
+  }
+
+  function setStorageArea(area, values) {
+    return new Promise((resolve) => {
+      area.set(values, () => {
+        resolve({
+          ok: !chrome.runtime.lastError,
+          error: chrome.runtime.lastError?.message || "",
+        });
+      });
+    });
+  }
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initPopupPage, { once: true });
+} else {
+  initPopupPage();
+}
 
 function hideActionStatus(statusEl) {
   statusEl.textContent = "";
