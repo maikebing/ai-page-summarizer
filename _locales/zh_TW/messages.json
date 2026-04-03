@@ -191,6 +191,9 @@
   "sidepanelApiRequestFailed": {
     "message": "API 請求失敗（$1）：$2"
   },
+  "githubModelsNoAccessModel": {
+    "message": "目前的 GitHub Models 權杖無法存取模型 $1。請改用 $2，或先在 GitHub Models 中確認該帳號已開通此模型權限。"
+  },
   "sidepanelBackgroundDisconnected": {
     "message": "背景連線已中斷，請再試一次。"
   },
@@ -400,6 +403,12 @@
   },
   "optionsAboutHelpItem2": {
     "message": "若連線失敗，可先使用網路診斷檢查本地與線上 provider 的可達性。"
+  },
+  "optionsAboutCommunityTitle": {
+    "message": "微信群交流"
+  },
+  "optionsAboutCommunityHint": {
+    "message": "如遇到使用問題，歡迎掃碼加入微信群，隨時溝通回饋。"
   },
   "optionsAboutLinksTitle": {
     "message": "倉庫連結"

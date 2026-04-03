@@ -191,6 +191,9 @@
   "sidepanelApiRequestFailed": {
     "message": "API 요청 실패($1): $2"
   },
+  "githubModelsNoAccessModel": {
+    "message": "현재 GitHub Models 토큰에는 모델 $1 접근 권한이 없습니다. $2로 바꾸거나, 먼저 GitHub Models에서 해당 계정에 그 모델 권한이 있는지 확인하세요."
+  },
   "sidepanelBackgroundDisconnected": {
     "message": "백그라운드 연결이 끊어졌습니다. 다시 시도하세요."
   },
@@ -400,6 +403,12 @@
   },
   "optionsAboutHelpItem2": {
     "message": "연결이 실패하면 먼저 네트워크 진단으로 로컬 및 온라인 provider 도달 가능 여부를 확인하세요."
+  },
+  "optionsAboutCommunityTitle": {
+    "message": "WeChat 그룹"
+  },
+  "optionsAboutCommunityHint": {
+    "message": "사용 중 문제가 있으면 QR 코드를 스캔해 WeChat 그룹에 참여하고 바로 소통해 주세요."
   },
   "optionsAboutLinksTitle": {
     "message": "저장소 링크"

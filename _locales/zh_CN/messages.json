@@ -206,6 +206,9 @@
   "sidepanelApiRequestFailed": {
     "message": "API 请求失败（$1）：$2"
   },
+  "githubModelsNoAccessModel": {
+    "message": "当前 GitHub Models 令牌无权访问模型 $1。请改用 $2，或先在 GitHub Models 中确认该账号已开通对应模型权限。"
+  },
   "sidepanelBackgroundDisconnected": {
     "message": "后台连接已断开，请重试"
   },
@@ -419,6 +422,12 @@
   "optionsAboutHelpItem2": {
     "message": "如遇到连接问题，可先使用“网络诊断”检查本地和在线 provider 可达性。"
   },
+  "optionsAboutCommunityTitle": {
+    "message": "微信群沟通"
+  },
+  "optionsAboutCommunityHint": {
+    "message": "如遇到使用问题，欢迎扫码加入微信群，随时沟通反馈。"
+  },
   "optionsAboutLinksTitle": {
     "message": "仓库地址"
   },
@@ -615,7 +624,7 @@
     "message": "openai/gpt-4.1-mini"
   },
   "optionsHintGitHubCopilotModel": {
-    "message": "从下拉框选择 GitHub Models 的模型 ID，例如 openai/gpt-4.1-mini"
+    "message": "刷新后会从 GitHub Models 目录读取模型 ID。部分模型仍取决于你的账号权限，推荐优先使用 openai/gpt-4.1-mini。"
   },
   "optionsHintDoubaoHtml": {
     "message": "在 <a href=\"https://console.volcengine.com/ark\" target=\"_blank\">火山引擎 Ark 控制台</a> 获取"

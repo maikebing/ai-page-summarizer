@@ -191,6 +191,9 @@
   "sidepanelApiRequestFailed": {
     "message": "Ошибка API-запроса ($1): $2"
   },
+  "githubModelsNoAccessModel": {
+    "message": "Текущий токен GitHub Models не имеет доступа к модели $1. Переключитесь на $2 или сначала проверьте в GitHub Models, что у этой учетной записи есть доступ к нужной модели."
+  },
   "sidepanelBackgroundDisconnected": {
     "message": "Подключение к фоновому процессу было прервано. Попробуйте снова."
   },
@@ -400,6 +403,12 @@
   },
   "optionsAboutHelpItem2": {
     "message": "Если соединение не работает, сначала используйте сетевую диагностику, чтобы проверить доступность локальных и онлайн provider."
+  },
+  "optionsAboutCommunityTitle": {
+    "message": "Группа WeChat"
+  },
+  "optionsAboutCommunityHint": {
+    "message": "Если возникли вопросы, отсканируйте QR-код, чтобы присоединиться к группе WeChat и связаться с нами напрямую."
   },
   "optionsAboutLinksTitle": {
     "message": "Ссылки на репозиторий"

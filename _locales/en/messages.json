@@ -206,6 +206,9 @@
   "sidepanelApiRequestFailed": {
     "message": "API request failed ($1): $2"
   },
+  "githubModelsNoAccessModel": {
+    "message": "Your GitHub Models token does not have access to model $1. Switch to $2, or verify that your GitHub Models account has access to that model first."
+  },
   "sidepanelBackgroundDisconnected": {
     "message": "The background connection was disconnected. Please try again."
   },
@@ -419,6 +422,12 @@
   "optionsAboutHelpItem2": {
     "message": "If a connection fails, use Network diagnostics first to check local and hosted provider reachability."
   },
+  "optionsAboutCommunityTitle": {
+    "message": "Community group"
+  },
+  "optionsAboutCommunityHint": {
+    "message": "If you run into issues, scan the QR code to join the WeChat group and talk with us directly."
+  },
   "optionsAboutLinksTitle": {
     "message": "Repository links"
   },
@@ -615,7 +624,7 @@
     "message": "openai/gpt-4.1-mini"
   },
   "optionsHintGitHubCopilotModel": {
-    "message": "Choose a GitHub Models model ID from the dropdown, such as openai/gpt-4.1-mini."
+    "message": "Refresh loads model IDs from the GitHub Models catalog. Some models still depend on your account access, so openai/gpt-4.1-mini is the safest starting point."
   },
   "optionsHintDoubaoHtml": {
     "message": "Get it from the <a href=\"https://console.volcengine.com/ark\" target=\"_blank\">Volcengine Ark Console</a>."

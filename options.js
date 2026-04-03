@@ -115,6 +115,16 @@ function initOptionsPage() {
     giteeai: giteeaiStatusEl,
     githubcopilot: githubcopilotStatusEl,
   };
+  const GITHUBCOPILOT_RECOMMENDED_MODELS = [
+    "openai/gpt-4.1-mini",
+    "openai/gpt-4.1",
+    "openai/gpt-4o-mini",
+    "microsoft/phi-4-mini-instruct",
+    "deepseek/deepseek-r1",
+  ];
+  const GITHUBCOPILOT_FALLBACK_MODELS = mergeModelLists(GITHUBCOPILOT_RECOMMENDED_MODELS, [
+    "microsoft/phi-4",
+  ]);
   const providerTestBtns = {
     deepseek: deepseekTestBtn,
     openai: openaiTestBtn,
@@ -136,7 +146,7 @@ function initOptionsPage() {
     aitdee: ["gpt-4.1-mini", "gpt-4o-mini", "gemini-2.0-flash", "deepseek-chat", "claude-3-5-sonnet-latest"],
     deepseek: ["deepseek-chat", "deepseek-reasoner"],
     giteeai: ["Qwen3-8B", "Qwen2.5-72B-Instruct", "DeepSeek-R1-Distill-Qwen-7B", "glm-4-9b-chat"],
-    githubcopilot: ["openai/gpt-4.1-mini", "openai/gpt-4.1", "openai/gpt-4o", "openai/gpt-5-mini", "deepseek/deepseek-r1"],
+    githubcopilot: GITHUBCOPILOT_RECOMMENDED_MODELS,
     doubao: ["doubao-pro-256k", "doubao-1-5-pro-32k", "doubao-1-5-lite-32k", "doubao-seed-1-6-thinking"],
   };
   const MODEL_LIST_CONFIG = {
@@ -174,7 +184,7 @@ function initOptionsPage() {
       input: githubcopilotModel,
       button: githubcopilotRefreshModelsBtn,
       getApiKey: () => githubcopilotKey.value.trim(),
-      fetcher: null,
+      fetcher: (apiKey, options = {}) => fetchGitHubCopilotModelList(apiKey, options.currentModel, !options.silent),
     },
     doubao: {
       input: doubaoModel,
@@ -752,9 +762,16 @@ function initOptionsPage() {
 
     try {
       let models = [...presetModels];
+      let preferredModel = "";
       if (typeof config.fetcher === "function" && config.getApiKey()) {
-        const remoteModels = await config.fetcher(config.getApiKey());
-        models = mergeModelLists(remoteModels, presetModels);
+        const fetchResult = normalizeModelFetchResult(
+          await config.fetcher(config.getApiKey(), {
+            currentModel: config.input.value,
+            silent,
+          })
+        );
+        models = mergeModelLists(fetchResult.models, presetModels);
+        preferredModel = fetchResult.preferredModel;
         setProviderStatus(provider, "success", t("optionsLoadedRemoteModels", models.length));
       } else if (!silent) {
         if (presetModels.length) {
@@ -764,10 +781,16 @@ function initOptionsPage() {
         }
       }
 
-      setModelSelectOptions(config.input, models, config.input.value);
+      const previousValue = String(config.input.value || "").trim();
+      const selectedValue = !silent && preferredModel ? preferredModel : previousValue;
+      setModelSelectOptions(config.input, models, selectedValue);
 
       if (!config.input.value.trim() && models.length) {
         config.input.value = models[0];
+      }
+
+      if (String(config.input.value || "").trim() !== previousValue) {
+        refreshProviderIndicators();
       }
     } catch (error) {
       setModelSelectOptions(config.input, presetModels, config.input.value);
@@ -794,6 +817,20 @@ function initOptionsPage() {
       seen.add(value);
       return true;
     });
+  }
+
+  function normalizeModelFetchResult(result) {
+    if (Array.isArray(result)) {
+      return {
+        models: result,
+        preferredModel: "",
+      };
+    }
+
+    return {
+      models: Array.isArray(result?.models) ? result.models : [],
+      preferredModel: String(result?.preferredModel || "").trim(),
+    };
   }
 
   async function fetchOpenAIModelList(apiKey) {
@@ -862,6 +899,141 @@ function initOptionsPage() {
     return (response.data?.data || response.data?.models || [])
       .map((item) => item?.id || item?.name)
       .filter(Boolean);
+  }
+
+  async function fetchGitHubCopilotModelList(apiKey, currentModel, probeAccess = false) {
+    const response = await backgroundFetchJson("https://models.github.ai/catalog/models", {
+      headers: {
+        Accept: "application/json",
+        ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(response.error || `HTTP ${response.status}`);
+    }
+
+    const rawModels = Array.isArray(response.data)
+      ? response.data
+      : (response.data?.data || response.data?.models || []);
+    const models = sortGitHubCopilotCatalogModels(rawModels);
+
+    if (!probeAccess || !apiKey) {
+      return { models };
+    }
+
+    const preferredModel = await resolveGitHubCopilotPreferredModel(apiKey, currentModel, models);
+    return {
+      models,
+      preferredModel: preferredModel && preferredModel !== String(currentModel || "").trim() ? preferredModel : "",
+    };
+  }
+
+  function sortGitHubCopilotCatalogModels(items) {
+    const tierOrder = {
+      low: 0,
+      high: 1,
+      custom: 2,
+    };
+    const priorityOrder = new Map(GITHUBCOPILOT_FALLBACK_MODELS.map((model, index) => [model, index]));
+
+    return (Array.isArray(items) ? items : [])
+      .filter((item) => {
+        const id = String(item?.id || item?.name || "").trim();
+        const outputs = Array.isArray(item?.supported_output_modalities) ? item.supported_output_modalities : [];
+        return Boolean(id) && outputs.includes("text");
+      })
+      .sort((left, right) => {
+        const leftId = String(left?.id || left?.name || "").trim();
+        const rightId = String(right?.id || right?.name || "").trim();
+        const leftPriority = priorityOrder.has(leftId) ? priorityOrder.get(leftId) : Number.MAX_SAFE_INTEGER;
+        const rightPriority = priorityOrder.has(rightId) ? priorityOrder.get(rightId) : Number.MAX_SAFE_INTEGER;
+
+        if (leftPriority !== rightPriority) {
+          return leftPriority - rightPriority;
+        }
+
+        const leftTier = tierOrder[String(left?.rate_limit_tier || "").toLowerCase()] ?? 99;
+        const rightTier = tierOrder[String(right?.rate_limit_tier || "").toLowerCase()] ?? 99;
+        if (leftTier !== rightTier) {
+          return leftTier - rightTier;
+        }
+
+        return leftId.localeCompare(rightId);
+      })
+      .map((item) => item?.id || item?.name)
+      .filter(Boolean);
+  }
+
+  async function resolveGitHubCopilotPreferredModel(apiKey, currentModel, availableModels = []) {
+    const selectedModel = String(currentModel || "").trim();
+    if (selectedModel) {
+      const selectedModelResponse = await probeGitHubCopilotModelAccess(apiKey, selectedModel);
+      if (selectedModelResponse.ok) {
+        return selectedModel;
+      }
+
+      if (!isGitHubCopilotRetryableModelError(selectedModelResponse)) {
+        throw new Error(selectedModelResponse.error || `HTTP ${selectedModelResponse.status}`);
+      }
+    }
+
+    const fallbackModels = getGitHubCopilotProbeCandidates(selectedModel, availableModels);
+    for (const model of fallbackModels) {
+      const fallbackResponse = await probeGitHubCopilotModelAccess(apiKey, model);
+      if (fallbackResponse.ok) {
+        return model;
+      }
+
+      if (!isGitHubCopilotRetryableModelError(fallbackResponse)) {
+        break;
+      }
+    }
+
+    return "";
+  }
+
+  function getGitHubCopilotProbeCandidates(currentModel, availableModels = []) {
+    const extraCandidates = (Array.isArray(availableModels) ? availableModels : [])
+      .filter((model) => !GITHUBCOPILOT_FALLBACK_MODELS.includes(model))
+      .slice(0, 2);
+
+    return mergeModelLists(
+      [
+        ...GITHUBCOPILOT_FALLBACK_MODELS,
+        ...extraCandidates,
+      ].filter((model) => model !== currentModel),
+      []
+    );
+  }
+
+  async function probeGitHubCopilotModelAccess(apiKey, model) {
+    return await backgroundFetchJson("https://models.github.ai/inference/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: "user", content: "ping" }],
+        max_tokens: 1,
+        temperature: 0,
+      }),
+    });
+  }
+
+  function isGitHubCopilotRetryableModelError(response) {
+    const message = String(response?.error || response?.data?.error?.message || "").toLowerCase();
+    if (response?.status === 403 && /no access to model/.test(message)) {
+      return true;
+    }
+
+    if (response?.status === 404) {
+      return true;
+    }
+
+    return /model not found|unknown model|invalid model/i.test(message);
   }
 
   function initializeProviderIndicators() {
@@ -1193,9 +1365,11 @@ function initOptionsPage() {
         case "anthropic":
         case "aitdee":
         case "giteeai":
-        case "githubcopilot":
         case "doubao":
           result = await testRemoteProviderConnection(provider);
+          break;
+        case "githubcopilot":
+          result = await testGitHubCopilotConnection();
           break;
         case "gemini":
           result = await testGeminiConnection();
@@ -1365,6 +1539,29 @@ function initOptionsPage() {
 
     return {
       message: t("optionsTestSuccessModel", config.model),
+    };
+  }
+
+  async function testGitHubCopilotConnection() {
+    const apiKey = githubcopilotKey.value.trim();
+    const currentModel = githubcopilotModel.value.trim() || GITHUBCOPILOT_RECOMMENDED_MODELS[0];
+
+    if (!apiKey || !currentModel) {
+      throw new Error(t("optionsTestMissingConfig"));
+    }
+
+    const preferredModel = await resolveGitHubCopilotPreferredModel(apiKey, currentModel, GITHUBCOPILOT_FALLBACK_MODELS);
+    if (!preferredModel) {
+      throw new Error(t("githubModelsNoAccessModel", [currentModel, GITHUBCOPILOT_RECOMMENDED_MODELS[0]]));
+    }
+
+    if (preferredModel !== currentModel) {
+      githubcopilotModel.value = preferredModel;
+      refreshProviderIndicators();
+    }
+
+    return {
+      message: t("optionsTestSuccessModel", preferredModel),
     };
   }
 

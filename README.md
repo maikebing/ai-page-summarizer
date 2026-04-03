@@ -122,6 +122,12 @@
 4. **总结结果不理想？**
    可尝试切换模型、切换总结风格或缩小总结范围。
 
+## 💬 微信交流群
+
+如遇到使用问题，欢迎扫码加入微信群，随时沟通反馈。
+
+![微信群二维码](weixin-qr.svg)
+
 如有更多问题，欢迎提交 Issue 或 PR 反馈。
 
 ---
@@ -232,5 +238,11 @@
    Open Network diagnostics first and review the provider-specific status messages.
 4. **Summary quality is not ideal?**
    Try another model, another summary style, or a smaller content range.
+
+## 💬 Community Group
+
+If you run into issues, scan the QR code below to join the WeChat group and talk with us directly.
+
+![WeChat group QR code](weixin-qr.svg)
 
 If you have more questions, feel free to open an Issue or PR.

@@ -191,6 +191,9 @@
   "sidepanelApiRequestFailed": {
     "message": "APIリクエストに失敗しました（$1）：$2"
   },
+  "githubModelsNoAccessModel": {
+    "message": "現在の GitHub Models トークンではモデル $1 にアクセスできません。$2 に切り替えるか、先に GitHub Models 側でこのアカウントに対象モデルの権限があることを確認してください。"
+  },
   "sidepanelBackgroundDisconnected": {
     "message": "バックグラウンド接続が切断されました。再試行してください。"
   },
@@ -400,6 +403,12 @@
   },
   "optionsAboutHelpItem2": {
     "message": "接続に失敗した場合は、まずネットワーク診断でローカル provider とオンライン provider の到達性を確認してください。"
+  },
+  "optionsAboutCommunityTitle": {
+    "message": "WeChat グループ"
+  },
+  "optionsAboutCommunityHint": {
+    "message": "利用上の問題があれば、QR コードを読み取って WeChat グループに参加し、いつでも直接ご相談ください。"
   },
   "optionsAboutLinksTitle": {
     "message": "リポジトリリンク"

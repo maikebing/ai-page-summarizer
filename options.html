@@ -959,6 +959,34 @@
       gap: 10px;
     }
 
+    .about-qr-card {
+      min-height: 420px;
+      align-items: center;
+      text-align: center;
+    }
+
+    .about-qr-card h3,
+    .about-qr-card p {
+      width: 100%;
+    }
+
+    .about-qr-card p {
+      margin-bottom: 12px;
+    }
+
+    .about-qr-image {
+      width: 100%;
+      max-width: none;
+      flex: 1 1 auto;
+      min-height: 260px;
+      margin-top: 8px;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+      object-fit: contain;
+    }
+
     .about-meta {
       display: grid;
       grid-template-columns: auto 1fr;
@@ -1228,6 +1256,12 @@
             <li data-i18n="optionsAboutHelpItem1">首次使用建议先在设置页完成模型配置，再打开侧边栏执行总结。</li>
             <li data-i18n="optionsAboutHelpItem2">如遇到连接问题，可先使用“网络诊断”检查本地和在线 provider 可达性。</li>
           </ul>
+        </article>
+
+        <article class="about-card about-qr-card">
+          <h3 data-i18n="optionsAboutCommunityTitle">微信群沟通</h3>
+          <p data-i18n="optionsAboutCommunityHint">如遇到使用问题，欢迎扫码加入微信群，随时沟通反馈。</p>
+          <img src="weixin-qr.svg" class="about-qr-image" alt="WeChat group QR code">
         </article>
 
         <article class="about-card">

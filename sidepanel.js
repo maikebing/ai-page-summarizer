@@ -1,4 +1,12 @@
 const SETTINGS_UPDATED_AT_KEY = "app_settings_updated_at";
+const GITHUBCOPILOT_FALLBACK_MODELS = [
+  "openai/gpt-4.1-mini",
+  "openai/gpt-4.1",
+  "openai/gpt-4o-mini",
+  "microsoft/phi-4-mini-instruct",
+  "deepseek/deepseek-r1",
+  "microsoft/phi-4",
+];
 
 function initSidepanelPage() {
   const { t } = window.AppI18n;
@@ -588,14 +596,27 @@ async function executeProviderRequest(provider, config, messages, temperature, e
   const { t } = window.AppI18n;
   const request = buildProviderRequest(provider, config, messages, temperature);
 
-  const response = await backgroundFetch(request.apiUrl, {
+  let response = await backgroundFetch(request.apiUrl, {
     method: "POST",
     headers: request.headers,
     body: request.body,
   });
 
+  if (!response.ok && provider === "githubcopilot" && isGitHubCopilotRetryableModelError(response)) {
+    const fallbackResult = await retryGitHubCopilotWithFallback(config, messages, temperature);
+    if (fallbackResult) {
+      if (fallbackResult.model !== String(config.model || "").trim()) {
+        await persistSettings({ githubcopilot_model: fallbackResult.model });
+      }
+
+      response = fallbackResult.response;
+    }
+  }
+
   if (!response.ok) {
-    const errorMessage = getProviderErrorMessage(provider, response.data || { error: { message: response.error } }, response.error);
+    const errorMessage = provider === "githubcopilot" && isGitHubCopilotRetryableModelError(response)
+      ? t("githubModelsNoAccessModel", [String(config.model || "openai/gpt-4.1-mini"), GITHUBCOPILOT_FALLBACK_MODELS[0]])
+      : getProviderErrorMessage(provider, response.data || { error: { message: response.error } }, response.error);
     if (!response.status) {
       throw new Error(errorMessage || t("commonNetworkRequestFailed"));
     }
@@ -604,6 +625,46 @@ async function executeProviderRequest(provider, config, messages, temperature, e
   }
 
   return extractProviderText(provider, response.data, emptyMessageKey);
+}
+
+async function retryGitHubCopilotWithFallback(config, messages, temperature) {
+  const currentModel = String(config.model || "").trim();
+  const fallbackModels = GITHUBCOPILOT_FALLBACK_MODELS.filter((model) => model !== currentModel);
+
+  for (const model of fallbackModels) {
+    const fallbackRequest = buildProviderRequest("githubcopilot", { ...config, model }, messages, temperature);
+    const fallbackResponse = await backgroundFetch(fallbackRequest.apiUrl, {
+      method: "POST",
+      headers: fallbackRequest.headers,
+      body: fallbackRequest.body,
+    });
+
+    if (fallbackResponse.ok) {
+      return {
+        model,
+        response: fallbackResponse,
+      };
+    }
+
+    if (!isGitHubCopilotRetryableModelError(fallbackResponse)) {
+      return null;
+    }
+  }
+
+  return null;
+}
+
+function isGitHubCopilotRetryableModelError(response) {
+  const message = String(response?.error || response?.data?.error?.message || "").toLowerCase();
+  if (response?.status === 403 && /no access to model/.test(message)) {
+    return true;
+  }
+
+  if (response?.status === 404) {
+    return true;
+  }
+
+  return /model not found|unknown model|invalid model/i.test(message);
 }
 
 function buildProviderRequest(provider, config, messages, temperature) {
