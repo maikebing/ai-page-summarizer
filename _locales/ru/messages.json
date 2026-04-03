@@ -194,6 +194,9 @@
   "githubModelsNoAccessModel": {
     "message": "Текущий токен GitHub Models не имеет доступа к модели $1. Переключитесь на $2 или сначала проверьте в GitHub Models, что у этой учетной записи есть доступ к нужной модели."
   },
+  "githubModelsNoAccessibleModels": {
+    "message": "Для текущего токена GitHub Models не найдено ни одной доступной модели. Проверьте, что PAT включает право models:read и что GitHub Models включен для этой учетной записи."
+  },
   "sidepanelBackgroundDisconnected": {
     "message": "Подключение к фоновому процессу было прервано. Попробуйте снова."
   },

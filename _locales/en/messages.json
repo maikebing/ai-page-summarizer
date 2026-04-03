@@ -209,6 +209,9 @@
   "githubModelsNoAccessModel": {
     "message": "Your GitHub Models token does not have access to model $1. Switch to $2, or verify that your GitHub Models account has access to that model first."
   },
+  "githubModelsNoAccessibleModels": {
+    "message": "No accessible GitHub Models were detected for the current token. Check that the PAT includes models:read and that GitHub Models is enabled for the account."
+  },
   "sidepanelBackgroundDisconnected": {
     "message": "The background connection was disconnected. Please try again."
   },
@@ -624,7 +627,7 @@
     "message": "openai/gpt-4.1-mini"
   },
   "optionsHintGitHubCopilotModel": {
-    "message": "Refresh loads model IDs from the GitHub Models catalog. Some models still depend on your account access, so openai/gpt-4.1-mini is the safest starting point."
+    "message": "After refresh, only models verified as accessible by the current GitHub Models token are shown. Refresh once first to build the list."
   },
   "optionsHintDoubaoHtml": {
     "message": "Get it from the <a href=\"https://console.volcengine.com/ark\" target=\"_blank\">Volcengine Ark Console</a>."

@@ -194,6 +194,9 @@
   "githubModelsNoAccessModel": {
     "message": "目前的 GitHub Models 權杖無法存取模型 $1。請改用 $2，或先在 GitHub Models 中確認該帳號已開通此模型權限。"
   },
+  "githubModelsNoAccessibleModels": {
+    "message": "目前的 GitHub Models 權杖未偵測到任何可存取模型。請檢查 PAT 是否包含 models:read 權限，並確認該帳號已啟用 GitHub Models。"
+  },
   "sidepanelBackgroundDisconnected": {
     "message": "背景連線已中斷，請再試一次。"
   },

@@ -194,6 +194,9 @@
   "githubModelsNoAccessModel": {
     "message": "現在の GitHub Models トークンではモデル $1 にアクセスできません。$2 に切り替えるか、先に GitHub Models 側でこのアカウントに対象モデルの権限があることを確認してください。"
   },
+  "githubModelsNoAccessibleModels": {
+    "message": "現在の GitHub Models トークンでは、アクセス可能なモデルが1つも検出されませんでした。PAT に models:read 権限が含まれていることと、このアカウントで GitHub Models が有効になっていることを確認してください。"
+  },
   "sidepanelBackgroundDisconnected": {
     "message": "バックグラウンド接続が切断されました。再試行してください。"
   },

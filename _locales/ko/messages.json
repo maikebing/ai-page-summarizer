@@ -194,6 +194,9 @@
   "githubModelsNoAccessModel": {
     "message": "현재 GitHub Models 토큰에는 모델 $1 접근 권한이 없습니다. $2로 바꾸거나, 먼저 GitHub Models에서 해당 계정에 그 모델 권한이 있는지 확인하세요."
   },
+  "githubModelsNoAccessibleModels": {
+    "message": "현재 GitHub Models 토큰으로 접근 가능한 모델이 하나도 감지되지 않았습니다. PAT에 models:read 권한이 있는지, 그리고 해당 계정에서 GitHub Models가 활성화되어 있는지 확인하세요."
+  },
   "sidepanelBackgroundDisconnected": {
     "message": "백그라운드 연결이 끊어졌습니다. 다시 시도하세요."
   },

@@ -115,6 +115,7 @@ function initOptionsPage() {
     giteeai: giteeaiStatusEl,
     githubcopilot: githubcopilotStatusEl,
   };
+  const GITHUBCOPILOT_ACCESSIBLE_MODELS_KEY = "githubcopilot_accessible_models";
   const GITHUBCOPILOT_RECOMMENDED_MODELS = [
     "openai/gpt-4.1-mini",
     "openai/gpt-4.1",
@@ -122,6 +123,7 @@ function initOptionsPage() {
     "microsoft/phi-4-mini-instruct",
     "deepseek/deepseek-r1",
   ];
+  const GITHUBCOPILOT_DEFAULT_MODEL = GITHUBCOPILOT_RECOMMENDED_MODELS[0];
   const GITHUBCOPILOT_FALLBACK_MODELS = mergeModelLists(GITHUBCOPILOT_RECOMMENDED_MODELS, [
     "microsoft/phi-4",
   ]);
@@ -314,7 +316,7 @@ function initOptionsPage() {
         "foundrylocal_url", "foundrylocal_model",
         "koboldcpp_url",
         "giteeai_api_key", "giteeai_model",
-        "githubcopilot_api_key", "githubcopilot_model",
+        "githubcopilot_api_key", "githubcopilot_model", GITHUBCOPILOT_ACCESSIBLE_MODELS_KEY,
         "summary_style",
       ]
     );
@@ -326,7 +328,8 @@ function initOptionsPage() {
     const savedAiTdEeUrl = data.aitdee_url || "https://ai.td.ee";
     const savedDoubaoModel = data.doubao_model || "doubao-pro-256k";
     const savedGiteeAIModel = data.giteeai_model || "Qwen3-8B";
-    const savedGitHubCopilotModel = data.githubcopilot_model || "openai/gpt-4.1-mini";
+    const savedGitHubCopilotModel = data.githubcopilot_model || GITHUBCOPILOT_DEFAULT_MODEL;
+    const savedGitHubCopilotModels = normalizeStoredModelList(data[GITHUBCOPILOT_ACCESSIBLE_MODELS_KEY]);
 
     deepseekKey.value = data.deepseek_api_key || "";
     deepseekModel.value = data.deepseek_model || "deepseek-chat";
@@ -354,7 +357,17 @@ function initOptionsPage() {
     setModelSelectOptions(anthropicModel, REMOTE_MODEL_PRESETS.anthropic, savedAnthropicModel);
     setModelSelectOptions(aitdeeModel, REMOTE_MODEL_PRESETS.aitdee, savedAiTdEeModel);
     setModelSelectOptions(giteeaiModel, REMOTE_MODEL_PRESETS.giteeai, savedGiteeAIModel);
-    setModelSelectOptions(githubcopilotModel, REMOTE_MODEL_PRESETS.githubcopilot, savedGitHubCopilotModel);
+    setModelSelectOptions(
+      githubcopilotModel,
+      savedGitHubCopilotModels.length ? savedGitHubCopilotModels : [GITHUBCOPILOT_DEFAULT_MODEL],
+      savedGitHubCopilotModels.includes(savedGitHubCopilotModel) ? savedGitHubCopilotModel : GITHUBCOPILOT_DEFAULT_MODEL,
+      { allowCustomValue: false }
+    );
+    if (!savedGitHubCopilotModels.length && savedGitHubCopilotModel) {
+      githubcopilotModel.dataset.cachedProbeModel = savedGitHubCopilotModel;
+    } else {
+      delete githubcopilotModel.dataset.cachedProbeModel;
+    }
     setModelSelectOptions(doubaoModel, REMOTE_MODEL_PRESETS.doubao, savedDoubaoModel);
 
     refreshProviderIndicators();
@@ -681,10 +694,12 @@ function initOptionsPage() {
     });
   }
 
-  function setModelSelectOptions(select, models, selectedValue) {
+  function setModelSelectOptions(select, models, selectedValue, options = {}) {
     if (!select || !Array.isArray(models)) {
       return;
     }
+
+    const { allowCustomValue = true } = options;
 
     const normalizedModels = [];
     const seen = new Set();
@@ -700,8 +715,9 @@ function initOptionsPage() {
     });
 
     const currentValue = String(selectedValue ?? select.value ?? "").trim();
-    if (currentValue && !seen.has(currentValue)) {
+    if (allowCustomValue && currentValue && !seen.has(currentValue)) {
       normalizedModels.unshift(currentValue);
+      seen.add(currentValue);
     }
 
     select.innerHTML = "";
@@ -712,7 +728,7 @@ function initOptionsPage() {
       select.appendChild(option);
     });
 
-    if (currentValue) {
+    if (currentValue && seen.has(currentValue)) {
       select.value = currentValue;
     }
 
@@ -754,7 +770,9 @@ function initOptionsPage() {
       return;
     }
 
-    const presetModels = REMOTE_MODEL_PRESETS[provider] || [];
+    const presetModels = provider === "githubcopilot"
+      ? await getGitHubCopilotStoredModelChoices()
+      : (REMOTE_MODEL_PRESETS[provider] || []);
     const button = config.button;
     if (button) {
       button.disabled = true;
@@ -764,13 +782,18 @@ function initOptionsPage() {
       let models = [...presetModels];
       let preferredModel = "";
       if (typeof config.fetcher === "function" && config.getApiKey()) {
+        const currentModel = provider === "githubcopilot" && silent
+          ? (config.input.dataset.cachedProbeModel || config.input.value)
+          : config.input.value;
         const fetchResult = normalizeModelFetchResult(
           await config.fetcher(config.getApiKey(), {
-            currentModel: config.input.value,
+            currentModel,
             silent,
           })
         );
-        models = mergeModelLists(fetchResult.models, presetModels);
+        models = fetchResult.replacePresets
+          ? mergeModelLists(fetchResult.models, [])
+          : mergeModelLists(fetchResult.models, presetModels);
         preferredModel = fetchResult.preferredModel;
         setProviderStatus(provider, "success", t("optionsLoadedRemoteModels", models.length));
       } else if (!silent) {
@@ -783,7 +806,12 @@ function initOptionsPage() {
 
       const previousValue = String(config.input.value || "").trim();
       const selectedValue = !silent && preferredModel ? preferredModel : previousValue;
-      setModelSelectOptions(config.input, models, selectedValue);
+      setModelSelectOptions(
+        config.input,
+        models,
+        selectedValue,
+        provider === "githubcopilot" ? { allowCustomValue: false } : undefined
+      );
 
       if (!config.input.value.trim() && models.length) {
         config.input.value = models[0];
@@ -792,13 +820,24 @@ function initOptionsPage() {
       if (String(config.input.value || "").trim() !== previousValue) {
         refreshProviderIndicators();
       }
+
+      if (provider === "githubcopilot") {
+        delete config.input.dataset.cachedProbeModel;
+      }
     } catch (error) {
-      setModelSelectOptions(config.input, presetModels, config.input.value);
+      setModelSelectOptions(
+        config.input,
+        presetModels,
+        provider === "githubcopilot" ? GITHUBCOPILOT_DEFAULT_MODEL : config.input.value,
+        provider === "githubcopilot" ? { allowCustomValue: false } : undefined
+      );
       if (!silent) {
-        const fallbackMessage = presetModels.length
-          ? t("optionsModelListFallbackPresets", presetModels.length)
-          : (error.message || t("commonUnknownError"));
-        setProviderStatus(provider, presetModels.length ? "info" : "error", fallbackMessage);
+        const fallbackMessage = provider === "githubcopilot"
+          ? (error.message || t("commonUnknownError"))
+          : (presetModels.length
+            ? t("optionsModelListFallbackPresets", presetModels.length)
+            : (error.message || t("commonUnknownError")));
+        setProviderStatus(provider, provider === "githubcopilot" || presetModels.length ? "info" : "error", fallbackMessage);
       }
     } finally {
       if (button) {
@@ -819,17 +858,27 @@ function initOptionsPage() {
     });
   }
 
+  function normalizeStoredModelList(value) {
+    if (!Array.isArray(value)) {
+      return [];
+    }
+
+    return mergeModelLists(value, []);
+  }
+
   function normalizeModelFetchResult(result) {
     if (Array.isArray(result)) {
       return {
         models: result,
         preferredModel: "",
+        replacePresets: false,
       };
     }
 
     return {
       models: Array.isArray(result?.models) ? result.models : [],
       preferredModel: String(result?.preferredModel || "").trim(),
+      replacePresets: Boolean(result?.replacePresets),
     };
   }
 
@@ -902,6 +951,39 @@ function initOptionsPage() {
   }
 
   async function fetchGitHubCopilotModelList(apiKey, currentModel, probeAccess = false) {
+    if (!probeAccess) {
+      const cachedModels = await getGitHubCopilotStoredModelChoices({ includeDefault: false });
+      if (cachedModels.length) {
+        return {
+          models: cachedModels,
+          replacePresets: true,
+        };
+      }
+
+      const selectedModel = String(currentModel || "").trim();
+      if (apiKey && selectedModel) {
+        const selectedModelResponse = await probeGitHubCopilotModelAccess(apiKey, selectedModel);
+        if (selectedModelResponse.ok) {
+          await persistSettings({
+            [GITHUBCOPILOT_ACCESSIBLE_MODELS_KEY]: [selectedModel],
+          });
+          return {
+            models: [selectedModel],
+            replacePresets: true,
+          };
+        }
+
+        if (!isGitHubCopilotRetryableModelError(selectedModelResponse)) {
+          throw new Error(selectedModelResponse.error || `HTTP ${selectedModelResponse.status}`);
+        }
+      }
+
+      return {
+        models: [GITHUBCOPILOT_DEFAULT_MODEL],
+        replacePresets: true,
+      };
+    }
+
     const response = await backgroundFetchJson("https://models.github.ai/catalog/models", {
       headers: {
         Accept: "application/json",
@@ -916,16 +998,29 @@ function initOptionsPage() {
     const rawModels = Array.isArray(response.data)
       ? response.data
       : (response.data?.data || response.data?.models || []);
-    const models = sortGitHubCopilotCatalogModels(rawModels);
+    const catalogModels = sortGitHubCopilotCatalogModels(rawModels);
+    const models = await filterGitHubCopilotAccessibleModels(apiKey, currentModel, catalogModels);
 
-    if (!probeAccess || !apiKey) {
-      return { models };
+    if (!models.length) {
+      await persistSettings({
+        [GITHUBCOPILOT_ACCESSIBLE_MODELS_KEY]: [],
+      });
+      const noAccessibleError = new Error(t("githubModelsNoAccessibleModels"));
+      noAccessibleError.code = "github-models-no-accessible-models";
+      throw noAccessibleError;
     }
 
-    const preferredModel = await resolveGitHubCopilotPreferredModel(apiKey, currentModel, models);
+    await persistSettings({
+      [GITHUBCOPILOT_ACCESSIBLE_MODELS_KEY]: models,
+    });
+
+    const preferredModel = models.includes(String(currentModel || "").trim())
+      ? String(currentModel || "").trim()
+      : models[0];
     return {
       models,
       preferredModel: preferredModel && preferredModel !== String(currentModel || "").trim() ? preferredModel : "",
+      replacePresets: true,
     };
   }
 
@@ -991,6 +1086,52 @@ function initOptionsPage() {
     }
 
     return "";
+  }
+
+  async function filterGitHubCopilotAccessibleModels(apiKey, currentModel, availableModels = []) {
+    const candidates = getGitHubCopilotVerificationCandidates(currentModel, availableModels);
+    const accessibleModels = new Array(candidates.length);
+    const concurrency = Math.min(4, candidates.length || 1);
+    let nextIndex = 0;
+
+    async function worker() {
+      while (nextIndex < candidates.length) {
+        const currentIndex = nextIndex;
+        nextIndex += 1;
+
+        const model = candidates[currentIndex];
+        const response = await probeGitHubCopilotModelAccess(apiKey, model);
+        if (response.ok) {
+          accessibleModels[currentIndex] = model;
+          continue;
+        }
+
+        if (!isGitHubCopilotRetryableModelError(response)) {
+          throw new Error(response.error || `HTTP ${response.status}`);
+        }
+      }
+    }
+
+    await Promise.all(Array.from({ length: concurrency }, () => worker()));
+    return accessibleModels.filter(Boolean);
+  }
+
+  function getGitHubCopilotVerificationCandidates(currentModel, availableModels = []) {
+    const selectedModel = String(currentModel || "").trim();
+    return mergeModelLists(
+      [
+        selectedModel,
+        ...(Array.isArray(availableModels) ? availableModels : []),
+      ],
+      []
+    );
+  }
+
+  async function getGitHubCopilotStoredModelChoices(options = {}) {
+    const { includeDefault = true } = options;
+    const data = await readSettings([GITHUBCOPILOT_ACCESSIBLE_MODELS_KEY]);
+    const cachedModels = normalizeStoredModelList(data[GITHUBCOPILOT_ACCESSIBLE_MODELS_KEY]);
+    return cachedModels.length ? cachedModels : (includeDefault ? [GITHUBCOPILOT_DEFAULT_MODEL] : []);
   }
 
   function getGitHubCopilotProbeCandidates(currentModel, availableModels = []) {
@@ -1550,10 +1691,13 @@ function initOptionsPage() {
       throw new Error(t("optionsTestMissingConfig"));
     }
 
-    const preferredModel = await resolveGitHubCopilotPreferredModel(apiKey, currentModel, GITHUBCOPILOT_FALLBACK_MODELS);
+    const fetchResult = normalizeModelFetchResult(await fetchGitHubCopilotModelList(apiKey, currentModel, true));
+    const preferredModel = fetchResult.preferredModel || fetchResult.models[0] || "";
     if (!preferredModel) {
-      throw new Error(t("githubModelsNoAccessModel", [currentModel, GITHUBCOPILOT_RECOMMENDED_MODELS[0]]));
+      throw new Error(t("githubModelsNoAccessibleModels"));
     }
+
+    setModelSelectOptions(githubcopilotModel, fetchResult.models, preferredModel, { allowCustomValue: false });
 
     if (preferredModel !== currentModel) {
       githubcopilotModel.value = preferredModel;

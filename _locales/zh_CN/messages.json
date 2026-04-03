@@ -209,6 +209,9 @@
   "githubModelsNoAccessModel": {
     "message": "当前 GitHub Models 令牌无权访问模型 $1。请改用 $2，或先在 GitHub Models 中确认该账号已开通对应模型权限。"
   },
+  "githubModelsNoAccessibleModels": {
+    "message": "当前 GitHub Models 令牌未检测到任何可访问模型。请检查 PAT 是否包含 models:read 权限，并确认账号已开通 GitHub Models。"
+  },
   "sidepanelBackgroundDisconnected": {
     "message": "后台连接已断开，请重试"
   },
@@ -624,7 +627,7 @@
     "message": "openai/gpt-4.1-mini"
   },
   "optionsHintGitHubCopilotModel": {
-    "message": "刷新后会从 GitHub Models 目录读取模型 ID。部分模型仍取决于你的账号权限，推荐优先使用 openai/gpt-4.1-mini。"
+    "message": "点击刷新后，只会显示当前 GitHub Models 令牌已验证可访问的模型；首次建议先刷新一次。"
   },
   "optionsHintDoubaoHtml": {
     "message": "在 <a href=\"https://console.volcengine.com/ark\" target=\"_blank\">火山引擎 Ark 控制台</a> 获取"
