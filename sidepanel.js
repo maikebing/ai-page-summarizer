@@ -615,6 +615,7 @@ function buildProviderRequest(provider, config, messages, temperature) {
         Authorization: `Bearer ${config.apiKey}`,
       },
       body: JSON.stringify({
+        model: config.model || "deepseek-chat",
         messages,
         max_tokens: 2000,
         temperature,
