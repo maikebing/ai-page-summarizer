@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "AI 页面总结器",
   "version": "1.0.0",
-  "description": "一键使用豆包/DeepSeek/Ollama总结当前页面内容",
+  "description": "一键使用豆包/DeepSeek/通义千问/Ollama总结当前页面内容",
   "permissions": [
     "activeTab",
     "tabs",

@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const koboldcppRefreshBtn = document.getElementById("koboldcpp-refresh-btn");
   const giteeaiKey = document.getElementById("giteeai-key");
   const giteeaiModel = document.getElementById("giteeai-model");
+  const qwenKey = document.getElementById("qwen-key");
+  const qwenModel = document.getElementById("qwen-model");
   const saveBtn = document.getElementById("save-btn");
   const status = document.getElementById("status");
 
@@ -26,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     [
       "deepseek_api_key", "deepseek_model",
       "doubao_api_key", "doubao_model",
+      "qwen_api_key", "qwen_model",
       "ollama_url", "ollama_model",
       "dockerai_url", "dockerai_model",
       "koboldcpp_url",
@@ -36,6 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
       deepseekModel.value = data.deepseek_model || "deepseek-chat";
       doubaoKey.value = data.doubao_api_key || "";
       doubaoModel.value = data.doubao_model || "doubao-pro-256k";
+      qwenKey.value = data.qwen_api_key || "";
+      qwenModel.value = data.qwen_model || "qwen-plus";
       ollamaUrl.value = data.ollama_url || "http://localhost:11434";
       ollamaModel.value = data.ollama_model || "qwen2.5:7b";
       dockeraiUrl.value = data.dockerai_url || "http://localhost:12434";
@@ -123,6 +128,8 @@ document.addEventListener("DOMContentLoaded", () => {
         deepseek_model: deepseekModel.value.trim(),
         doubao_api_key: doubaoKey.value.trim(),
         doubao_model: doubaoModel.value.trim(),
+        qwen_api_key: qwenKey.value.trim(),
+        qwen_model: qwenModel.value.trim(),
         ollama_url: ollamaUrl.value.trim(),
         ollama_model: ollamaModel.value,
         dockerai_url: dockeraiUrl.value.trim(),
