@@ -13,6 +13,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const chatSendBtn = document.getElementById("chat-send-btn");
   const summaryTimer = document.getElementById("summary-timer");
 
+  // 历史记录相关元素
+  const historyBtn = document.getElementById("history-btn");
+  const historyPanel = document.getElementById("history-panel");
+  const historyOverlay = document.getElementById("history-overlay");
+  const historyCloseBtn = document.getElementById("history-close-btn");
+  const historyClearBtn = document.getElementById("history-clear-btn");
+  const historyList = document.getElementById("history-list");
+  const historyEmpty = document.getElementById("history-empty");
+
+  // 确认对话框
+  const confirmDialog = document.getElementById("confirm-dialog");
+  const confirmMessage = document.getElementById("confirm-message");
+  const confirmCancelBtn = document.getElementById("confirm-cancel-btn");
+  const confirmOkBtn = document.getElementById("confirm-ok-btn");
+  let confirmCallback = null;
+
   // 对话历史（包含 system + 页面上下文 + 所有对话）
   let conversationHistory = [];
   // 缓存的页面内容，用于对话上下文
@@ -145,6 +161,255 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // ===== 历史记录相关函数 =====
+
+  async function saveToHistory(summary, summaryHtml, provider) {
+    if (!cachedPageContent && !cachedPageTitle) return;
+
+    await HistoryManager.add({
+      title: cachedPageTitle || "未获取标题",
+      url: cachedPageUrl,
+      summary: summary,
+      summaryHtml: summaryHtml,
+      pageContent: cachedPageContent,
+      provider: provider,
+    });
+  }
+
+  function openHistoryPanel() {
+    historyPanel.classList.remove("hidden");
+    historyOverlay.classList.remove("hidden");
+    loadHistoryList();
+  }
+
+  function closeHistoryPanel() {
+    historyPanel.classList.add("hidden");
+    historyOverlay.classList.add("hidden");
+  }
+
+  async function loadHistoryList() {
+    const history = await HistoryManager.getAll();
+    historyList.innerHTML = "";
+
+    if (history.length === 0) {
+      historyList.classList.add("hidden");
+      historyEmpty.classList.remove("hidden");
+      return;
+    }
+
+    historyList.classList.remove("hidden");
+    historyEmpty.classList.add("hidden");
+
+    history.forEach((item) => {
+      const historyItem = createHistoryItem(item);
+      historyList.appendChild(historyItem);
+    });
+  }
+
+  function createHistoryItem(item) {
+    const div = document.createElement("div");
+    div.className = "history-item";
+    div.dataset.id = item.id;
+
+    const providerDisplay = {
+      deepseek: "DeepSeek",
+      doubao: "豆包",
+      ollama: "Ollama",
+      dockerai: "Docker AI",
+      koboldcpp: "KoboldCpp",
+      giteeai: "Gitee AI",
+    };
+
+    div.innerHTML = `
+      <div class="history-item-title">${escapeHtml(item.title)}</div>
+      <div class="history-item-meta">
+        <span class="history-item-time">${HistoryManager.formatTime(item.createdAt)}</span>
+        <span class="history-item-provider">${providerDisplay[item.provider] || item.provider}</span>
+      </div>
+      ${item.url ? `<div class="history-item-url">${escapeHtml(item.url)}</div>` : ""}
+      <div class="history-item-preview">${HistoryManager.truncateForPreview(item.summary, 100)}</div>
+      <div class="history-item-actions">
+        <button class="btn-view" data-action="view">👁️ 查看</button>
+        <button class="btn-copy-summary" data-action="copy">📋 复制</button>
+        <button class="btn-resummarize" data-action="resummarize">🔄 重总结</button>
+        <button class="btn-delete" data-action="delete">🗑️</button>
+      </div>
+    `;
+
+    div.querySelector(".btn-view").addEventListener("click", (e) => {
+      e.stopPropagation();
+      viewHistoryItem(item);
+    });
+
+    div.querySelector(".btn-copy-summary").addEventListener("click", (e) => {
+      e.stopPropagation();
+      copyHistorySummary(item, e.target);
+    });
+
+    div.querySelector(".btn-resummarize").addEventListener("click", (e) => {
+      e.stopPropagation();
+      resummarizeHistoryItem(item);
+    });
+
+    div.querySelector(".btn-delete").addEventListener("click", (e) => {
+      e.stopPropagation();
+      deleteHistoryItem(item.id);
+    });
+
+    div.addEventListener("click", () => {
+      viewHistoryItem(item);
+    });
+
+    return div;
+  }
+
+  function viewHistoryItem(item) {
+    cachedPageContent = item.pageContent;
+    cachedPageTitle = item.title;
+    cachedPageUrl = item.url;
+    summaryContent.innerHTML = item.summaryHtml;
+
+    resultEl.classList.remove("hidden");
+    errorEl.classList.add("hidden");
+    chatMessages.classList.add("hidden");
+    chatMessages.innerHTML = "";
+    loadingEl.classList.add("hidden");
+
+    const safeContent = item.pageContent.replace(/`/g, "\\`");
+    conversationHistory = [
+      {
+        role: "system",
+        content: `你是一个专业的内容分析助手。用户正在查看历史记录中的总结内容。现在用户会对这段内容提出进一步的问题，请基于以下内容回答。如果问题超出内容范围，你也可以结合自己的知识回答，但要说明哪些是内容中的信息，哪些是你的补充。\n\n网页标题：${item.title}\n网页地址：${item.url || "未获取"}\n\n内容：\n${safeContent}`
+      },
+      { role: "assistant", content: item.summary },
+    ];
+
+    providerSelect.value = item.provider;
+    chrome.storage.sync.set({ provider: item.provider });
+
+    closeHistoryPanel();
+  }
+
+  function copyHistorySummary(item, btn) {
+    navigator.clipboard.writeText(item.summary).then(() => {
+      const originalText = btn.textContent;
+      btn.textContent = "✅ 已复制";
+      btn.style.background = "#dcfce7";
+      btn.style.color = "#16a34a";
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.style.background = "";
+        btn.style.color = "";
+      }, 1500);
+    });
+  }
+
+  async function resummarizeHistoryItem(item) {
+    if (!item.pageContent) {
+      showConfirmDialog("无法重新总结：该记录没有保存原始页面内容。", null);
+      return;
+    }
+
+    closeHistoryPanel();
+
+    cachedPageContent = item.pageContent;
+    cachedPageTitle = item.title;
+    cachedPageUrl = item.url;
+
+    loadingEl.classList.remove("hidden");
+    resultEl.classList.add("hidden");
+    errorEl.classList.add("hidden");
+    chatMessages.classList.add("hidden");
+    chatMessages.innerHTML = "";
+    conversationHistory = [];
+    summarizeBtn.disabled = true;
+    summaryTimer.textContent = "";
+
+    try {
+      const start = Date.now();
+      const summary = await callAI(providerSelect.value, cachedPageContent, cachedPageTitle, cachedPageUrl);
+      const end = Date.now();
+      summaryContent.innerHTML = renderMarkdown(summary);
+      resultEl.classList.remove("hidden");
+      summaryTimer.textContent = `耗时 ${((end - start) / 1000).toFixed(3)} 秒`;
+
+      conversationHistory = [
+        {
+          role: "system",
+          content: `你是一个专业的内容分析助手。用户正在浏览一个网页，你已经帮他总结了内容。现在用户会对这个页面内容提出进一步的问题，请基于以下网页内容回答。如果问题超出页面内容范围，你也可以结合自己的知识回答，但要说明哪些是页面内容中的信息，哪些是你的补充。\n\n网页标题：${cachedPageTitle}\n网页地址：${cachedPageUrl}\n\n网页内容：\n${cachedPageContent}`
+        },
+        { role: "assistant", content: summary },
+      ];
+
+      await HistoryManager.update(item.id, {
+        summary: summary,
+        summaryHtml: renderMarkdown(summary),
+        provider: providerSelect.value,
+      });
+    } catch (err) {
+      let msg = err.message || "总结失败";
+      if (providerSelect.value === "ollama" &&
+          (msg.includes("Failed to fetch") || msg.includes("CORS") || msg.includes("NetworkError") || msg.includes("网络请求失败"))) {
+        msg = "无法连接 Ollama 服务。请检查：\n1. Ollama 是否已启动（ollama serve）\n2. 启动前设置环境变量 OLLAMA_ORIGINS=*\n   Windows: set OLLAMA_ORIGINS=* 然后 ollama serve\n   Mac/Linux: OLLAMA_ORIGINS=* ollama serve";
+      }
+      errorMessage.textContent = msg;
+      errorEl.classList.remove("hidden");
+      summaryTimer.textContent = "";
+    } finally {
+      loadingEl.classList.add("hidden");
+      summarizeBtn.disabled = false;
+    }
+  }
+
+  function deleteHistoryItem(id) {
+    showConfirmDialog("确定要删除这条记录吗？", async () => {
+      await HistoryManager.delete(id);
+      loadHistoryList();
+    });
+  }
+
+  function clearAllHistory() {
+    showConfirmDialog("确定要清空所有历史记录吗？此操作不可恢复。", async () => {
+      await HistoryManager.clearAll();
+      loadHistoryList();
+    });
+  }
+
+  function showConfirmDialog(message, callback) {
+    confirmMessage.textContent = message;
+    confirmCallback = callback;
+    confirmDialog.classList.remove("hidden");
+  }
+
+  function hideConfirmDialog() {
+    confirmDialog.classList.add("hidden");
+    confirmCallback = null;
+  }
+
+  function escapeHtml(str) {
+    if (!str) return "";
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  // ===== 历史记录事件监听器 =====
+  historyBtn.addEventListener("click", openHistoryPanel);
+  historyCloseBtn.addEventListener("click", closeHistoryPanel);
+  historyOverlay.addEventListener("click", closeHistoryPanel);
+  historyClearBtn.addEventListener("click", clearAllHistory);
+
+  confirmCancelBtn.addEventListener("click", hideConfirmDialog);
+  confirmOkBtn.addEventListener("click", async () => {
+    if (confirmCallback) {
+      await confirmCallback();
+    }
+    hideConfirmDialog();
+  });
+
   // ===== 总结当前页面 =====
   async function doSummarize() {
     loadingEl.classList.remove("hidden");
@@ -199,6 +464,8 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         { role: "assistant", content: summary },
       ];
+      // 保存到历史记录
+      await saveToHistory(summary, renderMarkdown(summary), providerSelect.value);
     } catch (err) {
       let msg = err.message || "总结失败";
       if (providerSelect.value === "ollama" &&
@@ -248,6 +515,8 @@ document.addEventListener("DOMContentLoaded", () => {
           },
           { role: "assistant", content: summary },
         ];
+        // 保存到历史记录
+        await saveToHistory(summary, renderMarkdown(summary), providerSelect.value);
         chrome.storage.local.remove("sidepanel_selection");
       } catch (err) {
         let msg = err.message || "总结失败";

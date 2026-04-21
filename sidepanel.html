@@ -8,7 +8,12 @@
 </head>
 <body class="sidepanel-body">
   <div class="container">
-    <h1>📄 AI 页面总结</h1>
+    <!-- 顶部标题栏 -->
+    <div class="header-row">
+      <button id="history-btn" class="icon-btn" title="历史记录">📜</button>
+      <h1>📄 AI 页面总结</h1>
+      <div class="header-placeholder"></div>
+    </div>
 
     <div class="provider-select">
       <label for="provider">选择 AI 模型：</label>
@@ -56,6 +61,36 @@
     </div>
   </div>
 
+  <!-- 历史记录面板 -->
+  <div id="history-panel" class="history-panel hidden">
+    <div class="history-header">
+      <button id="history-close-btn" class="icon-btn" title="关闭">✕</button>
+      <h2>📜 历史记录</h2>
+      <button id="history-clear-btn" class="icon-btn" title="清空全部">🗑️</button>
+    </div>
+    <div id="history-list" class="history-list">
+      <!-- 历史记录项将动态插入 -->
+    </div>
+    <div id="history-empty" class="history-empty hidden">
+      <p>暂无历史记录</p>
+    </div>
+  </div>
+
+  <!-- 历史记录遮罩层 -->
+  <div id="history-overlay" class="history-overlay hidden"></div>
+
+  <!-- 确认对话框 -->
+  <div id="confirm-dialog" class="confirm-dialog hidden">
+    <div class="confirm-content">
+      <p id="confirm-message">确定要执行此操作吗？</p>
+      <div class="confirm-buttons">
+        <button id="confirm-cancel-btn" class="btn-secondary">取消</button>
+        <button id="confirm-ok-btn" class="btn-danger">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="history.js"></script>
   <script src="sidepanel.js"></script>
 </body>
 </html>
